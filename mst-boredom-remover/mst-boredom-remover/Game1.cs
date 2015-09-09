@@ -19,7 +19,8 @@ namespace mst_boredom_remover
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Button testButton;
+        List<UIObject> userInterface;
+        Button newButton;
 
         public Game1()
         {
@@ -51,12 +52,34 @@ namespace mst_boredom_remover
 
             IsMouseVisible = true;
 
-            Texture2D testBtnTexture = Content.Load<Texture2D>("Buttons\\BtnNew");
-            Texture2D testBtnTextureHover = Content.Load<Texture2D>("Buttons\\BtnNewHover");
+            // New Game Button
+            Texture2D newButtonTexture = Content.Load<Texture2D>("Buttons\\BtnNew");
+            Texture2D newButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnNewHover");
+            Button newButton = new Button(newButtonTexture, newButtonTextureHover, newButtonTextureHover, new Vector2(100,100));
+            newButton.OnPress += new EventHandler(newButton_OnPress);
+            newButton.Clicked += new EventHandler(newButton_Clicked);
 
-            testButton = new Button(testBtnTexture, testBtnTextureHover, testBtnTextureHover, new Vector2(100,100));
-            testButton.OnPress += new EventHandler(testButton_OnPress);
-            testButton.Clicked += new EventHandler(testButton_Clicked);
+            // Load Game Button
+            Texture2D loadButtonTexture = Content.Load<Texture2D>("Buttons\\BtnLoad");
+            Texture2D loadButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnLoadHover");
+            Button loadButton = new Button(loadButtonTexture, loadButtonTextureHover, loadButtonTextureHover, new Vector2(100, 200));
+            loadButton.OnPress += new EventHandler(loadButton_OnPress);
+            loadButton.Clicked += new EventHandler(loadButton_Clicked);
+            // Settings/Options Button
+
+            // Exit Button
+
+            // testTextDisplay
+            Texture2D blackTextBackground = Content.Load<Texture2D>("BlackTextBackground");
+            SpriteFont font = Content.Load<SpriteFont>("Arial");
+            TextDisplay testTextDisplay = new TextDisplay(blackTextBackground, new Vector2(100, 300), font, Color.White);
+
+            // list of all UI objects to be drawn/updated
+            userInterface = new List<UIObject>();
+            userInterface.Add(newButton);
+            userInterface.Add(loadButton);
+            userInterface.Add(testTextDisplay);
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -81,8 +104,11 @@ namespace mst_boredom_remover
             {
                 this.Exit();
             }
-
-            testButton.Update(gameTime);
+            
+            foreach (UIObject x in userInterface)
+            {
+                x.Update(gameTime);
+            }
 
             // TODO: Add your update logic here
 
@@ -100,16 +126,27 @@ namespace mst_boredom_remover
             // TODO: Add your drawing code here
             spriteBatch.Begin();
 
-            testButton.Draw(spriteBatch);
+            foreach (UIObject x in userInterface)
+            {
+                x.Draw(spriteBatch);
+            }
             
             spriteBatch.End();
             base.Draw(gameTime);
         }
-        public void testButton_Clicked(object sender, EventArgs e)
+        public void newButton_Clicked(object sender, EventArgs e)
         {
             this.Exit();
         }
-        public void testButton_OnPress(object sender, EventArgs e)
+        public void newButton_OnPress(object sender, EventArgs e)
+        {
+
+        }
+        public void loadButton_Clicked(object sender, EventArgs e)
+        {
+            this.Exit();
+        }
+        public void loadButton_OnPress(object sender, EventArgs e)
         {
 
         }

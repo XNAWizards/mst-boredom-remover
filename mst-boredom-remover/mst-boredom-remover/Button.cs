@@ -18,7 +18,7 @@ namespace mst_boredom_remover
         MouseOver, // when a mouse is on the button
         Pressed, // when the button is clicked
     }
-    public class Button
+    public class Button : UIObject
     {
         private Texture2D texture;
         private bool visible = true;
@@ -49,6 +49,7 @@ namespace mst_boredom_remover
 
         // button constructor
         public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position)
+            : base (texture, position)
         {
             this.texture = texture;
             this.hoverTexture = hoverTexture;
@@ -59,7 +60,7 @@ namespace mst_boredom_remover
         }
 
         // update button state/fire events as necessary
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (visible)
             {
@@ -123,7 +124,7 @@ namespace mst_boredom_remover
                 previousState = mouseState;
             }
         } // end update method
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {   
             if (visible)
             {
