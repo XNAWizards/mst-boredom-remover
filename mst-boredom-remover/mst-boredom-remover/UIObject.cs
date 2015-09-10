@@ -18,9 +18,15 @@ namespace mst_boredom_remover
         private Texture2D texture;
         private Vector2 position;
 
-        public UIObject(Texture2D texture, Vector2 position)
+        public virtual void changeContext(int id)
         {
 
+        }
+
+        public UIObject(Texture2D texture, Vector2 position)
+        {
+            //this.texture = texture;
+            //this.position = position;
         }
 
         public virtual void Update(GameTime gt)
@@ -29,7 +35,7 @@ namespace mst_boredom_remover
         }
         public virtual void Draw(SpriteBatch sb)
         {
-            //sb.Draw(texture, position, Color.White);
+            // no default draw
         }
     }
 }

@@ -36,6 +36,8 @@ namespace mst_boredom_remover
         // current button state
         private ButtonStatus state = ButtonStatus.Normal;
 
+        private float scale = 1.0f;
+
         public ButtonStatus GetButtonStatus
         {
             get { return state; }
@@ -48,7 +50,7 @@ namespace mst_boredom_remover
         public event EventHandler OnPress;
 
         // button constructor
-        public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position)
+        public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position, float scale = 1.0f)
             : base (texture, position)
         {
             this.texture = texture;
@@ -57,6 +59,7 @@ namespace mst_boredom_remover
             this.position = position;
 
             this.bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height); // set the bounds
+            this.scale = scale;
         }
 
         // update button state/fire events as necessary
@@ -133,15 +136,16 @@ namespace mst_boredom_remover
                 {
                     // draw the normal state of the button
                     case ButtonStatus.Normal:
-                        spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 100, 35), Color.White);
+                        spriteBatch.Draw(texture, position, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                        //spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height), Color.White);
                         break;
                     // draw the mouseover state of the button
                     case ButtonStatus.MouseOver:
-                        spriteBatch.Draw(hoverTexture, new Rectangle((int)position.X, (int)position.Y, 100, 35), Color.White);
+                        spriteBatch.Draw(hoverTexture, new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height), Color.White);
                         break;
                     // draw the pressed state of the button
                     case ButtonStatus.Pressed:
-                        spriteBatch.Draw(pressedTexture, new Rectangle((int)position.X, (int)position.Y, 100, 35), Color.White);
+                        spriteBatch.Draw(pressedTexture, new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height), Color.White);
                         break;
                     // impossible case
                     default:
@@ -149,6 +153,12 @@ namespace mst_boredom_remover
                 }
             }
         }
+
+        public virtual void changeContext(int id)
+        {
+
+        }
+
         public void ChangeTexture(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture)
         {
             this.texture = texture;

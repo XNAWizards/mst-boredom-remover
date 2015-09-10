@@ -19,6 +19,7 @@ namespace mst_boredom_remover
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        
         List<UIObject> userInterface;
         Button newButton;
 
@@ -26,6 +27,12 @@ namespace mst_boredom_remover
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+
+            IsMouseVisible = true;
+            graphics.ToggleFullScreen(); // activate full screen mode. toggle with alt + enter
         }
 
         /// <summary>
@@ -50,8 +57,7 @@ namespace mst_boredom_remover
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            IsMouseVisible = true;
-
+            #region Buttons
             // New Game Button
             Texture2D newButtonTexture = Content.Load<Texture2D>("Buttons\\BtnNew");
             Texture2D newButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnNewHover");
@@ -69,16 +75,45 @@ namespace mst_boredom_remover
 
             // Exit Button
 
+            // Back Button
+            Texture2D backButtonTexture = Content.Load<Texture2D>("Buttons\\BtnBack");
+            Texture2D backButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnBackHover");
+            Button backButton = new Button(backButtonTexture, backButtonTextureHover, backButtonTextureHover, new Vector2(1200, 10), .5f);
+            backButton.OnPress += new EventHandler(backButton_OnPress);
+            backButton.Clicked += new EventHandler(backButton_Clicked);
+
+            #endregion
+            #region TextDisplays
             // testTextDisplay
             Texture2D blackTextBackground = Content.Load<Texture2D>("BlackTextBackground");
             SpriteFont font = Content.Load<SpriteFont>("Arial");
-            TextDisplay testTextDisplay = new TextDisplay(blackTextBackground, new Vector2(100, 300), font, Color.White);
+            TextDisplay testTextDisplay = new TextDisplay(blackTextBackground, new Vector2(100, 300), font, Color.Green);
+            #endregion
+            #region Menus
+            Texture2D mainBackground = Content.Load<Texture2D>("MainBackground");
 
+            List<UIObject> mainControls = new List<UIObject>();
+            mainControls.Add(newButton);
+            mainControls.Add(loadButton);
+            mainControls.Add(testTextDisplay);
+
+            Menu mainMenu = new Menu(mainBackground, new Vector2(0, 0), mainControls, Color.White, 0);
+
+            Texture2D gameBackground = Content.Load<Texture2D>("gameBackground");
+
+            List<UIObject> gameControls = new List<UIObject>();
+
+            gameControls.Add(backButton);
+
+            Menu gameMenu = new Menu(gameBackground, new Vector2(0, 0), gameControls, Color.White, 1);
+            #endregion
+            
             // list of all UI objects to be drawn/updated
             userInterface = new List<UIObject>();
-            userInterface.Add(newButton);
-            userInterface.Add(loadButton);
-            userInterface.Add(testTextDisplay);
+
+            userInterface.Add(mainMenu);
+            userInterface.Add(gameMenu);
+            mainMenu.activate(); // activate the main user interface
 
             // TODO: use this.Content to load your game content here
         }
@@ -99,10 +134,23 @@ namespace mst_boredom_remover
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            KeyboardState keyboard = Keyboard.GetState();
             // Allows the game to exit
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (keyboard.IsKeyDown(Keys.Escape))
             {
                 this.Exit();
+            }
+            if (keyboard.IsKeyDown(Keys.D0))
+            {
+                changeScreen(0);
+            }
+            if (keyboard.IsKeyDown(Keys.D1))
+            {
+                changeScreen(1);
+            }
+            if (keyboard.IsKeyDown(Keys.LeftAlt) && keyboard.IsKeyDown(Keys.Enter))
+            {
+                graphics.ToggleFullScreen();
             }
             
             foreach (UIObject x in userInterface)
@@ -149,6 +197,22 @@ namespace mst_boredom_remover
         public void loadButton_OnPress(object sender, EventArgs e)
         {
 
+        }
+        public void backButton_Clicked(object sender, EventArgs e)
+        {
+            changeScreen(0);
+        }
+        public void backButton_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        private void changeScreen(int id)
+        {
+            foreach (UIObject x in userInterface)
+            {
+                x.changeContext(id); // switch to game screen
+            }
         }
     }
 }
