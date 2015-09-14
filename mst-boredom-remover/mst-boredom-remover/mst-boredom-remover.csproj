@@ -113,6 +113,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="TextDisplay.cs" />
+    <Compile Include="TextInput.cs" />
     <Compile Include="UIObject.cs" />
   </ItemGroup>
   <ItemGroup>

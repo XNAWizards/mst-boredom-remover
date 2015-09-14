@@ -56,7 +56,7 @@ namespace mst_boredom_remover
             calculateCenter();
         }
 
-        public virtual void changeContext(int id)
+        public override void changeContext(int id)
         {
 
         }
