@@ -45,6 +45,24 @@ namespace mst_boredom_remover
             target_unit = null
         };
 
+        public Unit(UnitType unit_type, Position position, Player owner)
+        {
+            // TODO: Set id
+            this.type = unit_type;
+            this.position = position;
+            this.owner = owner;
+
+            health = type.max_health;
+            status = Status.Idle;
+            orders = new List<Order>();
+            modifiers = new List<UnitModifier>();
+        }
+
+        public bool CanMove(Position p)
+        {
+            return true;
+        }
+
         public void NextOrder()
         {
             orders.RemoveAt(0);
@@ -61,13 +79,16 @@ namespace mst_boredom_remover
             switch (current_order.order_type)
             {
                 case Order.OrderType.Move:
-                    if (position == current_order.target_position)
+                    if (position.Equals(current_order.target_position))
                     {
+                        status = Status.Idle;
                         NextOrder();
                         Update(game);
+                        break;
                     }
-                    // TODO: Calculate path to target_position
-                    game.MoveUnit(this, current_order.target_position);
+                    Position next_position = Pathfinder.findNextStep(this, position, current_order.target_position);
+
+                    game.MoveUnit(this, next_position);
                     status = Status.Moving;
                     // TODO: Calculate cooldown based on speed and tile and modifiers
                     game.ScheduleUpdate(1, this);
@@ -75,8 +96,10 @@ namespace mst_boredom_remover
                 case Order.OrderType.Attack:
                     if (current_order.target_unit.status == Status.Dead)
                     {
+                        status = Status.Idle;
                         NextOrder();
                         Update(game);
+                        break;
                     }
                     if (position.Distance(current_order.target_unit.position) > type.attack_range)
                     {

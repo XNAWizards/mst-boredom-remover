@@ -25,6 +25,19 @@ namespace mst_boredom_remover
         };
         public List<PlayerModifier> modifiers;
 
-        
+        public Player(string name, int team=0)
+        {
+            // TODO: Set id
+
+            this.name = name;
+            this.team = team;
+
+            this.gold = 0.0;
+            this.mana_cystals = 0.0;
+            this.iron = 0.0;
+            this.is_alive = true;
+            this.modifiers = new List<PlayerModifier>();
+            this.unit_count = 0;
+        }
     }
 }

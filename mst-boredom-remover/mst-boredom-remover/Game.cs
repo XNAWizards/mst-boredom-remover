@@ -13,14 +13,36 @@ namespace mst_boredom_remover
         public Dictionary<int, List<Unit>> future_updates;
 
         // Map stuff
-        public int width;
-        public int height;
-        public Tile[,] tiles;
+        public Map map;
         
+        // Game types
+        public List<UnitType> unit_types;
+
         // Game objects
         public List<Player> players;
         public List<Unit> units;
         public Unit[,] unit_grid;
+
+        public Game()
+        {
+            current_tick = 0;
+            future_updates = new Dictionary<int, List<Unit>>();
+            map = new Map(100, 100);
+            unit_types = new List<UnitType>();
+            players = new List<Player>() {new Player("Frodo")};
+            units = new List<Unit>();
+            unit_grid = new Unit[map.width, map.height];
+        }
+
+        public void AddUnit(Unit unit)
+        {
+            units.Add(unit);
+            if (unit.position.x >= 0 && unit.position.x < map.width && unit.position.y >= 0 &&
+                unit.position.y < map.height)
+            {
+                unit_grid[unit.position.x, unit.position.y] = unit;
+            }
+        }
 
         public void Tick()
         {

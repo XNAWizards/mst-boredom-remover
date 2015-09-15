@@ -19,10 +19,16 @@ namespace mst_boredom_remover
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        private SpriteFont debug_font;
+
+        private Game game;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            game = new Game();
         }
 
         /// <summary>
@@ -47,6 +53,8 @@ namespace mst_boredom_remover
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            debug_font = Content.Load<SpriteFont>("debug_font");
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -70,7 +78,18 @@ namespace mst_boredom_remover
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
+            if (game.current_tick == 0)
+            {
+                game.unit_types.Add(new UnitType());
+                game.AddUnit(new Unit(game.unit_types[0], new Position(0, 0), game.players[0]));
+            }
+            else if (game.current_tick == 1)
+            {
+                game.units[0].orders.Add(Order.CreateMoveOrder(new Position(25, 25)));
+                game.ScheduleUpdate(1, game.units[0]);
+            }
+
+            game.Tick();
 
             base.Update(gameTime);
         }
@@ -83,7 +102,17 @@ namespace mst_boredom_remover
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            spriteBatch.Begin();
+
             // TODO: Add your drawing code here
+            spriteBatch.DrawString(debug_font, "Current tick: " + game.current_tick, new Vector2(1, 1), Color.Black);
+            if (game.current_tick > 1)
+            {
+                spriteBatch.DrawString(debug_font, "x: " + game.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
+                spriteBatch.DrawString(debug_font, "y: " + game.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
+            }
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

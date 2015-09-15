@@ -22,5 +22,15 @@ namespace mst_boredom_remover
         public OrderType order_type;
         public Position target_position; // Can be Null
         public Unit target_unit; // Can be Null
+
+        public static Order CreateMoveOrder(Position position)
+        {
+            return new Order()
+            {
+                order_type = OrderType.Move,
+                target_position = position,
+                target_unit = null
+            };
+        }
     }
 }
