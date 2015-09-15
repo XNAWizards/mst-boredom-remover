@@ -23,6 +23,11 @@ namespace mst_boredom_remover
 
         }
 
+        public virtual void mapMove(int deltaX, int deltaY)
+        {
+
+        }
+
         public UIObject(Texture2D texture, Vector2 position)
         {
             //this.texture = texture;
