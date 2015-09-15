@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Configuration;
 using System.Text;
 
 namespace mst_boredom_remover
@@ -27,6 +28,12 @@ namespace mst_boredom_remover
             }
             public int CompareTo(Node n)
             {
+                int val = value.CompareTo(n.value);
+                if (val.Equals(0))
+                {
+                    val = distance.CompareTo(n.distance);
+                    return -val;
+                }
                 return value.CompareTo(n.value);
             }
 
@@ -44,16 +51,18 @@ namespace mst_boredom_remover
         public static List<Position> findPath ( Unit unit, Position start, Position end )
         {
             List<Position> path = null;
-            int possibleMoves = Enum.GetNames(typeof(Map.Directions)).Length;
+            int numPossibleMoves = Enum.GetNames(typeof(Map.Directions)).Length;
+
             bool stop = false;
             bool success = false;
             Node tempNode = new Node(start, null, 0, fValue(start,end));
             Node currentBest = null;
             Position tempPosition = new Position(0,0);
             PriorityQueues.PriorityQueue<Node> openSet = new PriorityQueues.PriorityQueue<Node>();
-
+            HashSet<Position> visitedPositions = new HashSet<Position>();
+            var possibleMoves = Enum.GetValues(typeof (Map.Directions));
             openSet.Enqueue(tempNode);
-
+            visitedPositions.Add(tempNode.position);
             //generate path
             while ( !stop )
             {
@@ -72,7 +81,7 @@ namespace mst_boredom_remover
                     break;
                 }
                 //take current best, generate all possible nodes, push them onto queue
-                foreach (Map.Directions move in Enum.GetValues(typeof(Map.Directions)) )
+                foreach (Map.Directions move in possibleMoves )
                 {
                     switch ( move )
                     {
@@ -93,8 +102,9 @@ namespace mst_boredom_remover
                             tempNode = new Node( tempPosition , currentBest, currentBest.distance+1, currentBest.distance+1+fValue(tempPosition,end));
                             break;
                     }
-                    if ( unit.CanMove( tempPosition ) )
+                    if ( unit.CanMove( tempPosition ) && !visitedPositions.Contains(tempPosition) )
                     {
+                        visitedPositions.Add(tempPosition);
                         openSet.Enqueue(tempNode);
                     }
                 }

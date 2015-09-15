@@ -207,7 +207,7 @@ namespace mst_boredom_remover
             }
             else if (game.current_tick == 1)
             {
-                game.units[0].orders.Add(Order.CreateMoveOrder(new Position(25, 25)));
+                game.units[0].orders.Add(Order.CreateMoveOrder(new Position(50, 50)));
                 game.ScheduleUpdate(1, game.units[0]);
             }
 
