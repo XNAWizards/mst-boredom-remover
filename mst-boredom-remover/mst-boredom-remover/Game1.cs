@@ -203,12 +203,18 @@ namespace mst_boredom_remover
             if (game.current_tick == 0)
             {
                 game.unit_types.Add(new UnitType());
-                game.AddUnit(new Unit(game.unit_types[0], new Position(0, 0), game.players[0]));
+                for (int i = 0; i < 15; ++i)
+                {
+                    game.AddUnit(new Unit(game.unit_types[0], new Position(0, i), game.players[0]));
+                }
             }
             else if (game.current_tick == 1)
             {
-                game.units[0].orders.Add(Order.CreateMoveOrder(new Position(50, 50)));
-                game.ScheduleUpdate(1, game.units[0]);
+                foreach (Unit unit in game.units)
+                {
+                    unit.orders.Add(Order.CreateMoveOrder(new Position(100, 100)));
+                    game.ScheduleUpdate(1, unit);
+                }
             }
 
             game.Tick();

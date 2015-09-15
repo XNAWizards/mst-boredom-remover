@@ -27,7 +27,7 @@ namespace mst_boredom_remover
         {
             current_tick = 0;
             future_updates = new Dictionary<int, List<Unit>>();
-            map = new Map(100, 100);
+            map = new Map(1001, 1001);
             unit_types = new List<UnitType>();
             players = new List<Player>() {new Player("Frodo")};
             units = new List<Unit>();
