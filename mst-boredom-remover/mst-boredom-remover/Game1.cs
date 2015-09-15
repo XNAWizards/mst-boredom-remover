@@ -22,9 +22,9 @@ namespace mst_boredom_remover
         List<UIObject> userInterface;
         public enum MenuScreen
         {
-            Main, // main menu screen
-            InGame, // in game screen
-            NewGame, // New Game options screen
+            Main,           // 0 main menu screen
+            InGame,         // 1 in game screen
+            NewGame,        // 2 New Game options screen
         }
 
         public Game1()
@@ -36,7 +36,7 @@ namespace mst_boredom_remover
             graphics.PreferredBackBufferHeight = 720;
 
             IsMouseVisible = true;
-            graphics.ToggleFullScreen(); // activate full screen mode. toggle with alt + enter
+            //graphics.ToggleFullScreen(); // activate full screen mode. toggle with alt + enter
         }
 
         /// <summary>
@@ -60,6 +60,8 @@ namespace mst_boredom_remover
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+
 
             // UIObjects
             #region Buttons
@@ -146,9 +148,32 @@ namespace mst_boredom_remover
             newGameControls.Add(goButton);
             newGameControls.Add(ngbackButton);
 
+            Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Hills");
+            Texture2D mountainsTexture = Content.Load<Texture2D>("Terrain\\Mountains");
+            Texture2D desertTexture = Content.Load<Texture2D>("Terrain\\DesertFlat");
+            Texture2D oceanTexture = Content.Load<Texture2D>("Terrain\\Ocean1");
+            Texture2D dreadTexture = Content.Load<Texture2D>("Terrain\\Spoopy");
+            Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra");
+            Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest");
+
+            List<Texture2D> tiles = new List<Texture2D>();
+
+            tiles.Add(blankBackground);
+            tiles.Add(plainsTexture);
+            tiles.Add(mountainsTexture);
+            tiles.Add(desertTexture);
+            tiles.Add(oceanTexture);
+            tiles.Add(dreadTexture);
+            tiles.Add(tundraTexture);
+            tiles.Add(forestTexture);
+
+            Map m = new Map(Vector2.Zero, tiles);
+
+            gameControls.Add(m);
+
             Menu newGameMenu = new Menu(blankBackground, Vector2.Zero, newGameControls, Color.White, 2);
             #endregion
-            
+
             // list of all UI objects to be drawn/updated
             userInterface = new List<UIObject>();
 
@@ -226,7 +251,7 @@ namespace mst_boredom_remover
         }
         public void loadButton_Clicked(object sender, EventArgs e)
         {
-            this.Exit();
+            //this.Exit();
         }
         public void loadButton_OnPress(object sender, EventArgs e)
         {

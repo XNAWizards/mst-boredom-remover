@@ -40,6 +40,12 @@ namespace mst_boredom_remover
             bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
         }
 
+        public override void mapMove(int deltaX, int deltaY)
+        {
+
+            //base.mapMove(deltaX, deltaY);
+        }
+
         public override void changeContext(int id)
         {
 

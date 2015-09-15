@@ -63,6 +63,12 @@ namespace mst_boredom_remover
             this.scale = scale;
         }
 
+        public override void mapMove(int deltaX, int deltaY)
+        {
+
+            //base.mapMove(deltaX, deltaY);
+        }
+
         // update button state/fire events as necessary
         public override void Update(GameTime gameTime)
         {
