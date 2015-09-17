@@ -15,11 +15,11 @@ namespace mst_boredom_remover
     class Map : UIObject
     {
         private Vector2 position;
-        private List<Texture2D> tiles;
+        private List<Texture2D> tileTextures;
         private char[,] map;
 
-        private const int MAP_X = 1280 / 2;
-        private const int MAP_Y = 720 / 2;
+        public const int MAP_X = 1280 / 2;
+        public const int MAP_Y = 720 / 2;
         private const int TILE_PX_SIZE = 8;
         private const int TILE_PX_SMALL = 2;
         private const int RES_X = 1280;
@@ -29,6 +29,20 @@ namespace mst_boredom_remover
         private bool gDisable = false;
         private List<string> tileNames;
         private string debugText = "";
+        private List<Unit> units;
+
+        public int width;
+        public int height;
+
+        public Tile[,] tiles;
+
+        public enum Directions
+        {
+            North,
+            South,
+            East,
+            West
+        }
 
         struct BiomeInfo
         {
@@ -37,11 +51,15 @@ namespace mst_boredom_remover
             public int Y;
         };
 
-        public Map(Vector2 position, List<Texture2D> tiles, Texture2D texture = null) 
+        public Map(Vector2 position, List<Texture2D> tileTextures, List<Unit> units, Texture2D texture = null, int width = 0, int height = 0) 
             : base()
         {
+            this.width = width;
+            this.height = height;
+            this.tiles = new Tile[width, height];
+
             this.position = position;
-            this.tiles = tiles;
+            this.tileTextures = tileTextures;
             //this.map = map;
             //this.texture = texture;
 
@@ -59,6 +77,8 @@ namespace mst_boredom_remover
             tileNames.Add("Dreadland");
             tileNames.Add("Tundra");
             tileNames.Add("Forest");
+
+            this.units = units;
         }
 
         public override void changeContext(int id)
@@ -213,32 +233,47 @@ namespace mst_boredom_remover
 
         public override void toggleDebugMode()
         {
-            base.toggleDebugMode();
+            debugMode = !debugMode;
+            //base.toggleDebugMode();
         }
 
         private void debugUpdate(GameTime gt)
         {
             MouseState m = Mouse.GetState();
+            char c = ' ';
+            bool fail = false;
 
             // find out what tile is at tileIndex + MousePos / tile_px_size
 
             Vector2 mouseIndex = new Vector2(m.X / TILE_PX_SIZE, m.Y / TILE_PX_SIZE);
 
-            char c = map[(int)(mouseIndex.X + tileIndex.X), (int)(mouseIndex.Y + tileIndex.Y)];
+            if (mouseIndex.X + tileIndex.X < 0 || mouseIndex.X + tileIndex.X > MAP_X)
+            {
+                fail = true;
+            }
+            if (mouseIndex.Y + tileIndex.Y < 0 || mouseIndex.Y + tileIndex.Y > MAP_Y)
+            {
+                fail = true;
+            }
+            if (fail == false)
+            {
+                c = map[(int)(mouseIndex.X + tileIndex.X), (int)(mouseIndex.Y + tileIndex.Y)];
+            }
 
             debugText = "";
             debugText = "(" + m.X + ", " + m.Y + ")\n";
             debugText += tileNames[charToInt(c)];
             
         }
+        private void debugDraw(SpriteBatch sb)
+        {
+            sb.DrawString(font, debugText, new Vector2(0, 0), Color.Black);
+        }
 
         public override void changeFont(SpriteFont f)
         {
-            base.changeFont(f);
-        }
-        private void debugDraw(SpriteBatch sb)
-        {
-            sb.DrawString(font, debugText, new Vector2(0, 0), Color.White);
+            this.font = f;
+            //base.changeFont(f);
         }
 
         public override void Update(GameTime gt)
@@ -271,6 +306,11 @@ namespace mst_boredom_remover
                 mapMove(1, 0);
 
             }
+
+            if (debugMode)
+            {
+                debugUpdate(gt);
+            }
             //base.Update(gt);
         }
 
@@ -289,7 +329,7 @@ namespace mst_boredom_remover
                             if (tileIndex.Y < MAP_Y)
                             {
                                 // 2D array draw tiles at their designated spots, in TILE_PX x TILE_PX squares
-                                sb.Draw(tiles[charToInt(map[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
+                                sb.Draw(tileTextures[charToInt(map[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
                                     new Rectangle((int)position.X + TILE_PX_SIZE * x, (int)position.Y + TILE_PX_SIZE * y, TILE_PX_SIZE, TILE_PX_SIZE), Color.White);
                             }
                         }
@@ -309,12 +349,16 @@ namespace mst_boredom_remover
                             if (tileIndex.Y < MAP_Y)
                             {
                                 // 2D array draw tiles at their designated spots, in TILE_PX x TILE_PX squares
-                                sb.Draw(tiles[charToInt(map[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
+                                sb.Draw(tileTextures[charToInt(map[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
                                     new Rectangle((int)position.X + TILE_PX_SMALL * x, (int)position.Y + TILE_PX_SMALL * y, TILE_PX_SMALL, TILE_PX_SMALL), Color.White);
                             }
                         }
                     }
                 }
+            }
+            if (debugMode)
+            {
+                debugDraw(sb);
             }
             //base.Draw(sb);
         }

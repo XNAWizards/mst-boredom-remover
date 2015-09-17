@@ -22,12 +22,12 @@ namespace mst_boredom_remover
 
         public virtual void changeFont(SpriteFont f)
         {
-            this.font = f;
+            //this.font = f;
         }
 
         public virtual void toggleDebugMode()
         {
-            debugMode = !debugMode;
+            //debugMode = !debugMode;
         }
         public virtual void changeContext(int id)
         {

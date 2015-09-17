@@ -51,7 +51,7 @@ namespace mst_boredom_remover
         public static List<Position> findPath ( Unit unit, Position start, Position end )
         {
             List<Position> path = null;
-            int numPossibleMoves = Enum.GetNames(typeof(MapEngine.Directions)).Length;
+            int numPossibleMoves = Enum.GetNames(typeof(Map.Directions)).Length;
 
             bool stop = false;
             bool success = false;
@@ -60,7 +60,7 @@ namespace mst_boredom_remover
             Position tempPosition = new Position(0,0);
             PriorityQueues.PriorityQueue<Node> openSet = new PriorityQueues.PriorityQueue<Node>();
             HashSet<Position> visitedPositions = new HashSet<Position>();
-            var possibleMoves = Enum.GetValues(typeof (MapEngine.Directions));
+            var possibleMoves = Enum.GetValues(typeof (Map.Directions));
             openSet.Enqueue(tempNode);
             visitedPositions.Add(tempNode.position);
             //generate path
@@ -81,23 +81,23 @@ namespace mst_boredom_remover
                     break;
                 }
                 //take current best, generate all possible nodes, push them onto queue
-                foreach (MapEngine.Directions move in possibleMoves )
+                foreach (Map.Directions move in possibleMoves )
                 {
                     switch ( move )
                     {
-                        case MapEngine.Directions.North:
+                        case Map.Directions.North:
                             tempPosition = new Position(currentBest.position.x + 1,currentBest.position.y);
                             tempNode = new Node( tempPosition , currentBest, currentBest.distance+1, currentBest.distance+1+fValue(tempPosition,end));
                             break;
-                        case MapEngine.Directions.South:
+                        case Map.Directions.South:
                             tempPosition = new Position(currentBest.position.x - 1,currentBest.position.y);
                             tempNode = new Node( tempPosition , currentBest, currentBest.distance+1, currentBest.distance+1+fValue(tempPosition,end));
                             break;
-                        case MapEngine.Directions.East:
+                        case Map.Directions.East:
                             tempPosition = new Position(currentBest.position.x,currentBest.position.y + 1);
                             tempNode = new Node( tempPosition , currentBest, currentBest.distance+1, currentBest.distance+1+fValue(tempPosition,end));
                             break;
-                        case MapEngine.Directions.West:
+                        case Map.Directions.West:
                             tempPosition = new Position(currentBest.position.x,currentBest.position.y - 1);
                             tempNode = new Node( tempPosition , currentBest, currentBest.distance+1, currentBest.distance+1+fValue(tempPosition,end));
                             break;

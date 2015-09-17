@@ -126,7 +126,6 @@
     <Compile Include="TextDisplay.cs" />
     <Compile Include="TextInput.cs" />
     <Compile Include="UIObject.cs" />
-    <Compile Include="MapEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
