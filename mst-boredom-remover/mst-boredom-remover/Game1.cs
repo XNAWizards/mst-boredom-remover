@@ -18,25 +18,31 @@ namespace mst_boredom_remover
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        
+        private SpriteFont debug_font;
+
+        private Game game;
 
         List<UIObject> userInterface;
         public enum MenuScreen
         {
-            Main, // main menu screen
-            InGame, // in game screen
-            NewGame, // New Game options screen
+            Main,           // 0 main menu screen
+            InGame,         // 1 in game screen
+            NewGame,        // 2 New Game options screen
         }
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            
+            game = new Game();
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
 
             IsMouseVisible = true;
-            graphics.ToggleFullScreen(); // activate full screen mode. toggle with alt + enter
+            //graphics.ToggleFullScreen(); // activate full screen mode. toggle with alt + enter
         }
 
         /// <summary>
@@ -60,6 +66,9 @@ namespace mst_boredom_remover
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+
+            debug_font = Content.Load<SpriteFont>("debug_font");
 
             // UIObjects
             #region Buttons
@@ -146,9 +155,32 @@ namespace mst_boredom_remover
             newGameControls.Add(goButton);
             newGameControls.Add(ngbackButton);
 
+            Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Hills");
+            Texture2D mountainsTexture = Content.Load<Texture2D>("Terrain\\Mountains");
+            Texture2D desertTexture = Content.Load<Texture2D>("Terrain\\DesertFlat");
+            Texture2D oceanTexture = Content.Load<Texture2D>("Terrain\\Ocean1");
+            Texture2D dreadTexture = Content.Load<Texture2D>("Terrain\\Spoopy");
+            Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra");
+            Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest");
+
+            List<Texture2D> tiles = new List<Texture2D>();
+
+            tiles.Add(blankBackground);
+            tiles.Add(plainsTexture);
+            tiles.Add(mountainsTexture);
+            tiles.Add(desertTexture);
+            tiles.Add(oceanTexture);
+            tiles.Add(dreadTexture);
+            tiles.Add(tundraTexture);
+            tiles.Add(forestTexture);
+
+            Map m = new Map(Vector2.Zero, tiles);
+
+            gameControls.Add(m);
+
             Menu newGameMenu = new Menu(blankBackground, Vector2.Zero, newGameControls, Color.White, 2);
             #endregion
-            
+
             // list of all UI objects to be drawn/updated
             userInterface = new List<UIObject>();
 
@@ -156,6 +188,11 @@ namespace mst_boredom_remover
             userInterface.Add(gameMenu);
             userInterface.Add(newGameMenu);
             mainMenu.activate(); // activate the main menu first
+
+            foreach (UIObject u in userInterface)
+            {
+                u.changeFont(font);
+            }
 
             // TODO: use this.Content to load your game content here
         }
@@ -191,7 +228,24 @@ namespace mst_boredom_remover
                 x.Update(gameTime);
             }
 
-            // TODO: Add your update logic here
+            if (game.current_tick == 0)
+            {
+                game.unit_types.Add(new UnitType());
+                for (int i = 0; i < 15; ++i)
+                {
+                    game.AddUnit(new Unit(game.unit_types[0], new Position(0, i), game.players[0]));
+                }
+            }
+            else if (game.current_tick == 1)
+            {
+                foreach (Unit unit in game.units)
+                {
+                    unit.orders.Add(Order.CreateMoveOrder(new Position(100, 100)));
+                    game.ScheduleUpdate(1, unit);
+                }
+            }
+
+            game.Tick();
 
             base.Update(gameTime);
         }
@@ -204,14 +258,20 @@ namespace mst_boredom_remover
         {
             GraphicsDevice.Clear(Color.MediumSlateBlue);
 
-            // TODO: Add your drawing code here
             spriteBatch.Begin();
 
             foreach (UIObject x in userInterface)
             {
                 x.Draw(spriteBatch);
             }
-            
+
+            spriteBatch.DrawString(debug_font, "Current tick: " + game.current_tick, new Vector2(1, 1), Color.Black);
+            if (game.current_tick > 1)
+            {
+                spriteBatch.DrawString(debug_font, "x: " + game.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
+                spriteBatch.DrawString(debug_font, "y: " + game.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
+            }
+
             spriteBatch.End();
             base.Draw(gameTime);
         }
@@ -226,7 +286,7 @@ namespace mst_boredom_remover
         }
         public void loadButton_Clicked(object sender, EventArgs e)
         {
-            this.Exit();
+            //this.Exit();
         }
         public void loadButton_OnPress(object sender, EventArgs e)
         {

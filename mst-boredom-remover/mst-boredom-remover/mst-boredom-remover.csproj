@@ -107,14 +107,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game.cs" />
+    <Compile Include="Map.cs" />
+    <Compile Include="Order.cs" />
+    <Compile Include="Pathfinder.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="Position.cs" />
+    <Compile Include="PriorityQueuesProgram.cs" />
+    <Compile Include="Game1.cs" />
+    <Compile Include="Tile.cs" />
+    <Compile Include="TileType.cs" />
+    <Compile Include="Unit.cs" />
+    <Compile Include="UnitType.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Game1.cs" />
     <Compile Include="TextDisplay.cs" />
     <Compile Include="TextInput.cs" />
     <Compile Include="UIObject.cs" />
+    <Compile Include="MapEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

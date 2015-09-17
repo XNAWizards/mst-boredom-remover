@@ -26,7 +26,7 @@ namespace mst_boredom_remover
         private int test = 1;
 
         public TextDisplay(Texture2D texture, Vector2 position, SpriteFont font, Color color)
-            : base(texture, position)
+            : base()
         {
             this.texture = texture;
             this.position = position;
@@ -56,7 +56,32 @@ namespace mst_boredom_remover
             calculateCenter();
         }
 
+        public override void changeFont(SpriteFont f)
+        {
+            base.changeFont(f);
+        }
+
         public override void changeContext(int id)
+        {
+
+        }
+
+        public override void toggleDebugMode()
+        {
+            base.toggleDebugMode();
+        }
+
+        public override void mapMove(int deltaX, int deltaY)
+        {
+
+            //base.mapMove(deltaX, deltaY);
+        }
+
+        private void debugUpdate(GameTime gt)
+        {
+
+        }
+        private void debugDraw(SpriteBatch sb)
         {
 
         }
