@@ -42,6 +42,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="debug_font.spritefont">
+      <Name>debug_font</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <Compile Include="498880.jpg">
       <Name>498880</Name>
       <Importer>TextureImporter</Importer>
