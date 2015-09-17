@@ -13,7 +13,7 @@ namespace mst_boredom_remover
         public Dictionary<int, List<Unit>> future_updates;
 
         // Map stuff
-        public MapEngine map;
+        public Map map;
         
         // Game types
         public List<UnitType> unit_types;
@@ -23,15 +23,15 @@ namespace mst_boredom_remover
         public List<Unit> units;
         public Unit[,] unit_grid;
 
-        public Game()
+        public Game(Map map = null)
         {
             current_tick = 0;
             future_updates = new Dictionary<int, List<Unit>>();
-            map = new MapEngine(1001, 1001);
+            this.map = map;// = new MapEngine(1001, 1001);
             unit_types = new List<UnitType>();
             players = new List<Player>() {new Player("Frodo")};
             units = new List<Unit>();
-            unit_grid = new Unit[map.width, map.height];
+            unit_grid = new Unit[Map.MAP_X, Map.MAP_Y];
         }
 
         public void AddUnit(Unit unit)

@@ -174,7 +174,7 @@ namespace mst_boredom_remover
             tiles.Add(tundraTexture);
             tiles.Add(forestTexture);
 
-            Map m = new Map(Vector2.Zero, tiles);
+            Map m = new Map(Vector2.Zero, tiles, game.units);
 
             gameControls.Add(m);
 
@@ -193,7 +193,7 @@ namespace mst_boredom_remover
             {
                 u.changeFont(font);
             }
-
+            game.map = m;
             // TODO: use this.Content to load your game content here
         }
 
@@ -222,6 +222,13 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.LeftAlt) && keyboard.IsKeyDown(Keys.Enter))
             {
                 graphics.ToggleFullScreen();
+            }
+            if (keyboard.IsKeyDown(Keys.F1))
+            {
+                foreach (UIObject u in userInterface)
+                {
+                    u.toggleDebugMode();
+                }
             }
             foreach (UIObject x in userInterface)
             {

@@ -57,14 +57,18 @@ namespace mst_boredom_remover
 
         public override void toggleDebugMode()
         {
-            base.toggleDebugMode();
+            foreach (UIObject u in controls)
+            {
+                u.toggleDebugMode();
+            }
+            //base.toggleDebugMode();
         }
 
         public override void changeFont(SpriteFont f)
         {
             foreach (UIObject u in controls)
             {
-                base.changeFont(f);
+                u.changeFont(f);
             }
         }
 
