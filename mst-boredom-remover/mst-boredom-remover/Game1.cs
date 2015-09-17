@@ -18,6 +18,10 @@ namespace mst_boredom_remover
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        
+        private SpriteFont debug_font;
+
+        private Game game;
 
         List<UIObject> userInterface;
         public enum MenuScreen
@@ -31,6 +35,8 @@ namespace mst_boredom_remover
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            
+            game = new Game();
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -62,6 +68,7 @@ namespace mst_boredom_remover
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
 
+            debug_font = Content.Load<SpriteFont>("debug_font");
 
             // UIObjects
             #region Buttons
@@ -167,7 +174,7 @@ namespace mst_boredom_remover
             tiles.Add(tundraTexture);
             tiles.Add(forestTexture);
 
-            Map m = new Map(Vector2.Zero, tiles);
+            Map m = new Map(Vector2.Zero, tiles, game.units);
 
             gameControls.Add(m);
 
@@ -186,7 +193,7 @@ namespace mst_boredom_remover
             {
                 u.changeFont(font);
             }
-
+            game.map = m;
             // TODO: use this.Content to load your game content here
         }
 
@@ -216,12 +223,36 @@ namespace mst_boredom_remover
             {
                 graphics.ToggleFullScreen();
             }
+            if (keyboard.IsKeyDown(Keys.F1))
+            {
+                foreach (UIObject u in userInterface)
+                {
+                    u.toggleDebugMode();
+                }
+            }
             foreach (UIObject x in userInterface)
             {
                 x.Update(gameTime);
             }
 
-            // TODO: Add your update logic here
+            if (game.current_tick == 0)
+            {
+                game.unit_types.Add(new UnitType());
+                for (int i = 0; i < 15; ++i)
+                {
+                    game.AddUnit(new Unit(game.unit_types[0], new Position(0, i), game.players[0]));
+                }
+            }
+            else if (game.current_tick == 1)
+            {
+                foreach (Unit unit in game.units)
+                {
+                    unit.orders.Add(Order.CreateMoveOrder(new Position(100, 100)));
+                    game.ScheduleUpdate(1, unit);
+                }
+            }
+
+            game.Tick();
 
             base.Update(gameTime);
         }
@@ -234,14 +265,20 @@ namespace mst_boredom_remover
         {
             GraphicsDevice.Clear(Color.MediumSlateBlue);
 
-            // TODO: Add your drawing code here
             spriteBatch.Begin();
 
             foreach (UIObject x in userInterface)
             {
                 x.Draw(spriteBatch);
             }
-            
+
+            spriteBatch.DrawString(debug_font, "Current tick: " + game.current_tick, new Vector2(1, 1), Color.Black);
+            if (game.current_tick > 1)
+            {
+                spriteBatch.DrawString(debug_font, "x: " + game.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
+                spriteBatch.DrawString(debug_font, "y: " + game.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
+            }
+
             spriteBatch.End();
             base.Draw(gameTime);
         }
