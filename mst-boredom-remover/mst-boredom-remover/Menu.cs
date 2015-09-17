@@ -23,7 +23,7 @@ namespace mst_boredom_remover
         private bool active = false;
 
         public Menu(Texture2D texture, Vector2 position, List<UIObject> controls, Color color, int thisId)
-            : base(texture, position)
+            : base()
         {
             this.texture = texture;
             this.position = position;
@@ -55,10 +55,32 @@ namespace mst_boredom_remover
             }
         }
 
+        public override void toggleDebugMode()
+        {
+            base.toggleDebugMode();
+        }
+
+        public override void changeFont(SpriteFont f)
+        {
+            foreach (UIObject u in controls)
+            {
+                base.changeFont(f);
+            }
+        }
+
         public override void mapMove(int deltaX, int deltaY)
         {
 
             //base.mapMove(deltaX, deltaY);
+        }
+
+        private void debugUpdate(GameTime gt)
+        {
+
+        }
+        private void debugDraw(SpriteBatch sb)
+        {
+
         }
 
         public override void Update(GameTime gt)

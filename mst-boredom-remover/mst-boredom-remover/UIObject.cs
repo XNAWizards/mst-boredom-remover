@@ -15,9 +15,20 @@ namespace mst_boredom_remover
     public class UIObject
     {
         // Master class to contain all UI objects
-        private Texture2D texture;
-        private Vector2 position;
+        //private Texture2D texture;
+        //private Vector2 position;
+        protected bool debugMode = false;
+        protected SpriteFont font;
 
+        public virtual void changeFont(SpriteFont f)
+        {
+            this.font = f;
+        }
+
+        public virtual void toggleDebugMode()
+        {
+            debugMode = !debugMode;
+        }
         public virtual void changeContext(int id)
         {
 
@@ -28,10 +39,9 @@ namespace mst_boredom_remover
 
         }
 
-        public UIObject(Texture2D texture, Vector2 position)
+        public UIObject(SpriteFont font = null)
         {
-            //this.texture = texture;
-            //this.position = position;
+            this.font = font;
         }
 
         public virtual void Update(GameTime gt)

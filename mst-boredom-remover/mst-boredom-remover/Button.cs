@@ -51,7 +51,7 @@ namespace mst_boredom_remover
 
         // button constructor
         public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position, float scale = 1.0f)
-            : base (texture, position)
+            : base ()
         {
             this.texture = texture;
             this.hoverTexture = hoverTexture;
@@ -63,10 +63,29 @@ namespace mst_boredom_remover
             this.scale = scale;
         }
 
+        public override void toggleDebugMode()
+        {
+            base.toggleDebugMode();
+        }
+
         public override void mapMove(int deltaX, int deltaY)
         {
 
             //base.mapMove(deltaX, deltaY);
+        }
+
+        public override void changeFont(SpriteFont f)
+        {
+            base.changeFont(f);
+        }
+
+        private void debugUpdate(GameTime gt)
+        {
+
+        }
+        private void debugDraw(SpriteBatch sb)
+        {
+
         }
 
         // update button state/fire events as necessary

@@ -189,6 +189,11 @@ namespace mst_boredom_remover
             userInterface.Add(newGameMenu);
             mainMenu.activate(); // activate the main menu first
 
+            foreach (UIObject u in userInterface)
+            {
+                u.changeFont(font);
+            }
+
             // TODO: use this.Content to load your game content here
         }
 
