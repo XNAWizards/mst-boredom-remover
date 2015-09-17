@@ -55,6 +55,12 @@ namespace mst_boredom_remover
             }
         }
 
+        public override void mapMove(int deltaX, int deltaY)
+        {
+
+            //base.mapMove(deltaX, deltaY);
+        }
+
         public override void Update(GameTime gt)
         {
             if (active)
