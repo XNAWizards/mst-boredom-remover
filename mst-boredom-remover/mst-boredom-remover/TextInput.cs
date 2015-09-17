@@ -30,7 +30,7 @@ namespace mst_boredom_remover
         //public event EventHandler newInput;
 
         public TextInput(Texture2D texture, Texture2D activeTexture, Vector2 position, SpriteFont font)
-            : base(texture, position)
+            : base()
         {
             this.texture = texture;
             this.activeTexture = activeTexture;
@@ -38,6 +38,13 @@ namespace mst_boredom_remover
             this.font = font;
 
             bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
+        }
+
+        
+
+        public override void toggleDebugMode()
+        {
+            base.toggleDebugMode();
         }
 
         public override void mapMove(int deltaX, int deltaY)
@@ -51,6 +58,21 @@ namespace mst_boredom_remover
 
             //base.changeContext(id);
         }
+
+        public override void changeFont(SpriteFont f)
+        {
+            base.changeFont(f);
+        }
+
+        private void debugUpdate(GameTime gt)
+        {
+
+        }
+        private void debugDraw(SpriteBatch sb)
+        {
+
+        }
+
         public override void Update(GameTime gt)
         {
             MouseState mouse = Mouse.GetState();
@@ -98,7 +120,7 @@ namespace mst_boredom_remover
                             }
                             catch (Exception e)
                             {
-
+                                // k is not a key convertable to a char
                             }
                         }
                     }
@@ -130,6 +152,7 @@ namespace mst_boredom_remover
             previousKeys = keys;
             //base.Update(gt);
         }
+
         public override void Draw(SpriteBatch sb)
         {
             if (!active)

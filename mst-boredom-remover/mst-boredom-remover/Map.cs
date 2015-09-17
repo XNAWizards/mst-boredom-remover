@@ -21,11 +21,14 @@ namespace mst_boredom_remover
         private const int MAP_X = 1280 / 2;
         private const int MAP_Y = 720 / 2;
         private const int TILE_PX_SIZE = 8;
+        private const int TILE_PX_SMALL = 2;
         private const int RES_X = 1280;
         private const int RES_Y = 720;
         private bool smallMode = false;
         private Vector2 tileIndex;
         private bool gDisable = false;
+        private List<string> tileNames;
+        private string debugText = "";
 
         struct BiomeInfo
         {
@@ -35,7 +38,7 @@ namespace mst_boredom_remover
         };
 
         public Map(Vector2 position, List<Texture2D> tiles, Texture2D texture = null) 
-            : base(texture, position)
+            : base()
         {
             this.position = position;
             this.tiles = tiles;
@@ -45,6 +48,17 @@ namespace mst_boredom_remover
             tileIndex = Vector2.Zero;
 
             generator();
+
+            tileNames = new List<string>();
+
+            tileNames.Add("null");
+            tileNames.Add("Plains");
+            tileNames.Add("Mountain");
+            tileNames.Add("Desert");
+            tileNames.Add("Ocean");
+            tileNames.Add("Dreadland");
+            tileNames.Add("Tundra");
+            tileNames.Add("Forest");
         }
 
         public override void changeContext(int id)
@@ -98,11 +112,13 @@ namespace mst_boredom_remover
             const int GOLD_CHANCE = 5;
             const int IRON_CHANCE = 2;
             const int MANA_CHANCE = 2;
-            const int NumBio = 500;
+            const int NumBio = 700;
             Random r = new Random();
             BiomeInfo[] bio = new BiomeInfo[NumBio];
             for (int i = 0; i < bio.Length; i++)
+            {
                 bio[i] = new BiomeInfo();
+            }
             for (int a = 0; a < (NumBio / 7); a++)
             {
                 bio[a * 7].Type = '~'; //Ocean
@@ -195,6 +211,36 @@ namespace mst_boredom_remover
 
         }
 
+        public override void toggleDebugMode()
+        {
+            base.toggleDebugMode();
+        }
+
+        private void debugUpdate(GameTime gt)
+        {
+            MouseState m = Mouse.GetState();
+
+            // find out what tile is at tileIndex + MousePos / tile_px_size
+
+            Vector2 mouseIndex = new Vector2(m.X / TILE_PX_SIZE, m.Y / TILE_PX_SIZE);
+
+            char c = map[(int)(mouseIndex.X + tileIndex.X), (int)(mouseIndex.Y + tileIndex.Y)];
+
+            debugText = "";
+            debugText = "(" + m.X + ", " + m.Y + ")\n";
+            debugText += tileNames[charToInt(c)];
+            
+        }
+
+        public override void changeFont(SpriteFont f)
+        {
+            base.changeFont(f);
+        }
+        private void debugDraw(SpriteBatch sb)
+        {
+            sb.DrawString(font, debugText, new Vector2(0, 0), Color.White);
+        }
+
         public override void Update(GameTime gt)
         {
             KeyboardState keyboard = Keyboard.GetState();
@@ -250,19 +296,23 @@ namespace mst_boredom_remover
                     }
                 }
             }
-            // small mode for new game screen
+            // small mode for zoomed out view
             else
             {
-                // different position
-                position.X = 100;
-                position.Y = 200;
-                for (int x = (int)position.X; x < (RES_X - 100 / 2); x++)
+                // keep drawing until we run out of screen space, x and y
+                for (int x = (int)position.X; x < ((RES_X / TILE_PX_SMALL)); x++)
                 {
-                    for (int y = (int)position.Y; y < (RES_Y - 200 / 2); y++)
+                    if (tileIndex.X < MAP_X)
                     {
-                        /*sb.Draw(tiles[charToInt(map[x, y])],
-                            new Rectangle((int)position.X + 2 * x, (int)position.Y + 2 * y, 2, 2), Color.White);
-                         * */
+                        for (int y = (int)position.Y; y < ((RES_Y / TILE_PX_SMALL)); y++)
+                        {
+                            if (tileIndex.Y < MAP_Y)
+                            {
+                                // 2D array draw tiles at their designated spots, in TILE_PX x TILE_PX squares
+                                sb.Draw(tiles[charToInt(map[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
+                                    new Rectangle((int)position.X + TILE_PX_SMALL * x, (int)position.Y + TILE_PX_SMALL * y, TILE_PX_SMALL, TILE_PX_SMALL), Color.White);
+                            }
+                        }
                     }
                 }
             }
@@ -275,29 +325,21 @@ namespace mst_boredom_remover
             {
                 case '+':
                     return 1;
-                    break;
                 case 'M':
                     return 2;
-                    break;
                 case 'D':
                     return 3;
-                    break;
                 case '~':
                     return 4;
-                    break;
                 case '%':
                     return 5;
-                    break;
                 case 'T':
                     return 6;
-                    break;
                 case 'F':
                     return 7;
-                    break;
                 default:
                     // 0 is not a tile, more efficient than try-catch index out of bounds
                     return 0;
-                    break;
             }
         }
     }
