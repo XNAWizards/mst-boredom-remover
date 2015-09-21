@@ -20,7 +20,7 @@ namespace mst_boredom_remover
 
         public const int MAP_X = 1280 / 2;
         public const int MAP_Y = 720 / 2;
-        private const int TILE_PX_SIZE = 8;
+        private const int TILE_PX_SIZE = 28;
         private const int TILE_PX_SMALL = 2;
         private const int RES_X = 1280;
         private const int RES_Y = 720;
@@ -30,6 +30,7 @@ namespace mst_boredom_remover
         private List<string> tileNames;
         private string debugText = "";
         private List<Unit> units;
+        private List<Texture2D> unitTextures;
 
         public int width;
         public int height;
@@ -44,6 +45,14 @@ namespace mst_boredom_remover
             West
         }
 
+        private enum UnitTypeTextures
+        {
+            Default,        // 0
+            Swordman,       // 1
+            Archer,         // 2
+            Mage            // 3
+        };
+
         struct BiomeInfo
         {
             public char Type;
@@ -51,7 +60,7 @@ namespace mst_boredom_remover
             public int Y;
         };
 
-        public Map(Vector2 position, List<Texture2D> tileTextures, List<Unit> units, Texture2D texture = null, int width = 0, int height = 0) 
+        public Map(Vector2 position, List<Texture2D> tileTextures, List<Unit> units, List<Texture2D> unitTextures, int width = 0, int height = 0) 
             : base()
         {
             this.width = width;
@@ -60,6 +69,7 @@ namespace mst_boredom_remover
 
             this.position = position;
             this.tileTextures = tileTextures;
+            this.unitTextures = unitTextures;
             //this.map = map;
             //this.texture = texture;
 
@@ -261,7 +271,8 @@ namespace mst_boredom_remover
             }
 
             debugText = "";
-            debugText = "(" + m.X + ", " + m.Y + ")\n";
+            debugText += "Mouse Position: (" + m.X + ", " + m.Y + ")\n";
+            debugText += "TileIndex: (" + tileIndex.X + ", " + tileIndex.Y + ")\n";
             debugText += tileNames[charToInt(c)];
             
         }
@@ -356,6 +367,45 @@ namespace mst_boredom_remover
                     }
                 }
             }
+
+            int unitIndex = 0;
+            Vector2 unitPos = new Vector2();
+            Vector2 drawPos = new Vector2();
+
+            foreach (Unit x in units)
+            {
+                // determine texture to draw
+                if (x.type.movement_type == UnitType.MovementType.Walker)
+                {
+                    if (x.type.attack_type == UnitType.AttackType.Melee)
+                    {
+                        // sword
+                        unitIndex = Convert.ToInt32(UnitTypeTextures.Swordman);
+                    }
+                    else if (x.type.attack_type == UnitType.AttackType.Arrow)
+                    {
+                        // archer
+                        unitIndex = Convert.ToInt32(UnitTypeTextures.Archer);
+                    }
+                    else if (x.type.attack_type == UnitType.AttackType.Fireball)
+                    {
+                        // mage
+                        unitIndex = Convert.ToInt32(UnitTypeTextures.Mage);
+                    }
+                }
+
+                // map coordinate of unit
+                unitPos.X = x.position.x;
+                unitPos.Y = x.position.y;
+
+                // calculate screen space based on map coordinates
+                // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
+                drawPos = (unitPos - tileIndex) *TILE_PX_SIZE;
+
+                // finally draw the unit
+                sb.Draw(unitTextures[1], new Rectangle((int)drawPos.X, (int)drawPos.Y, TILE_PX_SIZE, TILE_PX_SIZE), Color.White);
+            }
+
             if (debugMode)
             {
                 debugDraw(sb);

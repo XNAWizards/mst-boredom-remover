@@ -174,7 +174,18 @@ namespace mst_boredom_remover
             tiles.Add(tundraTexture);
             tiles.Add(forestTexture);
 
-            Map m = new Map(Vector2.Zero, tiles, game.units);
+            Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\knight normal");
+            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knight normal"); // temp
+            Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magenormal");
+
+            List<Texture2D> unitTextures = new List<Texture2D>();
+
+            unitTextures.Add(blankBackground);
+            unitTextures.Add(swordUnitTexture);
+            unitTextures.Add(archerUnitTexture);
+            unitTextures.Add(mageUnitTexture);
+
+            Map m = new Map(Vector2.Zero, tiles, game.units, unitTextures);
 
             gameControls.Add(m);
 
