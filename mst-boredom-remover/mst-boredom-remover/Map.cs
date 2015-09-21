@@ -20,11 +20,7 @@ namespace mst_boredom_remover
 
         public const int MAP_X = 1280 / 2;
         public const int MAP_Y = 720 / 2;
-<<<<<<< HEAD
         private const int TILE_PX_SIZE = 28;
-=======
-        private const int TILE_PX_SIZE = 8;
->>>>>>> master
         private const int TILE_PX_SMALL = 2;
         private const int RES_X = 1280;
         private const int RES_Y = 720;
@@ -32,12 +28,9 @@ namespace mst_boredom_remover
         private Vector2 tileIndex;
         private bool gDisable = false;
         private List<string> tileNames;
-        private string debugText = "";
+        //private string debugText = "";
         private List<Unit> units;
-<<<<<<< HEAD
         private List<Texture2D> unitTextures;
-=======
->>>>>>> master
 
         public int width;
         public int height;
@@ -51,7 +44,6 @@ namespace mst_boredom_remover
             East,
             West
         }
-<<<<<<< HEAD
 
         private enum UnitTypeTextures
         {
@@ -60,8 +52,6 @@ namespace mst_boredom_remover
             Archer,         // 2
             Mage            // 3
         };
-=======
->>>>>>> master
 
         struct BiomeInfo
         {
@@ -69,13 +59,7 @@ namespace mst_boredom_remover
             public int X;
             public int Y;
         };
-
-<<<<<<< HEAD
-        public Map(Vector2 position, List<Texture2D> tileTextures, List<Unit> units, List<Texture2D> unitTextures, int width = 0, int height = 0) 
-=======
-        public Map(Vector2 position, List<Texture2D> tileTextures, List<Unit> units, Texture2D texture = null, int width = 0, int height = 0) 
->>>>>>> master
-            : base()
+        public Map(Vector2 position, List<Texture2D> tileTextures, ref List<Unit> units, List<Texture2D> unitTextures, int width = 0, int height = 0)
         {
             this.width = width;
             this.height = height;
@@ -83,10 +67,7 @@ namespace mst_boredom_remover
 
             this.position = position;
             this.tileTextures = tileTextures;
-<<<<<<< HEAD
             this.unitTextures = unitTextures;
-=======
->>>>>>> master
             //this.map = map;
             //this.texture = texture;
 
@@ -295,12 +276,13 @@ namespace mst_boredom_remover
         }
         private void debugDraw(SpriteBatch sb)
         {
-            sb.DrawString(font, debugText, new Vector2(0, 0), Color.Black);
+            // menu draws all of its controls' debug texts
+            //sb.DrawString(font, debugText, new Vector2(0, 0), Color.Black);
         }
 
         public override void changeFont(SpriteFont f)
         {
-            this.font = f;
+            //this.font = f;
             //base.changeFont(f);
         }
 
@@ -358,7 +340,7 @@ namespace mst_boredom_remover
                             {
                                 // 2D array draw tiles at their designated spots, in TILE_PX x TILE_PX squares
                                 sb.Draw(tileTextures[charToInt(map[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
-                                    new Rectangle((int)position.X + TILE_PX_SIZE * x, (int)position.Y + TILE_PX_SIZE * y, TILE_PX_SIZE, TILE_PX_SIZE), Color.White);
+                                    new Rectangle((int)position.X + TILE_PX_SIZE * x, (int)position.Y + TILE_PX_SIZE * y, TILE_PX_SIZE + 4, TILE_PX_SIZE + 4), Color.White);
                             }
                         }
                     }
@@ -384,7 +366,6 @@ namespace mst_boredom_remover
                     }
                 }
             }
-<<<<<<< HEAD
 
             int unitIndex = 0;
             Vector2 unitPos = new Vector2();
@@ -424,8 +405,6 @@ namespace mst_boredom_remover
                 sb.Draw(unitTextures[1], new Rectangle((int)drawPos.X, (int)drawPos.Y, TILE_PX_SIZE, TILE_PX_SIZE), Color.White);
             }
 
-=======
->>>>>>> master
             if (debugMode)
             {
                 debugDraw(sb);

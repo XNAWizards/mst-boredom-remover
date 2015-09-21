@@ -174,10 +174,9 @@ namespace mst_boredom_remover
             tiles.Add(tundraTexture);
             tiles.Add(forestTexture);
 
-<<<<<<< HEAD
-            Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\knight normal");
-            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knight normal"); // temp
-            Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magenormal");
+            Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\knightbase");
+            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
+            Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
 
             List<Texture2D> unitTextures = new List<Texture2D>();
 
@@ -186,10 +185,7 @@ namespace mst_boredom_remover
             unitTextures.Add(archerUnitTexture);
             unitTextures.Add(mageUnitTexture);
 
-            Map m = new Map(Vector2.Zero, tiles, game.units, unitTextures);
-=======
-            Map m = new Map(Vector2.Zero, tiles, game.units);
->>>>>>> master
+            Map m = new Map(Vector2.Zero, tiles, ref game.units, unitTextures);
 
             gameControls.Add(m);
 
@@ -258,7 +254,7 @@ namespace mst_boredom_remover
                     game.AddUnit(new Unit(game.unit_types[0], new Position(0, i), game.players[0]));
                 }
             }
-            else if (game.current_tick == 1)
+            else if (game.current_tick == 500)
             {
                 foreach (Unit unit in game.units)
                 {

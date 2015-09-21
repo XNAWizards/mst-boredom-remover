@@ -251,13 +251,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Units\knight normal.png">
-      <Name>knight normal</Name>
+    <Compile Include="Units\knightbase.png">
+      <Name>knightbase</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Units\magenormal.png">
-      <Name>magenormal</Name>
+    <Compile Include="Units\magebase.png">
+      <Name>magebase</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
