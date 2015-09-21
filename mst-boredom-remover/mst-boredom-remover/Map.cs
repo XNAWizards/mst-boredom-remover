@@ -20,7 +20,11 @@ namespace mst_boredom_remover
 
         public const int MAP_X = 1280 / 2;
         public const int MAP_Y = 720 / 2;
+<<<<<<< HEAD
         private const int TILE_PX_SIZE = 28;
+=======
+        private const int TILE_PX_SIZE = 8;
+>>>>>>> master
         private const int TILE_PX_SMALL = 2;
         private const int RES_X = 1280;
         private const int RES_Y = 720;
@@ -30,7 +34,10 @@ namespace mst_boredom_remover
         private List<string> tileNames;
         private string debugText = "";
         private List<Unit> units;
+<<<<<<< HEAD
         private List<Texture2D> unitTextures;
+=======
+>>>>>>> master
 
         public int width;
         public int height;
@@ -44,6 +51,7 @@ namespace mst_boredom_remover
             East,
             West
         }
+<<<<<<< HEAD
 
         private enum UnitTypeTextures
         {
@@ -52,6 +60,8 @@ namespace mst_boredom_remover
             Archer,         // 2
             Mage            // 3
         };
+=======
+>>>>>>> master
 
         struct BiomeInfo
         {
@@ -60,7 +70,11 @@ namespace mst_boredom_remover
             public int Y;
         };
 
+<<<<<<< HEAD
         public Map(Vector2 position, List<Texture2D> tileTextures, List<Unit> units, List<Texture2D> unitTextures, int width = 0, int height = 0) 
+=======
+        public Map(Vector2 position, List<Texture2D> tileTextures, List<Unit> units, Texture2D texture = null, int width = 0, int height = 0) 
+>>>>>>> master
             : base()
         {
             this.width = width;
@@ -69,7 +83,10 @@ namespace mst_boredom_remover
 
             this.position = position;
             this.tileTextures = tileTextures;
+<<<<<<< HEAD
             this.unitTextures = unitTextures;
+=======
+>>>>>>> master
             //this.map = map;
             //this.texture = texture;
 
@@ -367,6 +384,7 @@ namespace mst_boredom_remover
                     }
                 }
             }
+<<<<<<< HEAD
 
             int unitIndex = 0;
             Vector2 unitPos = new Vector2();
@@ -406,6 +424,8 @@ namespace mst_boredom_remover
                 sb.Draw(unitTextures[1], new Rectangle((int)drawPos.X, (int)drawPos.Y, TILE_PX_SIZE, TILE_PX_SIZE), Color.White);
             }
 
+=======
+>>>>>>> master
             if (debugMode)
             {
                 debugDraw(sb);
