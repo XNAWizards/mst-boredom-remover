@@ -28,8 +28,10 @@ namespace mst_boredom_remover
         private Vector2 tileIndex;
         private bool gDisable = false;
         private List<string> tileNames;
-        private string debugText = "";
+        //private string debugText = "";
         private List<Unit> units;
+        private List<Texture2D> unitTextures;
+        private Game game;
 
         public int width;
         public int height;
@@ -44,15 +46,21 @@ namespace mst_boredom_remover
             West
         }
 
+        private enum UnitTypeTextures
+        {
+            Default,        // 0
+            Swordman,       // 1
+            Archer,         // 2
+            Mage            // 3
+        };
+
         struct BiomeInfo
         {
             public char Type;
             public int X;
             public int Y;
         };
-
-        public Map(Vector2 position, List<Texture2D> tileTextures, List<Unit> units, Texture2D texture = null, int width = 0, int height = 0) 
-            : base()
+        public Map(Vector2 position, List<Texture2D> tileTextures, ref List<Unit> units, List<Texture2D> unitTextures, ref Game game, int width = 0, int height = 0)
         {
             this.width = width;
             this.height = height;
@@ -60,6 +68,7 @@ namespace mst_boredom_remover
 
             this.position = position;
             this.tileTextures = tileTextures;
+            this.unitTextures = unitTextures;
             //this.map = map;
             //this.texture = texture;
 
@@ -79,6 +88,7 @@ namespace mst_boredom_remover
             tileNames.Add("Forest");
 
             this.units = units;
+            this.game = game;
         }
 
         public override void changeContext(int id)
@@ -261,18 +271,20 @@ namespace mst_boredom_remover
             }
 
             debugText = "";
-            debugText = "(" + m.X + ", " + m.Y + ")\n";
+            debugText += "Mouse Position: (" + m.X + ", " + m.Y + ")\n";
+            debugText += "TileIndex: (" + tileIndex.X + ", " + tileIndex.Y + ")\n";
             debugText += tileNames[charToInt(c)];
             
         }
         private void debugDraw(SpriteBatch sb)
         {
-            sb.DrawString(font, debugText, new Vector2(0, 0), Color.Black);
+            // menu draws all of its controls' debug texts
+            //sb.DrawString(font, debugText, new Vector2(0, 0), Color.Black);
         }
 
         public override void changeFont(SpriteFont f)
         {
-            this.font = f;
+            //this.font = f;
             //base.changeFont(f);
         }
 
@@ -307,6 +319,17 @@ namespace mst_boredom_remover
 
             }
 
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                int i = 0;
+                foreach (Unit unit in units)
+                {
+                    unit.orders.Add(Order.CreateMoveOrder(new Position((Mouse.GetState().X / TILE_PX_SIZE) + (int)tileIndex.X, (Mouse.GetState().Y / TILE_PX_SIZE) + (int)tileIndex.Y)));
+                    game.ScheduleUpdate(10, unit);
+                    i++;
+                }
+            }
+
             if (debugMode)
             {
                 debugUpdate(gt);
@@ -330,7 +353,7 @@ namespace mst_boredom_remover
                             {
                                 // 2D array draw tiles at their designated spots, in TILE_PX x TILE_PX squares
                                 sb.Draw(tileTextures[charToInt(map[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
-                                    new Rectangle((int)position.X + TILE_PX_SIZE * x, (int)position.Y + TILE_PX_SIZE * y, TILE_PX_SIZE, TILE_PX_SIZE), Color.White);
+                                    new Rectangle((int)position.X + TILE_PX_SIZE * x, (int)position.Y + TILE_PX_SIZE * y, TILE_PX_SIZE + 4, TILE_PX_SIZE + 4), Color.White);
                             }
                         }
                     }
@@ -356,6 +379,47 @@ namespace mst_boredom_remover
                     }
                 }
             }
+
+            int unitIndex = 0;
+            Vector2 unitPos = new Vector2();
+            Vector2 drawPos = new Vector2();
+
+            foreach (Unit x in units)
+            {
+                // determine texture to draw
+                if (x.type.movement_type == UnitType.MovementType.Walker)
+                {
+                    if (x.type.attack_type == UnitType.AttackType.Melee)
+                    {
+                        // sword
+                        unitIndex = Convert.ToInt32(UnitTypeTextures.Swordman);
+                    }
+                    else if (x.type.attack_type == UnitType.AttackType.Arrow)
+                    {
+                        // archer
+                        unitIndex = Convert.ToInt32(UnitTypeTextures.Archer);
+                    }
+                    else if (x.type.attack_type == UnitType.AttackType.Fireball)
+                    {
+                        // mage
+                        unitIndex = Convert.ToInt32(UnitTypeTextures.Mage);
+                    }
+                }
+
+                // map coordinate of unit
+                unitPos.X = x.position.x;
+                unitPos.Y = x.position.y;
+
+                // calculate screen space based on map coordinates
+                // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
+                drawPos = (unitPos - tileIndex) *TILE_PX_SIZE;
+
+                Color color = Color.White;
+
+                // finally draw the unit
+                sb.Draw(unitTextures[unitIndex], new Rectangle((int)drawPos.X, (int)drawPos.Y, TILE_PX_SIZE, TILE_PX_SIZE), color);
+            }
+
             if (debugMode)
             {
                 debugDraw(sb);
