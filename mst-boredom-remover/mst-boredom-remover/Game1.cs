@@ -104,7 +104,7 @@ namespace mst_boredom_remover
             // Go Button for New Game screen
             Texture2D goButtonTexture = Content.Load<Texture2D>("Buttons\\BtnGo");
             Texture2D goButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnGoHover");
-            Button goButton = new Button(goButtonTexture, goButtonTextureHover, goButtonTextureHover, new Vector2(1150, 675));
+            Button goButton = new Button(goButtonTexture, goButtonTextureHover, goButtonTextureHover, new Vector2(600, 500));
             goButton.OnPress += new EventHandler(goButton_OnPress);
             goButton.Clicked += new EventHandler(goButton_Clicked);
 
@@ -185,7 +185,7 @@ namespace mst_boredom_remover
             unitTextures.Add(archerUnitTexture);
             unitTextures.Add(mageUnitTexture);
 
-            Map m = new Map(Vector2.Zero, tiles, ref game.units, unitTextures);
+            Map m = new Map(Vector2.Zero, tiles, ref game.units, unitTextures, ref game);
 
             gameControls.Add(m);
 
@@ -256,12 +256,17 @@ namespace mst_boredom_remover
             }
             else if (game.current_tick == 500)
             {
+                int i = 0;
                 foreach (Unit unit in game.units)
                 {
-                    unit.orders.Add(Order.CreateMoveOrder(new Position(100, 100)));
-                    game.ScheduleUpdate(1, unit);
+                    //unit.orders.Add(Order.CreateMoveOrder(new Position(100 + i, 100)));
+                    //game.ScheduleUpdate(1, unit);
+                    i++;
                 }
             }
+            
+            
+
 
             game.Tick();
 

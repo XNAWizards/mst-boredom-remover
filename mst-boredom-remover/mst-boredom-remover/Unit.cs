@@ -91,7 +91,7 @@ namespace mst_boredom_remover
                     game.MoveUnit(this, next_position);
                     status = Status.Moving;
                     // TODO: Calculate cooldown based on speed and tile and modifiers
-                    game.ScheduleUpdate(1, this);
+                    game.ScheduleUpdate(10, this);
                     break;
                 case Order.OrderType.Attack:
                     if (current_order.target_unit.status == Status.Dead)

@@ -20,7 +20,7 @@ namespace mst_boredom_remover
 
         public const int MAP_X = 1280 / 2;
         public const int MAP_Y = 720 / 2;
-        private const int TILE_PX_SIZE = 28;
+        private const int TILE_PX_SIZE = 8;
         private const int TILE_PX_SMALL = 2;
         private const int RES_X = 1280;
         private const int RES_Y = 720;
@@ -31,6 +31,7 @@ namespace mst_boredom_remover
         //private string debugText = "";
         private List<Unit> units;
         private List<Texture2D> unitTextures;
+        private Game game;
 
         public int width;
         public int height;
@@ -59,7 +60,7 @@ namespace mst_boredom_remover
             public int X;
             public int Y;
         };
-        public Map(Vector2 position, List<Texture2D> tileTextures, ref List<Unit> units, List<Texture2D> unitTextures, int width = 0, int height = 0)
+        public Map(Vector2 position, List<Texture2D> tileTextures, ref List<Unit> units, List<Texture2D> unitTextures, ref Game game, int width = 0, int height = 0)
         {
             this.width = width;
             this.height = height;
@@ -87,6 +88,7 @@ namespace mst_boredom_remover
             tileNames.Add("Forest");
 
             this.units = units;
+            this.game = game;
         }
 
         public override void changeContext(int id)
@@ -317,6 +319,17 @@ namespace mst_boredom_remover
 
             }
 
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                int i = 0;
+                foreach (Unit unit in units)
+                {
+                    unit.orders.Add(Order.CreateMoveOrder(new Position((Mouse.GetState().X / TILE_PX_SIZE) + (int)tileIndex.X, (Mouse.GetState().Y / TILE_PX_SIZE) + (int)tileIndex.Y)));
+                    game.ScheduleUpdate(10, unit);
+                    i++;
+                }
+            }
+
             if (debugMode)
             {
                 debugUpdate(gt);
@@ -401,8 +414,10 @@ namespace mst_boredom_remover
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
                 drawPos = (unitPos - tileIndex) *TILE_PX_SIZE;
 
+                Color color = Color.White;
+
                 // finally draw the unit
-                sb.Draw(unitTextures[1], new Rectangle((int)drawPos.X, (int)drawPos.Y, TILE_PX_SIZE, TILE_PX_SIZE), Color.White);
+                sb.Draw(unitTextures[unitIndex], new Rectangle((int)drawPos.X, (int)drawPos.Y, TILE_PX_SIZE, TILE_PX_SIZE), color);
             }
 
             if (debugMode)
