@@ -68,7 +68,7 @@ namespace mst_boredom_remover
             orders.RemoveAt(0);
         }
 
-        public void Update(Game game)
+        public void Update(Engine game)
         {
             if (orders.Count == 0)
             {

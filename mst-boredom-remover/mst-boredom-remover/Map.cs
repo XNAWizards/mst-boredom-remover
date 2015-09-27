@@ -16,10 +16,10 @@ namespace mst_boredom_remover
     {
         private Vector2 position;
         private List<Texture2D> tileTextures;
-        private char[,] map;
+        private char[,] charmap;
 
-        public const int MAP_X = 1280 / 2;
-        public const int MAP_Y = 720 / 2;
+        public int width;
+        public int height;
         private const int TILE_PX_SIZE = 8;
         private const int TILE_PX_SMALL = 2;
         private const int RES_X = 1280;
@@ -31,20 +31,7 @@ namespace mst_boredom_remover
         //private string debugText = "";
         private List<Unit> units;
         private List<Texture2D> unitTextures;
-        private Game game;
-
-        public int width;
-        public int height;
-
-        public Tile[,] tiles;
-
-        public enum Directions
-        {
-            North,
-            South,
-            East,
-            West
-        }
+        private Engine game;
 
         private enum UnitTypeTextures
         {
@@ -54,17 +41,16 @@ namespace mst_boredom_remover
             Mage            // 3
         };
 
-        struct BiomeInfo
+        public struct BiomeInfo
         {
             public char Type;
             public int X;
             public int Y;
         };
-        public Map(Vector2 position, List<Texture2D> tileTextures, ref List<Unit> units, List<Texture2D> unitTextures, ref Game game, int width = 0, int height = 0)
+        public Map(Vector2 position, List<Texture2D> tileTextures, ref List<Unit> units, List<Texture2D> unitTextures, int width, int height, ref Engine game)
         {
             this.width = width;
             this.height = height;
-            this.tiles = new Tile[width, height];
 
             this.position = position;
             this.tileTextures = tileTextures;
@@ -74,7 +60,7 @@ namespace mst_boredom_remover
 
             tileIndex = Vector2.Zero;
 
-            generator();
+            this.charmap = Generator.generate(width, height);
 
             tileNames = new List<string>();
 
@@ -114,7 +100,7 @@ namespace mst_boredom_remover
             {
                 if (tileIndex.X + deltaX >= 0)
                 {
-                    if (tileIndex.X + deltaX < MAP_X - ((RES_X / TILE_PX_SIZE)))
+                    if (tileIndex.X + deltaX < width - ((RES_X / TILE_PX_SIZE)))
                     {
                         tileIndex.X += deltaX;
                     }
@@ -126,119 +112,13 @@ namespace mst_boredom_remover
                 {
                     // res_y/px_size = number of tiles that fit on screen
                     // map_Y - #tiles on screen = maximum tileIndex.Y to allow
-                    if (tileIndex.Y + deltaY < MAP_Y - ((RES_Y / TILE_PX_SIZE)))
+                    if (tileIndex.Y + deltaY < height - ((RES_Y / TILE_PX_SIZE)))
                     {
                         tileIndex.Y += deltaY;
                     }
                 }
             }
             //base.mapMove(deltaX, deltaY);
-        }
-
-        private void generator()
-        {
-            // chance out of 1000
-            const int MAX_CHANCE = 1000;
-            const int GOLD_CHANCE = 5;
-            const int IRON_CHANCE = 2;
-            const int MANA_CHANCE = 2;
-            const int NumBio = 700;
-            Random r = new Random();
-            BiomeInfo[] bio = new BiomeInfo[NumBio];
-            for (int i = 0; i < bio.Length; i++)
-            {
-                bio[i] = new BiomeInfo();
-            }
-            for (int a = 0; a < (NumBio / 7); a++)
-            {
-                bio[a * 7].Type = '~'; //Ocean
-                bio[a * 7].X = r.Next(0, MAP_X);
-                bio[a * 7].Y = r.Next(0, MAP_Y);
-
-                bio[a * 7 + 1].Type = '+';//Plain
-                bio[a * 7 + 1].X = r.Next(0, MAP_X);
-                bio[a * 7 + 1].Y = r.Next(0, MAP_Y);
-
-                bio[a * 7 + 2].Type = 'M';//Mountain
-                bio[a * 7 + 2].X = r.Next(0, MAP_X);
-                bio[a * 7 + 2].Y = r.Next(0, MAP_Y);
-
-                bio[a * 7 + 3].Type = 'F';//Forest
-                bio[a * 7 + 3].X = r.Next(0, MAP_X);
-                bio[a * 7 + 3].Y = r.Next(0, MAP_Y);
-
-                bio[a * 7 + 4].Type = '%';//Dreadlands
-                bio[a * 7 + 4].X = r.Next(0, MAP_X);
-                bio[a * 7 + 4].Y = r.Next(0, MAP_Y);
-
-                bio[a * 7 + 5].Type = 'D';//Desert
-                bio[a * 7 + 5].X = r.Next(0, MAP_X);
-                bio[a * 7 + 5].Y = r.Next(0, MAP_Y);
-
-                bio[a * 7 + 6].Type = 'T';//Tundra
-                bio[a * 7 + 6].X = r.Next(0, MAP_X);
-                bio[a * 7 + 6].Y = r.Next(0, MAP_Y);
-            }
-
-            char[,] field = new char[MAP_X, MAP_Y];
-            // i = y
-            // j = x
-            for (int i = 0; i < MAP_Y; i++)
-            {
-                for (int j = 0; j < MAP_X; j++)
-                {
-                    char nearest = '~';
-                    int dist = 5000;
-                    for (int z = 0; z < NumBio; z++)
-                    {
-                        int Xdiff = bio[z].X - i;
-                        int Ydiff = bio[z].Y - j;
-                        int Cdist = Xdiff * Xdiff + Ydiff * Ydiff;
-                        if (Cdist < dist)
-                        {
-                            nearest = bio[z].Type;
-                            dist = Cdist;
-                        }
-
-                    }
-                    field[j, i] = nearest;
-                }
-            }
-            for (int i = 0; i < MAP_Y; i++)
-            {
-                field[0, i] = '~';          // left side
-                field[MAP_X - 1, i] = '~';  // right side
-            }
-            for (int j = 0; j < MAP_X; j++)
-            {
-                field[j, 0] = '~';          // top
-                field[j, MAP_Y - 1] = '~';  // bottom
-            }
-            //Adding Resources.
-            for (int i = 0; i < MAP_Y; i++)
-            {
-                for (int j = 0; j < MAP_X; j++)
-                {
-                    if (field[j, i] == 'M')
-                    {
-                        if (r.Next(0, MAX_CHANCE) <= GOLD_CHANCE)
-                            field[j, i] = 'G';//inserts gold mine resource
-                    }
-                    else if (field[j, i] == 'F')
-                    {
-                        if (r.Next(0, MAX_CHANCE) <= IRON_CHANCE)
-                            field[j, i] = 'L';//sawmill for lumber
-                    }
-                    else if (field[j, i] == '%')
-                    {
-                        if (r.Next(0, MAX_CHANCE) <= MANA_CHANCE)
-                            field[j, i] = '*';//magic crystal resource
-                    }
-
-                }
-            }
-            map = field;
-
         }
 
         public override void toggleDebugMode()
@@ -257,17 +137,17 @@ namespace mst_boredom_remover
 
             Vector2 mouseIndex = new Vector2(m.X / TILE_PX_SIZE, m.Y / TILE_PX_SIZE);
 
-            if (mouseIndex.X + tileIndex.X < 0 || mouseIndex.X + tileIndex.X > MAP_X)
+            if (mouseIndex.X + tileIndex.X < 0 || mouseIndex.X + tileIndex.X > width)
             {
                 fail = true;
             }
-            if (mouseIndex.Y + tileIndex.Y < 0 || mouseIndex.Y + tileIndex.Y > MAP_Y)
+            if (mouseIndex.Y + tileIndex.Y < 0 || mouseIndex.Y + tileIndex.Y > height)
             {
                 fail = true;
             }
             if (fail == false)
             {
-                c = map[(int)(mouseIndex.X + tileIndex.X), (int)(mouseIndex.Y + tileIndex.Y)];
+                c = charmap[(int)(mouseIndex.X + tileIndex.X), (int)(mouseIndex.Y + tileIndex.Y)];
             }
 
             debugText = "";
@@ -295,7 +175,7 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.G) && gDisable == false)
             {
                 // generate a new map quickly
-                generator();
+                charmap = Generator.generate(width, height);
                 gDisable = true;
             }
             if (keyboard.IsKeyDown(Keys.W))
@@ -345,14 +225,14 @@ namespace mst_boredom_remover
                 // keep drawing until we run out of screen space, x and y
                 for (int x = (int)position.X; x < ((RES_X / TILE_PX_SIZE)); x++)
                 {
-                    if (tileIndex.X < MAP_X)
+                    if (tileIndex.X < width)
                     {
                         for (int y = (int)position.Y; y < ((RES_Y / TILE_PX_SIZE)); y++)
                         {
-                            if (tileIndex.Y < MAP_Y)
+                            if (tileIndex.Y < height)
                             {
                                 // 2D array draw tiles at their designated spots, in TILE_PX x TILE_PX squares
-                                sb.Draw(tileTextures[charToInt(map[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
+                                sb.Draw(tileTextures[charToInt(charmap[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
                                     new Rectangle((int)position.X + TILE_PX_SIZE * x, (int)position.Y + TILE_PX_SIZE * y, TILE_PX_SIZE + 4, TILE_PX_SIZE + 4), Color.White);
                             }
                         }
@@ -365,14 +245,14 @@ namespace mst_boredom_remover
                 // keep drawing until we run out of screen space, x and y
                 for (int x = (int)position.X; x < ((RES_X / TILE_PX_SMALL)); x++)
                 {
-                    if (tileIndex.X < MAP_X)
+                    if (tileIndex.X < width)
                     {
                         for (int y = (int)position.Y; y < ((RES_Y / TILE_PX_SMALL)); y++)
                         {
-                            if (tileIndex.Y < MAP_Y)
+                            if (tileIndex.Y < height)
                             {
                                 // 2D array draw tiles at their designated spots, in TILE_PX x TILE_PX squares
-                                sb.Draw(tileTextures[charToInt(map[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
+                                sb.Draw(tileTextures[charToInt(charmap[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
                                     new Rectangle((int)position.X + TILE_PX_SMALL * x, (int)position.Y + TILE_PX_SMALL * y, TILE_PX_SMALL, TILE_PX_SMALL), Color.White);
                             }
                         }
