@@ -15,8 +15,9 @@ namespace mst_boredom_remover
             const int IRON_CHANCE = 2;
             const int MANA_CHANCE = 2;
             const int NumBio = 700;
+            const int Border = 1996;
             Random r = new Random();
-            Map.BiomeInfo[] bio = new Map.BiomeInfo[NumBio];
+            Map.BiomeInfo[] bio = new Map.BiomeInfo[NumBio + Border];
             for (int i = 0; i < bio.Length; i++)
             {
                 bio[i] = new Map.BiomeInfo();
@@ -50,6 +51,27 @@ namespace mst_boredom_remover
                 bio[a * 7 + 6].Type = 'T';//Tundra
                 bio[a * 7 + 6].X = r.Next(0, width);
                 bio[a * 7 + 6].Y = r.Next(0, height);
+            }
+            //Sets Border To Ocean Biome
+            for (int k = 0; k < width; k++)
+            {//goes through and sets top and bottom rows to Ocean biome.
+                bio[NumBio + k * 2].Type = '~';
+                bio[NumBio + k * 2].X = k;
+                bio[NumBio + k * 2].Y = 0;
+
+                bio[NumBio + k * 2 + 1].Type = '~';
+                bio[NumBio + k * 2 + 1].X = k;
+                bio[NumBio + k * 2 + 1].Y = height - 1;
+            }
+            for (int l = 0; l < height; l++)
+            {//Sets Left and Right border to Ocean biome
+                bio[NumBio + width + l * 2].Type = '~';
+                bio[NumBio + width + l * 2].X = 0;
+                bio[NumBio + width + l * 2].Y = l;
+
+                bio[NumBio + width + l * 2 + 1].Type = '~';
+                bio[NumBio + width + l * 2 + 1].X = width - 1;
+                bio[NumBio + width + l * 2 + 1].Y = l;
             }
 
             char[,] field = new char[width, height];
@@ -109,6 +131,7 @@ namespace mst_boredom_remover
 
                 }
             }
+
             return field;
         }
     }

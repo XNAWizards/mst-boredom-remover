@@ -24,8 +24,8 @@ namespace mst_boredom_remover
 
         private Engine engine;
         
-        public const int MAP_X = 1280 / 2;
-        public const int MAP_Y = 720 / 2;
+        public const int width = 1280 / 2;
+        public const int height = 720 / 2;
 
         List<UIObject> userInterface;
         public enum MenuScreen
@@ -40,7 +40,7 @@ namespace mst_boredom_remover
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             
-            engine = new Engine(MAP_X, MAP_Y);
+            engine = new Engine(width, height);
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -187,7 +187,7 @@ namespace mst_boredom_remover
                 move_textures: new Texture2D[] { swordUnitTexture },
                 attack_textures: new Texture2D[] { swordUnitTexture }));
 
-            Map m = new Map(Vector2.Zero, tiles, MAP_X, MAP_Y, ref engine);
+            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine);
 
             gameControls.Add(m);
 

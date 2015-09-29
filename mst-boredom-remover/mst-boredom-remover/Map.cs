@@ -107,7 +107,7 @@ namespace mst_boredom_remover
                 if (tileIndex.Y + deltaY >= 0)
                 {
                     // res_y/px_size = number of tiles that fit on screen
-                    // map_Y - #tiles on screen = maximum tileIndex.Y to allow
+                    // height - #tiles on screen = maximum tileIndex.Y to allow
                     if (tileIndex.Y + deltaY < height - ((RES_Y / TILE_PX_SIZE)))
                     {
                         tileIndex.Y += deltaY;
@@ -116,7 +116,7 @@ namespace mst_boredom_remover
             }
             //base.mapMove(deltaX, deltaY);
         }
-
+        
         public override void toggleDebugMode()
         {
             debugMode = !debugMode;
