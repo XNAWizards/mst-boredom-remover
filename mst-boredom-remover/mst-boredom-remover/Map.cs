@@ -29,8 +29,6 @@ namespace mst_boredom_remover
         private bool gDisable = false;
         private List<string> tileNames;
         //private string debugText = "";
-        private List<Unit> units;
-        private List<Texture2D> unitTextures;
         private Engine game;
 
         private enum UnitTypeTextures
@@ -47,14 +45,13 @@ namespace mst_boredom_remover
             public int X;
             public int Y;
         };
-        public Map(Vector2 position, List<Texture2D> tileTextures, ref List<Unit> units, List<Texture2D> unitTextures, int width, int height, ref Engine game)
+        public Map(Vector2 position, List<Texture2D> tileTextures, int width, int height, ref Engine game)
         {
             this.width = width;
             this.height = height;
 
             this.position = position;
             this.tileTextures = tileTextures;
-            this.unitTextures = unitTextures;
             //this.map = map;
             //this.texture = texture;
 
@@ -72,8 +69,7 @@ namespace mst_boredom_remover
             tileNames.Add("Dreadland");
             tileNames.Add("Tundra");
             tileNames.Add("Forest");
-
-            this.units = units;
+            
             this.game = game;
         }
 
@@ -202,7 +198,7 @@ namespace mst_boredom_remover
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 int i = 0;
-                foreach (Unit unit in units)
+                foreach (Unit unit in game.units)
                 {
                     unit.orders.Add(Order.CreateMoveOrder(new Position((Mouse.GetState().X / TILE_PX_SIZE) + (int)tileIndex.X, (Mouse.GetState().Y / TILE_PX_SIZE) + (int)tileIndex.Y)));
                     game.ScheduleUpdate(10, unit);
@@ -260,44 +256,32 @@ namespace mst_boredom_remover
                 }
             }
 
-            int unitIndex = 0;
-            Vector2 unitPos = new Vector2();
-            Vector2 drawPos = new Vector2();
-
-            foreach (Unit x in units)
+            // Draw units
+            // TODO: Only do this for units on screen, probably with the help of a quad-tree
+            foreach (Unit unit in game.units)
             {
-                // determine texture to draw
-                if (x.type.movement_type == UnitType.MovementType.Walker)
+                // TODO: Move current_textures outside of this loop and into unit logic
+                Texture2D[] current_textures = null;
+                switch (unit.status)
                 {
-                    if (x.type.attack_type == UnitType.AttackType.Melee)
-                    {
-                        // sword
-                        unitIndex = Convert.ToInt32(UnitTypeTextures.Swordman);
-                    }
-                    else if (x.type.attack_type == UnitType.AttackType.Arrow)
-                    {
-                        // archer
-                        unitIndex = Convert.ToInt32(UnitTypeTextures.Archer);
-                    }
-                    else if (x.type.attack_type == UnitType.AttackType.Fireball)
-                    {
-                        // mage
-                        unitIndex = Convert.ToInt32(UnitTypeTextures.Mage);
-                    }
+                    case Unit.Status.Idle:
+                        current_textures = unit.type.idle_textures;
+                        break;
+                    case Unit.Status.Moving:
+                        current_textures = unit.type.move_textures;
+                        break;
+                    case Unit.Status.Attacking:
+                        current_textures = unit.type.attack_textures;
+                        break;
                 }
-
-                // map coordinate of unit
-                unitPos.X = x.position.x;
-                unitPos.Y = x.position.y;
 
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
-                drawPos = (unitPos - tileIndex) *TILE_PX_SIZE;
-
-                Color color = Color.White;
-
+                Vector2 draw_position = (unit.position.ToVector2() - tileIndex) * TILE_PX_SIZE;
+          
                 // finally draw the unit
-                sb.Draw(unitTextures[unitIndex], new Rectangle((int)drawPos.X, (int)drawPos.Y, TILE_PX_SIZE, TILE_PX_SIZE), color);
+                sb.Draw(current_textures[(game.current_tick - unit.animation_start_tick) % current_textures.Length],
+                    new Rectangle((int)draw_position.X, (int)draw_position.Y, TILE_PX_SIZE, TILE_PX_SIZE), Color.White);
             }
 
             if (debugMode)

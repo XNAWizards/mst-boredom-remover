@@ -182,14 +182,12 @@ namespace mst_boredom_remover
             Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
             Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
 
-            List<Texture2D> unitTextures = new List<Texture2D>();
+            engine.unit_types.Add(new UnitType(
+                idle_textures: new Texture2D[] { swordUnitTexture },
+                move_textures: new Texture2D[] { swordUnitTexture },
+                attack_textures: new Texture2D[] { swordUnitTexture }));
 
-            unitTextures.Add(blankBackground);
-            unitTextures.Add(swordUnitTexture);
-            unitTextures.Add(archerUnitTexture);
-            unitTextures.Add(mageUnitTexture);
-
-            Map m = new Map(Vector2.Zero, tiles, ref engine.units, unitTextures, MAP_X, MAP_Y, ref engine);
+            Map m = new Map(Vector2.Zero, tiles, MAP_X, MAP_Y, ref engine);
 
             gameControls.Add(m);
 
@@ -257,7 +255,6 @@ namespace mst_boredom_remover
             // Create testing units on the first tick
             if (engine.current_tick == 0)
             {
-                engine.unit_types.Add(new UnitType());
                 for (int i = 0; i < 15; ++i)
                 {
                     engine.AddUnit(new Unit(engine.unit_types[0], new Position(0, i), engine.players[0]));

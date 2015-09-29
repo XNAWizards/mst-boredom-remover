@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace mst_boredom_remover
 {
@@ -17,6 +19,7 @@ namespace mst_boredom_remover
         
         // Game types
         public List<UnitType> unit_types;
+        public List<TileType> tile_types;
 
         // Game objects
         public List<Player> players;
