@@ -113,8 +113,9 @@ namespace mst_boredom_remover
             const int IRON_CHANCE = 2;
             const int MANA_CHANCE = 2;
             const int NumBio = 700;
+			const int Border = 1996;
             Random r = new Random();
-            BiomeInfo[] bio = new BiomeInfo[NumBio];
+            BiomeInfo[] bio = new BiomeInfo[NumBio+Border];
             for (int i = 0; i < bio.Length; i++)
             {
                 bio[i] = new BiomeInfo();
@@ -149,6 +150,25 @@ namespace mst_boredom_remover
                 bio[a * 7 + 6].X = r.Next(0, MAP_X);
                 bio[a * 7 + 6].Y = r.Next(0, MAP_Y);
             }
+			//Sets Border To Ocean Biome
+			for(int k=0;k<MAP_X;k++){//goes through and sets top and bottom rows to Ocean biome.
+				bio[NumBio+k*2].Type = '~';
+				bio[NumBio+k*2].X = k;
+				bio[NumBio+k*2].Y = 0;
+				
+				bio[NumBio+k*2+1].Type = '~';
+				bio[NumBio+k*2+1].X = k;
+				bio[NumBio+k*2+1].Y = MAP_Y-1;
+			}
+			for(int l=0;l<MAP_Y;l++){//Sets Left and Right border to Ocean biome
+				bio[NumBio+MAP_X+l*2].Type = '~';
+				bio[NumBio+MAP_X+l*2].X = 0;
+				bio[NumBio+MAP_X+l*2].Y = l;
+				
+				bio[NumBio+MAP_X+l*2+1].Type = '~';
+				bio[NumBio+MAP_X+l*2+1].X = MAP_X-1;
+				bio[NumBio+MAP_X+l*2+1].Y = l;
+			}
 
             char[,] field = new char[MAP_X, MAP_Y];
             // i = y
