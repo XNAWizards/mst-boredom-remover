@@ -19,9 +19,13 @@ namespace mst_boredom_remover
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         
+        // TODO: Remove this
         private SpriteFont debug_font;
 
-        private Game game;
+        private Engine engine;
+        
+        public const int width = 1280 / 2;
+        public const int height = 720 / 2;
 
         List<UIObject> userInterface;
         public enum MenuScreen
@@ -36,7 +40,7 @@ namespace mst_boredom_remover
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             
-            game = new Game();
+            engine = new Engine(width, height);
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -178,14 +182,12 @@ namespace mst_boredom_remover
             Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
             Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
 
-            List<Texture2D> unitTextures = new List<Texture2D>();
+            engine.unit_types.Add(new UnitType(
+                idle_textures: new Texture2D[] { swordUnitTexture },
+                move_textures: new Texture2D[] { swordUnitTexture },
+                attack_textures: new Texture2D[] { swordUnitTexture }));
 
-            unitTextures.Add(blankBackground);
-            unitTextures.Add(swordUnitTexture);
-            unitTextures.Add(archerUnitTexture);
-            unitTextures.Add(mageUnitTexture);
-
-            Map m = new Map(Vector2.Zero, tiles, ref game.units, unitTextures, ref game);
+            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine);
 
             gameControls.Add(m);
 
@@ -204,7 +206,6 @@ namespace mst_boredom_remover
             {
                 u.changeFont(font);
             }
-            game.map = m;
             // TODO: use this.Content to load your game content here
         }
 
@@ -230,10 +231,12 @@ namespace mst_boredom_remover
             {
                 this.Exit();
             }
+            // Toggle fullscreen
             if (keyboard.IsKeyDown(Keys.LeftAlt) && keyboard.IsKeyDown(Keys.Enter))
             {
                 graphics.ToggleFullScreen();
             }
+            // Toggle debug info
             if (keyboard.IsKeyDown(Keys.F1))
             {
                 foreach (UIObject u in userInterface)
@@ -241,34 +244,23 @@ namespace mst_boredom_remover
                     u.toggleDebugMode();
                 }
             }
+
+            // Update every UIObject
             foreach (UIObject x in userInterface)
             {
                 x.Update(gameTime);
             }
 
-            if (game.current_tick == 0)
+            // TODO: Remove
+            // Create testing units on the first tick
+            if (engine.current_tick == 0)
             {
-                game.unit_types.Add(new UnitType());
                 for (int i = 0; i < 15; ++i)
                 {
-                    game.AddUnit(new Unit(game.unit_types[0], new Position(0, i), game.players[0]));
+                    engine.AddUnit(new Unit(engine.unit_types[0], new Position(0, i), engine.players[0]));
                 }
             }
-            else if (game.current_tick == 500)
-            {
-                int i = 0;
-                foreach (Unit unit in game.units)
-                {
-                    //unit.orders.Add(Order.CreateMoveOrder(new Position(100 + i, 100)));
-                    //game.ScheduleUpdate(1, unit);
-                    i++;
-                }
-            }
-            
-            
-
-
-            game.Tick();
+            engine.Tick();
 
             base.Update(gameTime);
         }
@@ -288,11 +280,11 @@ namespace mst_boredom_remover
                 x.Draw(spriteBatch);
             }
 
-            spriteBatch.DrawString(debug_font, "Current tick: " + game.current_tick, new Vector2(1, 1), Color.Black);
-            if (game.current_tick > 1)
+            spriteBatch.DrawString(debug_font, "Current tick: " + engine.current_tick, new Vector2(1, 1), Color.Black);
+            if (engine.current_tick > 1)
             {
-                spriteBatch.DrawString(debug_font, "x: " + game.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
-                spriteBatch.DrawString(debug_font, "y: " + game.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
+                spriteBatch.DrawString(debug_font, "x: " + engine.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
+                spriteBatch.DrawString(debug_font, "y: " + engine.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
             }
 
             spriteBatch.End();

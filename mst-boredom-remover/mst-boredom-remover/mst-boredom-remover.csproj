@@ -107,7 +107,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game.cs" />
+    <Compile Include="Engine.cs" />
+    <Compile Include="EngineMap.cs" />
+    <Compile Include="Generator.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="Pathfinder.cs" />
