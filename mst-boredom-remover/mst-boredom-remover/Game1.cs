@@ -104,7 +104,7 @@ namespace mst_boredom_remover
             // Go Button for New Game screen
             Texture2D goButtonTexture = Content.Load<Texture2D>("Buttons\\BtnGo");
             Texture2D goButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnGoHover");
-            Button goButton = new Button(goButtonTexture, goButtonTextureHover, goButtonTextureHover, new Vector2(1150, 675));
+            Button goButton = new Button(goButtonTexture, goButtonTextureHover, goButtonTextureHover, new Vector2(600, 500));
             goButton.OnPress += new EventHandler(goButton_OnPress);
             goButton.Clicked += new EventHandler(goButton_Clicked);
 
@@ -174,7 +174,18 @@ namespace mst_boredom_remover
             tiles.Add(tundraTexture);
             tiles.Add(forestTexture);
 
-            Map m = new Map(Vector2.Zero, tiles);
+            Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\knightbase");
+            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
+            Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
+
+            List<Texture2D> unitTextures = new List<Texture2D>();
+
+            unitTextures.Add(blankBackground);
+            unitTextures.Add(swordUnitTexture);
+            unitTextures.Add(archerUnitTexture);
+            unitTextures.Add(mageUnitTexture);
+
+            Map m = new Map(Vector2.Zero, tiles, ref game.units, unitTextures, ref game);
 
             gameControls.Add(m);
 
@@ -193,7 +204,7 @@ namespace mst_boredom_remover
             {
                 u.changeFont(font);
             }
-
+            game.map = m;
             // TODO: use this.Content to load your game content here
         }
 
@@ -223,6 +234,13 @@ namespace mst_boredom_remover
             {
                 graphics.ToggleFullScreen();
             }
+            if (keyboard.IsKeyDown(Keys.F1))
+            {
+                foreach (UIObject u in userInterface)
+                {
+                    u.toggleDebugMode();
+                }
+            }
             foreach (UIObject x in userInterface)
             {
                 x.Update(gameTime);
@@ -236,14 +254,19 @@ namespace mst_boredom_remover
                     game.AddUnit(new Unit(game.unit_types[0], new Position(0, i), game.players[0]));
                 }
             }
-            else if (game.current_tick == 1)
+            else if (game.current_tick == 500)
             {
+                int i = 0;
                 foreach (Unit unit in game.units)
                 {
-                    unit.orders.Add(Order.CreateMoveOrder(new Position(100, 100)));
-                    game.ScheduleUpdate(1, unit);
+                    //unit.orders.Add(Order.CreateMoveOrder(new Position(100 + i, 100)));
+                    //game.ScheduleUpdate(1, unit);
+                    i++;
                 }
             }
+            
+            
+
 
             game.Tick();
 

@@ -44,7 +44,7 @@ namespace mst_boredom_remover
 
         public override void toggleDebugMode()
         {
-            base.toggleDebugMode();
+            //base.toggleDebugMode();
         }
 
         public override void mapMove(int deltaX, int deltaY)

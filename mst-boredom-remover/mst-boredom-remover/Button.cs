@@ -65,7 +65,7 @@ namespace mst_boredom_remover
 
         public override void toggleDebugMode()
         {
-            base.toggleDebugMode();
+            //base.toggleDebugMode();
         }
 
         public override void mapMove(int deltaX, int deltaY)
@@ -76,7 +76,7 @@ namespace mst_boredom_remover
 
         public override void changeFont(SpriteFont f)
         {
-            base.changeFont(f);
+
         }
 
         private void debugUpdate(GameTime gt)

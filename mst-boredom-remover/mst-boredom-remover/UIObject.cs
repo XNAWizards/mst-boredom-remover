@@ -19,15 +19,16 @@ namespace mst_boredom_remover
         //private Vector2 position;
         protected bool debugMode = false;
         protected SpriteFont font;
+        public string debugText = "";
 
         public virtual void changeFont(SpriteFont f)
         {
-            this.font = f;
+            //this.font = f;
         }
 
         public virtual void toggleDebugMode()
         {
-            debugMode = !debugMode;
+            //debugMode = !debugMode;
         }
         public virtual void changeContext(int id)
         {

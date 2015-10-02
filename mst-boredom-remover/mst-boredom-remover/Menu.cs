@@ -57,15 +57,18 @@ namespace mst_boredom_remover
 
         public override void toggleDebugMode()
         {
-            base.toggleDebugMode();
+            foreach (UIObject u in controls)
+            {
+                u.toggleDebugMode();
+            }
+
+            debugMode = !debugMode;
+            //base.toggleDebugMode();
         }
 
         public override void changeFont(SpriteFont f)
         {
-            foreach (UIObject u in controls)
-            {
-                base.changeFont(f);
-            }
+            font = f;
         }
 
         public override void mapMove(int deltaX, int deltaY)
@@ -76,11 +79,17 @@ namespace mst_boredom_remover
 
         private void debugUpdate(GameTime gt)
         {
-
+            // reset the debug text
+            debugText = "";
+            // compile each subobject's debug text
+            foreach (UIObject x in controls)
+            {
+                debugText += x.debugText;
+            }
         }
         private void debugDraw(SpriteBatch sb)
         {
-
+            sb.DrawString(font, debugText, Vector2.Zero, Color.White);
         }
 
         public override void Update(GameTime gt)
@@ -92,6 +101,11 @@ namespace mst_boredom_remover
                     x.Update(gt);
                 }
                 //base.Update(gt);
+
+                if (debugMode)
+                {
+                    debugUpdate(gt);
+                }
             }
         }
 
@@ -105,6 +119,10 @@ namespace mst_boredom_remover
                     x.Draw(sb);
                 }
                 //base.Draw(sb);
+                if (debugMode)
+                {
+                    debugDraw(sb);
+                }
             }
         }
     }
