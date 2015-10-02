@@ -22,6 +22,7 @@ namespace mst_boredom_remover
         public int height;
         private const int TILE_PX_SIZE = 8;
         private const int TILE_PX_SMALL = 2;
+        private int px_mod = 0;
         private const int RES_X = 1280;
         private const int RES_Y = 720;
         private bool smallMode = false;
@@ -30,6 +31,9 @@ namespace mst_boredom_remover
         private List<string> tileNames;
         //private string debugText = "";
         private Engine game;
+        private int lastScrollValue;
+
+        private Vector2 mouseTile = new Vector2();
 
         private enum UnitTypeTextures
         {
@@ -39,12 +43,6 @@ namespace mst_boredom_remover
             Mage            // 3
         };
 
-        public struct BiomeInfo
-        {
-            public char Type;
-            public int X;
-            public int Y;
-        };
         public Map(Vector2 position, List<Texture2D> tileTextures, int width, int height, ref Engine game)
         {
             this.width = width;
@@ -96,7 +94,7 @@ namespace mst_boredom_remover
             {
                 if (tileIndex.X + deltaX >= 0)
                 {
-                    if (tileIndex.X + deltaX < width - ((RES_X / TILE_PX_SIZE)))
+                    if (tileIndex.X + deltaX < width - (RES_X / (TILE_PX_SIZE + px_mod)))
                     {
                         tileIndex.X += deltaX;
                     }
@@ -108,7 +106,7 @@ namespace mst_boredom_remover
                 {
                     // res_y/px_size = number of tiles that fit on screen
                     // height - #tiles on screen = maximum tileIndex.Y to allow
-                    if (tileIndex.Y + deltaY < height - ((RES_Y / TILE_PX_SIZE)))
+                    if (tileIndex.Y + deltaY < height - (RES_Y / (TILE_PX_SIZE + px_mod)))
                     {
                         tileIndex.Y += deltaY;
                     }
@@ -133,7 +131,11 @@ namespace mst_boredom_remover
 
             Vector2 mouseIndex = new Vector2(m.X / TILE_PX_SIZE, m.Y / TILE_PX_SIZE);
 
-            if (mouseIndex.X + tileIndex.X < 0 || mouseIndex.X + tileIndex.X > width)
+            if (mouseTile.X < 0 || mouseTile.X > width)
+            {
+                fail = true;
+            }
+            if (mouseTile.Y < 0 || mouseTile.Y > height)
             {
                 fail = true;
             }
@@ -143,11 +145,20 @@ namespace mst_boredom_remover
             }
             if (fail == false)
             {
+                try
+                {
+                    c = charmap[(int)(mouseTile.X), (int)(mouseTile.Y)];
+                }
+                catch (Exception e)
+                {
+                    c = '!';
+                }
                 c = charmap[(int)(mouseIndex.X + tileIndex.X), (int)(mouseIndex.Y + tileIndex.Y)];
             }
 
             debugText = "";
             debugText += "Mouse Position: (" + m.X + ", " + m.Y + ")\n";
+            debugText += "Mouse Tile: (" + mouseTile.X + ", " + mouseTile.Y + ")\n";
             debugText += "TileIndex: (" + tileIndex.X + ", " + tileIndex.Y + ")\n";
             debugText += tileNames[charToInt(c)];
             
@@ -164,6 +175,64 @@ namespace mst_boredom_remover
             //base.changeFont(f);
         }
 
+        private void forceBounds()
+        {
+            // min bounds
+            if (tileIndex.X < 0)
+            {
+                tileIndex.X = 0;
+            }
+            if (tileIndex.Y < 0)
+            {
+                tileIndex.Y = 0;
+            }
+            // max bounds
+            if (tileIndex.X + (RES_X / (TILE_PX_SIZE + px_mod)) > width)
+            {
+                tileIndex.X = width - (RES_X / (TILE_PX_SIZE + px_mod));
+            }
+            if (tileIndex.Y + (RES_Y / (TILE_PX_SIZE + px_mod)) > height)
+            {
+                tileIndex.Y = height - (RES_Y / (TILE_PX_SIZE + px_mod));
+            }
+        }
+
+        private void zoomIn()
+        {
+            if (px_mod < 18)
+            {
+                px_mod += 2;
+
+
+                // calculate number of tiles after zoom
+                int tilesX = RES_X / (TILE_PX_SIZE + px_mod);
+                int tilesY = RES_Y / (TILE_PX_SIZE + px_mod);
+                // new tileIndex =  mouseTile - tiles after/2
+                tileIndex.X = mouseTile.X - tilesX / 2;
+                tileIndex.Y = mouseTile.Y - tilesY / 2;
+
+                forceBounds();
+            }
+        }
+        private void zoomOut()
+        {
+            // zoom out
+            if (px_mod > -6)
+            {
+                px_mod -= 2;
+
+
+                // calculate number of tiles after zoom
+                int tilesX = RES_X / (TILE_PX_SIZE + px_mod);
+                int tilesY = RES_Y / (TILE_PX_SIZE + px_mod);
+                // new tileIndex =  mouseTile - tiles after/2
+                tileIndex.X = mouseTile.X - tilesX / 2;
+                tileIndex.Y = mouseTile.Y - tilesY / 2;
+
+                forceBounds();
+            }
+        }
+
         public override void Update(GameTime gt)
         {
             KeyboardState keyboard = Keyboard.GetState();
@@ -177,30 +246,44 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.W))
             {
                 mapMove(0, -1);
-                
             }
             else if (keyboard.IsKeyDown(Keys.A))
             {
                 mapMove(-1, 0);
-
             }
             else if (keyboard.IsKeyDown(Keys.S))
             {
                 mapMove(0, 1);
-
             }
             else if (keyboard.IsKeyDown(Keys.D))
             {
                 mapMove(1, 0);
-
             }
 
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            MouseState m = Mouse.GetState();
+
+            mouseTile.X = m.X / (TILE_PX_SIZE + px_mod) + tileIndex.X;
+            mouseTile.Y = m.Y / (TILE_PX_SIZE + px_mod) + tileIndex.Y;
+
+            // scroll up
+            if (m.ScrollWheelValue > lastScrollValue)
+            {
+                zoomIn();
+            }
+            // scroll down
+            else if (m.ScrollWheelValue < lastScrollValue)
+            {
+                zoomOut();
+            }
+
+            lastScrollValue = m.ScrollWheelValue;
+
+            if (m.LeftButton == ButtonState.Pressed)
             {
                 int i = 0;
                 foreach (Unit unit in game.units)
                 {
-                    unit.orders.Add(Order.CreateMoveOrder(new Position((Mouse.GetState().X / TILE_PX_SIZE) + (int)tileIndex.X, (Mouse.GetState().Y / TILE_PX_SIZE) + (int)tileIndex.Y)));
+                    unit.orders.Add(Order.CreateMoveOrder(new Position((m.X / (TILE_PX_SIZE + px_mod)) + (int)tileIndex.X, (m.Y / (TILE_PX_SIZE + px_mod)) + (int)tileIndex.Y)));
                     game.ScheduleUpdate(10, unit);
                     i++;
                 }
@@ -219,17 +302,17 @@ namespace mst_boredom_remover
             if (!smallMode)
             {
                 // keep drawing until we run out of screen space, x and y
-                for (int x = (int)position.X; x < ((RES_X / TILE_PX_SIZE)); x++)
+                for (int x = (int)position.X; x < ((RES_X / (TILE_PX_SIZE + px_mod))); x++)
                 {
                     if (tileIndex.X < width)
                     {
-                        for (int y = (int)position.Y; y < ((RES_Y / TILE_PX_SIZE)); y++)
+                        for (int y = (int)position.Y; y < ((RES_Y / (TILE_PX_SIZE + px_mod))); y++)
                         {
                             if (tileIndex.Y < height)
                             {
                                 // 2D array draw tiles at their designated spots, in TILE_PX x TILE_PX squares
                                 sb.Draw(tileTextures[charToInt(charmap[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
-                                    new Rectangle((int)position.X + TILE_PX_SIZE * x, (int)position.Y + TILE_PX_SIZE * y, TILE_PX_SIZE + 4, TILE_PX_SIZE + 4), Color.White);
+                                    new Rectangle((int)position.X + (TILE_PX_SIZE + px_mod) * x, (int)position.Y + (TILE_PX_SIZE + px_mod) * y, (TILE_PX_SIZE + px_mod) + 4, (TILE_PX_SIZE + px_mod) + 4), Color.White);
                             }
                         }
                     }
@@ -238,22 +321,7 @@ namespace mst_boredom_remover
             // small mode for zoomed out view
             else
             {
-                // keep drawing until we run out of screen space, x and y
-                for (int x = (int)position.X; x < ((RES_X / TILE_PX_SMALL)); x++)
-                {
-                    if (tileIndex.X < width)
-                    {
-                        for (int y = (int)position.Y; y < ((RES_Y / TILE_PX_SMALL)); y++)
-                        {
-                            if (tileIndex.Y < height)
-                            {
-                                // 2D array draw tiles at their designated spots, in TILE_PX x TILE_PX squares
-                                sb.Draw(tileTextures[charToInt(charmap[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
-                                    new Rectangle((int)position.X + TILE_PX_SMALL * x, (int)position.Y + TILE_PX_SMALL * y, TILE_PX_SMALL, TILE_PX_SMALL), Color.White);
-                            }
-                        }
-                    }
-                }
+                
             }
 
             // Draw units
@@ -277,11 +345,11 @@ namespace mst_boredom_remover
 
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
-                Vector2 draw_position = (unit.position.ToVector2() - tileIndex) * TILE_PX_SIZE;
+                Vector2 draw_position = (unit.position.ToVector2() - tileIndex) * (TILE_PX_SIZE + px_mod);
           
                 // finally draw the unit
                 sb.Draw(current_textures[(game.current_tick - unit.animation_start_tick) % current_textures.Length],
-                    new Rectangle((int)draw_position.X, (int)draw_position.Y, TILE_PX_SIZE, TILE_PX_SIZE), Color.White);
+                    new Rectangle((int)draw_position.X, (int)draw_position.Y, (TILE_PX_SIZE + px_mod), (TILE_PX_SIZE + px_mod)), Color.White);
             }
 
             if (debugMode)
