@@ -6,46 +6,80 @@ using System.Text;
 
 namespace mst_boredom_remover
 {
+    class Node : IComparable<Node>
+    {
+        public Position position;
+        public Node parent;
+        public int value;
+        public int distance;
+
+        public Node(Position p, Node par, int d, int v)
+        {
+            this.position = p;
+            this.parent = par;
+            this.distance = d;
+            this.value = v;
+        }
+        public override string ToString()
+        {
+            return this.position.ToString() + ',' + this.distance.ToString() + ',' + this.value.ToString();
+        }
+        public int CompareTo(Node n)
+        {
+            int val = value.CompareTo(n.value);
+            if (val.Equals(0))
+            {
+                val = distance.CompareTo(n.distance);
+                return -val;
+            }
+            return value.CompareTo(n.value);
+        }
+
+    }
+
     class Pathfinder
     {
-        private class Node : IComparable<Node>
-        {
-            public Position position;
-            public Node parent;    
-            public int value;
-            public int distance;
 
-            public Node( Position p, Node par, int d, int v)
-            {
-                this.position = p;
-                this.parent = par;
-                this.distance = d;
-                this.value = v;
-            }
-            public override string ToString()
-            {
-                return this.position.ToString() + ',' + this.distance.ToString() + ',' + this.value.ToString();
-            }
-            public int CompareTo(Node n)
-            {
-                int val = value.CompareTo(n.value);
-                if (val.Equals(0))
-                {
-                    val = distance.CompareTo(n.distance);
-                    return -val;
-                }
-                return value.CompareTo(n.value);
-            }
-
-        }
         public static Position findNextStep( Unit unit, Position start, Position end )
         {
+            if (unit.path != null && verifyPath(unit)  )
+            {
+                unit.path.RemoveAt(0);
+                if (unit.path.Count >= 2)
+                {
+                    return unit.path[1];
+                }
+                else
+                {
+                    unit.path = null;
+                }
+            }
             List<Position> temp = null;
             temp = findPath(unit, start, end);
             if (temp != null && temp.Count > 1)
+            {
+                unit.path = null;
+                unit.path = temp;
                 return temp[1];
+            }
             else
+            {
+                unit.path = null;
                 return null;
+            }
+        }
+
+        public static bool verifyPath( Unit unit )
+        {
+            int count = unit.path.Count;
+            for (int i = 0; i < 15 && i < count; i++ )
+            {
+                if( !unit.CanMove(unit.path[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public static List<Position> findPath ( Unit unit, Position start, Position end )

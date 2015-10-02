@@ -26,6 +26,7 @@ namespace mst_boredom_remover
         public Status status;
         public Player owner;
         public List<Order> orders;
+        public List<Position> path;
 
         public enum UnitModifier
         {
@@ -53,6 +54,7 @@ namespace mst_boredom_remover
             status = Status.Idle;
             orders = new List<Order>();
             modifiers = new List<UnitModifier>();
+            path = null;
 
             animation_start_tick = 0;
         }
