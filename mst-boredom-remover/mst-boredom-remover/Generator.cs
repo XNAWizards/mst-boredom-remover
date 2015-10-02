@@ -7,50 +7,63 @@ namespace mst_boredom_remover
 {
     class Generator
     {
+        public struct BiomeInfo
+        {
+            public char Type;
+            public int X;
+            public int Y;
+        };
         public static char[,] generate(int width, int height)
         {
             // chance out of 1000
+            
+            int RX = width - 10;
+            int RY = height - 10;
             const int MAX_CHANCE = 1000;
             const int GOLD_CHANCE = 5;
             const int IRON_CHANCE = 2;
             const int MANA_CHANCE = 2;
-            const int NumBio = 700;
-            const int Border = 1996;
+            const int NumBio = 800;
+            const int Border = 2000;
             Random r = new Random();
-            Map.BiomeInfo[] bio = new Map.BiomeInfo[NumBio + Border];
+            BiomeInfo[] bio = new BiomeInfo[NumBio + Border];
             for (int i = 0; i < bio.Length; i++)
             {
-                bio[i] = new Map.BiomeInfo();
+                bio[i] = new BiomeInfo();
             }
-            for (int a = 0; a < (NumBio / 7); a++)
+            for (int a = 0; a < (NumBio / 8); a++)
             {
-                bio[a * 7].Type = '~'; //Ocean
-                bio[a * 7].X = r.Next(0, width);
-                bio[a * 7].Y = r.Next(0, height);
+                bio[a * 8].Type = '~'; //Ocean
+                bio[a * 8].X = r.Next(0, width);
+                bio[a * 8].Y = r.Next(0, height);
 
-                bio[a * 7 + 1].Type = '+';//Plain
-                bio[a * 7 + 1].X = r.Next(0, width);
-                bio[a * 7 + 1].Y = r.Next(0, height);
+                bio[a * 8 + 1].Type = '+';//Plain
+                bio[a * 8 + 1].X = r.Next(10, RX);
+                bio[a * 8 + 1].Y = r.Next(10, RY);
 
-                bio[a * 7 + 2].Type = 'M';//Mountain
-                bio[a * 7 + 2].X = r.Next(0, width);
-                bio[a * 7 + 2].Y = r.Next(0, height);
+                bio[a * 8 + 2].Type = 'M';//Mountain
+                bio[a * 8 + 2].X = r.Next(10, RX);
+                bio[a * 8 + 2].Y = r.Next(10, RY);
 
-                bio[a * 7 + 3].Type = 'F';//Forest
-                bio[a * 7 + 3].X = r.Next(0, width);
-                bio[a * 7 + 3].Y = r.Next(0, height);
+                bio[a * 8 + 3].Type = 'F';//Forest
+                bio[a * 8 + 3].X = r.Next(10, RX);
+                bio[a * 8 + 3].Y = r.Next(10, RY);
 
-                bio[a * 7 + 4].Type = '%';//Dreadlands
-                bio[a * 7 + 4].X = r.Next(0, width);
-                bio[a * 7 + 4].Y = r.Next(0, height);
+                bio[a * 8 + 4].Type = '%';//Dreadlands
+                bio[a * 8 + 4].X = r.Next(10, RX);
+                bio[a * 8 + 4].Y = r.Next(10, RY);
 
-                bio[a * 7 + 5].Type = 'D';//Desert
-                bio[a * 7 + 5].X = r.Next(0, width);
-                bio[a * 7 + 5].Y = r.Next(0, height);
+                bio[a * 8 + 5].Type = 'D';//Desert
+                bio[a * 8 + 5].X = r.Next(10, RX);
+                bio[a * 8 + 5].Y = r.Next(10, RY);
 
-                bio[a * 7 + 6].Type = 'T';//Tundra
-                bio[a * 7 + 6].X = r.Next(0, width);
-                bio[a * 7 + 6].Y = r.Next(0, height);
+                bio[a * 8 + 6].Type = 'T';//Tundra
+                bio[a * 8 + 6].X = r.Next(10, RX);
+                bio[a * 8 + 6].Y = r.Next(10, RY);
+
+                bio[a * 8 + 7].Type = '~'; //Ocean
+                bio[a * 8 + 7].X = r.Next(0, width);
+                bio[a * 8 + 7].Y = r.Next(0, height);
             }
             //Sets Border To Ocean Biome
             for (int k = 0; k < width; k++)
@@ -83,10 +96,10 @@ namespace mst_boredom_remover
                 {
                     char nearest = '~';
                     int dist = 5000;
-                    for (int z = 0; z < NumBio; z++)
+                    for (int z = 0; z < NumBio + Border; z++)
                     {
-                        int Xdiff = bio[z].X - i;
-                        int Ydiff = bio[z].Y - j;
+                        int Xdiff = bio[z].X - j;
+                        int Ydiff = bio[z].Y - i;
                         int Cdist = Xdiff * Xdiff + Ydiff * Ydiff;
                         if (Cdist < dist)
                         {
@@ -98,7 +111,7 @@ namespace mst_boredom_remover
                     field[j, i] = nearest;
                 }
             }
-            for (int i = 0; i < height; i++)
+            /*for (int i = 0; i < height; i++)
             {
                 field[0, i] = '~';          // left side
                 field[width - 1, i] = '~';  // right side
@@ -107,7 +120,7 @@ namespace mst_boredom_remover
             {
                 field[j, 0] = '~';          // top
                 field[j, height - 1] = '~';  // bottom
-            }
+            }*/
             //Adding Resources.
             for (int i = 0; i < height; i++)
             {
@@ -131,7 +144,6 @@ namespace mst_boredom_remover
 
                 }
             }
-
             return field;
         }
     }
