@@ -108,6 +108,22 @@ namespace mst_boredom_remover
                     // TODO: Calculate cooldown based on attack cooldown and modifiers
                     game.ScheduleUpdate(1, this);
                     break;
+                case Order.OrderType.Produce:
+                    if (owner.gold < current_order.unit_type_build.gold_cost ||
+                        owner.iron < current_order.unit_type_build.iron_cost ||
+                        owner.mana_cystals < current_order.unit_type_build.mana_crystals_cost)
+                    {
+                        // TODO: Decide what happens here
+                        // Wait a certain amount of time and check again
+                        // or just skip to next order
+                        game.ScheduleUpdate(5, this);
+                        break;
+                    }
+                    // TODO: Find place to put unit
+                    Position target_location = position;
+                    var deltas = new int[,] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+                    game.AddUnit()
+                    break;
             }
         }
     }

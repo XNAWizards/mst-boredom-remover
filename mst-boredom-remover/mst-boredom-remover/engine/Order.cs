@@ -22,6 +22,7 @@ namespace mst_boredom_remover
         public OrderType order_type;
         public Position target_position; // Can be Null
         public Unit target_unit; // Can be Null
+        public UnitType unit_type_build; // Nullable
 
         public static Order CreateMoveOrder(Position position)
         {
