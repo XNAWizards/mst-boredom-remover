@@ -8,6 +8,8 @@ namespace mst_boredom_remover
 {
     class Unit
     {
+        public Engine engine; // SO BAD
+
         public int id;
         public UnitType type;
         public double health;
@@ -57,9 +59,11 @@ namespace mst_boredom_remover
             animation_start_tick = 0;
         }
 
-        public bool CanMove(Position p)
+        public bool CanMove(Position position)
         {
-            return true;
+            return (position.x >= 0 && position.y >= 0 &&
+                position.x < engine.map.width && position.y < engine.map.height &&
+                engine.unit_grid[position.x, position.y] == null);
         }
 
         public void NextOrder()
@@ -87,7 +91,10 @@ namespace mst_boredom_remover
                     }
                     Position next_position = Pathfinder.findNextStep(this, position, current_order.target_position);
 
-                    game.MoveUnit(this, next_position);
+                    if (next_position != null)
+                    {
+                        game.MoveUnit(this, next_position);
+                    }
                     status = Status.Moving;
                     // TODO: Calculate cooldown based on speed and tile and modifiers
                     game.ScheduleUpdate(10, this);
@@ -119,10 +126,32 @@ namespace mst_boredom_remover
                         game.ScheduleUpdate(5, this);
                         break;
                     }
-                    // TODO: Find place to put unit
+                    // Find place to put unit
                     Position target_location = position;
-                    var deltas = new int[,] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
-                    game.AddUnit()
+                    Position produce_position = null;
+                    foreach (var delta in EngineMap.direction_deltas)
+                    {
+                        Position test_position = position + delta;
+                        if (game.unit_grid[test_position.x, test_position.y] == null)
+                        {
+                            produce_position = test_position;
+                            break;
+                        }
+                    }
+                    if (produce_position == null)
+                    {
+                        // Try again in the future
+                        game.ScheduleUpdate(5, this);
+                        break;
+                    }
+                    // Subtract resources
+                    owner.gold -= current_order.unit_type_build.gold_cost;
+                    owner.iron -= current_order.unit_type_build.iron_cost;
+                    owner.mana_cystals -= current_order.unit_type_build.mana_crystals_cost;
+                    // Create the unit
+                    // TODO: Apply orders to the new unit, such as a rally point
+                    game.AddUnit(new Unit(current_order.unit_type_build, produce_position, owner));
+                    NextOrder();
                     break;
             }
         }

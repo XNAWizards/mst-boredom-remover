@@ -30,7 +30,19 @@ namespace mst_boredom_remover
             {
                 order_type = OrderType.Move,
                 target_position = position,
-                target_unit = null
+                target_unit = null,
+                unit_type_build = null
+            };
+        }
+
+        public static Order CreateProduceOrder(UnitType unit_type)
+        {
+            return new Order()
+            {
+                order_type = OrderType.Produce,
+                target_position = null,
+                target_unit = null,
+                unit_type_build = unit_type
             };
         }
     }

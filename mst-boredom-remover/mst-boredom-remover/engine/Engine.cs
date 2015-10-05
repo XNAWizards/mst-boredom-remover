@@ -45,6 +45,7 @@ namespace mst_boredom_remover
             {
                 unit_grid[unit.position.x, unit.position.y] = unit;
             }
+            unit.engine = this;
         }
 
         public void Tick()
@@ -79,6 +80,18 @@ namespace mst_boredom_remover
             unit_grid[unit.position.x, unit.position.y] = null;
             unit_grid[target_position.x, target_position.y] = unit;
             unit.position = target_position;
+        }
+
+        public void OrderMove(Unit unit, Position target_position)
+        {
+            unit.orders.Add(Order.CreateMoveOrder(target_position));
+            ScheduleUpdate(1, unit);
+        }
+
+        public void OrderProduce(Unit factory, UnitType unit_type)
+        {
+            factory.orders.Add(Order.CreateProduceOrder(unit_type));
+            ScheduleUpdate(1, factory);
         }
     }
 }

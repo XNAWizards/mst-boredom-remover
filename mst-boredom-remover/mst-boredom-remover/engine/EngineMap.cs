@@ -20,6 +20,14 @@ namespace mst_boredom_remover
             West
         }
 
+        public static Position[] direction_deltas = new Position[]
+        {
+            new Position(1, 0),
+            new Position(0, 1),
+            new Position(-1, 0),
+            new Position(0, -1)
+        };
+
         public EngineMap(int width, int height)
         {
             this.width = width;
