@@ -25,6 +25,7 @@ namespace mst_boredom_remover
             const int MANA_CHANCE = 2;
             const int NumBio = 800;
             const int Border = 2000;
+            const int numRivers = 50;
             Random r = new Random();
             BiomeInfo[] bio = new BiomeInfo[NumBio + Border];
             for (int i = 0; i < bio.Length; i++)
@@ -88,6 +89,7 @@ namespace mst_boredom_remover
             }
 
             char[,] field = new char[width, height];
+            int[,] elevation = new int[width, height];
             // i = y
             // j = x
             for (int i = 0; i < height; i++)
@@ -143,13 +145,13 @@ namespace mst_boredom_remover
 			}
 			
 			for(int i=0;i<numRivers;i++){
-				int riverX = r.Next(50,MAP_X-50);
-				int riverY = r.Next(50,MAP_Y-50);
+				int riverX = r.Next(50,width-50);
+				int riverY = r.Next(50,height-50);
 				if(elevation[riverX,riverY]<25){
-					int riverX = r.Next(50,MAP_X-50);
-					int riverY = r.Next(50,MAP_Y-50);
+					riverX = r.Next(50,width-50);
+					riverY = r.Next(50,height-50);
 				}
-				int Direction; //0=North, 1=East, 2=South 3=West
+				int Direction = r.Next(0, 4); //0=North, 1=East, 2=South 3=West
 				int riverLength = r.Next(0,6);
 				switch(riverLength){//0=medium, 1=long, 2=extensive, else small
 					case 0:
@@ -167,7 +169,7 @@ namespace mst_boredom_remover
 				}
 				
 				//make this random length
-				field[riverY,riverX] = '~';//Designed for '-' character, but use ocean biome for now.
+				field[riverX,riverY] = '~';//Designed for '-' character, but use ocean biome for now.
 				for(int j=0;j<riverLength;j++){
 					int minHeight = 100;
 					if(Direction != 2 &&elevation[riverX-1,riverY]<minHeight){
@@ -184,7 +186,7 @@ namespace mst_boredom_remover
 					}
 					if(Direction != 1 &&elevation[riverX,riverY-1]<minHeight){
 						minHeight = elevation[riverX,riverY-1];
-						Direction=3
+                        Direction = 3;
 					}
 					switch(Direction){
 						case 0:
