@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace mst_boredom_remover
 {
@@ -50,6 +51,11 @@ namespace mst_boredom_remover
             }
             
             return x == obj.x && y == obj.y;
+        }
+
+        public Vector2 ToVector2()
+        {
+            return new Vector2(x, y);
         }
     }
 }

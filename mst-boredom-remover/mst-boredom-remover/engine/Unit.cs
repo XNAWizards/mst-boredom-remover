@@ -12,6 +12,7 @@ namespace mst_boredom_remover
         public UnitType type;
         public double health;
         public Position position;
+        public Position previous_position;
 
         public enum Status
         {
@@ -38,24 +39,22 @@ namespace mst_boredom_remover
         };
         public List<UnitModifier> modifiers;
 
-        public Order DefaultOrder = new Order
-        {
-            order_type = Order.OrderType.Idle,
-            target_position = null,
-            target_unit = null
-        };
+        public int animation_start_tick; // This tells us on which tick an animation was started
 
         public Unit(UnitType unit_type, Position position, Player owner)
         {
             // TODO: Set id
             this.type = unit_type;
             this.position = position;
+            this.previous_position = position;
             this.owner = owner;
 
             health = type.max_health;
             status = Status.Idle;
             orders = new List<Order>();
             modifiers = new List<UnitModifier>();
+
+            animation_start_tick = 0;
         }
 
         public bool CanMove(Position p)
@@ -68,7 +67,7 @@ namespace mst_boredom_remover
             orders.RemoveAt(0);
         }
 
-        public void Update(Game game)
+        public void Update(Engine game)
         {
             if (orders.Count == 0)
             {
