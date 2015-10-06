@@ -144,7 +144,9 @@ namespace mst_boredom_remover
             const int MANA_CHANCE = 2;
             const int NumBio = 700;
 			const int Border = 1996;
-            Random r = new Random();
+            const int numRivers = 50;
+			
+			Random r = new Random();
             BiomeInfo[] bio = new BiomeInfo[NumBio+Border];
             for (int i = 0; i < bio.Length; i++)
             {
@@ -201,6 +203,7 @@ namespace mst_boredom_remover
 			}
 
             char[,] field = new char[MAP_X, MAP_Y];
+			int[,] elevation = new int[MAP_X, MAP_Y];
             // i = y
             // j = x
             for (int i = 0; i < MAP_Y; i++)
@@ -211,8 +214,8 @@ namespace mst_boredom_remover
                     int dist = 5000;
                     for (int z = 0; z < NumBio; z++)
                     {
-                        int Xdiff = bio[z].X - i;
-                        int Ydiff = bio[z].Y - j;
+                        int Xdiff = bio[z].X - j;
+                        int Ydiff = bio[z].Y - i;
                         int Cdist = Xdiff * Xdiff + Ydiff * Ydiff;
                         if (Cdist < dist)
                         {
@@ -224,6 +227,94 @@ namespace mst_boredom_remover
                     field[j, i] = nearest;
                 }
             }
+			
+			//River Algorithm
+			for(int i=0;i<100;i++){
+				for(int j=0;j<100;j++){
+					if(field[j, i]=='M')
+						elevation[j, i] = r.Next(40,90);
+					if(field[j, i]=='T')
+						elevation[j, i] = r.Next(10,40);
+					if(field[j, i]=='P')
+						elevation[j, i] = r.Next(5,35);
+					if(field[j, i]=='D')
+						elevation[j, i] = r.Next(10,35);
+					if(field[j, i]=='%')
+						elevation[j, i] = r.Next(0,20);
+					if(field[j, i]=='~')
+						elevation[j, i] = 0;
+					if(field[j, i]=='F')
+						elevation[j, i] = r.Next(20,60);
+				}
+			}
+			
+			for(int i=0;i<numRivers;i++){
+				int riverX = r.Next(50,MAP_X-50);
+				int riverY = r.Next(50,MAP_Y-50);
+				if(elevation[riverX,riverY]<25){
+					int riverX = r.Next(50,MAP_X-50);
+					int riverY = r.Next(50,MAP_Y-50);
+				}
+				int Direction; //0=North, 1=East, 2=South 3=West
+				int riverLength = r.Next(0,6);
+				switch(riverLength){//0=medium, 1=long, 2=extensive, else small
+					case 0:
+						riverLength = r.Next(100,180);
+						break;
+					case 1:
+						riverLength = r.Next(200,350);
+						break;
+					case 2:
+						riverLength = r.Next(400,600);
+						break;
+					default:
+						riverLength = r.Next(30,70);
+						break;
+				}
+				
+				//make this random length
+				field[riverY,riverX] = '~';//Designed for '-' character, but use ocean biome for now.
+				for(int j=0;j<riverLength;j++){
+					int minHeight = 100;
+					if(Direction != 2 &&elevation[riverX-1,riverY]<minHeight){
+						minHeight = elevation[riverX-1,riverY];
+						Direction=0;
+					}
+					if(Direction != 3 &&elevation[riverX,riverY+1]<minHeight){
+						minHeight = elevation[riverX,riverY+1];
+						Direction=1;
+					}
+					if(Direction != 0 &&elevation[riverX+1,riverY]<minHeight){
+						minHeight = elevation[riverX+1,riverY];
+						Direction=2;
+					}
+					if(Direction != 1 &&elevation[riverX,riverY-1]<minHeight){
+						minHeight = elevation[riverX,riverY-1];
+						Direction=3
+					}
+					switch(Direction){
+						case 0:
+							riverX-=1;
+							break;
+						case 1:
+							riverY+=1;
+							break;
+						case 2:
+							riverX+=1;
+							break;
+						case 3:
+							riverY-=1;
+							break;
+						default:
+							break;
+					}
+					if(field[riverX,riverY]=='~')
+						break;
+					else
+						field[riverX,riverY]='~';
+				}
+				
+			//Oceanic border
             for (int i = 0; i < MAP_Y; i++)
             {
                 field[0, i] = '~';          // left side
