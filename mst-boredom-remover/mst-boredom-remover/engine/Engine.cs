@@ -45,7 +45,6 @@ namespace mst_boredom_remover
             {
                 unit_grid[unit.position.x, unit.position.y] = unit;
             }
-            unit.engine = this;
         }
 
         public void Tick()
@@ -55,7 +54,7 @@ namespace mst_boredom_remover
                 // Apply all updates for this tick
                 foreach (var unit in future_updates[current_tick])
                 {
-                    unit.Update(this);
+                    unit.Update();
                 }
 
                 // We are done with all the updates for this tick

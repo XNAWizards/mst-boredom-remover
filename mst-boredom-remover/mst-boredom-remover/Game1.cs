@@ -257,7 +257,7 @@ namespace mst_boredom_remover
             {
                 for (int i = 0; i < 15; ++i)
                 {
-                    engine.AddUnit(new Unit(engine.unit_types[0], new Position(0, i), engine.players[0]));
+                    engine.AddUnit(new Unit(engine, engine.unit_types[0], new Position(0, i), engine.players[0]));
                 }
             }
             engine.Tick();

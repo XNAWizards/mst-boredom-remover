@@ -304,18 +304,23 @@ namespace mst_boredom_remover
             
             if (m.LeftButton == ButtonState.Pressed && previous_left_mouse_state == ButtonState.Released)
             {
-                if (keyboard.IsKeyDown(Keys.P)) // Produce units
+                var enumerator = game.map.BreadthFirst(mouse_game_tile_position).GetEnumerator();
+                enumerator.MoveNext();
+                foreach (Unit unit in selected_units)
                 {
-                    foreach (Unit unit in selected_units)
+                    if (game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y] == unit) // Produce units
                     {
                         game.OrderProduce(unit, game.unit_types[0]);
+                        break;
                     }
-                }
-                else // Move units
-                {
-                    foreach (Unit unit in selected_units)
+                    else // Move units
                     {
-                        game.OrderMove(unit, mouse_game_tile_position);
+                        while (game.unit_grid[enumerator.Current.x, enumerator.Current.y] != null)
+                        {
+                            enumerator.MoveNext();
+                        }
+                        game.OrderMove(unit, enumerator.Current);
+                        enumerator.MoveNext();
                     }
                 }
             }
