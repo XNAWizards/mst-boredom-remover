@@ -89,7 +89,7 @@ namespace mst_boredom_remover
                         Update();
                         break;
                     }
-                    Position next_position = Pathfinder.findNextStep(this, position, current_order.target_position);
+                    Position next_position = Pathfinder.findNextStep(engine, this, position, current_order.target_position);
 
                     if (next_position != null)
                     {
