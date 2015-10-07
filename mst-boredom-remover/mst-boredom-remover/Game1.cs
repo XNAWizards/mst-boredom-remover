@@ -182,7 +182,7 @@ namespace mst_boredom_remover
             Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
             Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
 
-            engine.unit_types.Add(new UnitType(
+            engine.unit_types.Add(new UnitType(name: "Swordsman",
                 idle_textures: new Texture2D[] { swordUnitTexture },
                 move_textures: new Texture2D[] { swordUnitTexture },
                 attack_textures: new Texture2D[] { swordUnitTexture }));
@@ -257,7 +257,7 @@ namespace mst_boredom_remover
             {
                 for (int i = 0; i < 15; ++i)
                 {
-                    engine.AddUnit(new Unit(engine.unit_types[0], new Position(0, i), engine.players[0]));
+                    engine.AddUnit(new Unit(engine, engine.unit_types[0], new Position(0, i), engine.players[0]));
                 }
             }
             engine.Tick();

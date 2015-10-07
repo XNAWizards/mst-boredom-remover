@@ -8,6 +8,7 @@ namespace mst_boredom_remover
 {
     class UnitType
     {
+        public string name;
         public double max_health;
 
         public enum AttackType
@@ -46,16 +47,22 @@ namespace mst_boredom_remover
         }
         public List<Spell> spells;
 
+        public double gold_cost;
+        public double iron_cost;
+        public double mana_crystals_cost;
+
         // Animation stuff
         public Texture2D[] idle_textures;
         public Texture2D[] attack_textures;
         public Texture2D[] move_textures;
 
-        public UnitType(double max_health=100.0, AttackType attack_type=AttackType.Melee,
+        public UnitType(string name="", double max_health=100.0, AttackType attack_type=AttackType.Melee,
             double attack_strength=1.0, double attack_range=1.0, MovementType movement_type=MovementType.Walker,
             double movement_speed=1.0, List<Action> actions=null, List<Spell> spells=null,
+            double gold_cost=0.0, double iron_cost=0.0, double mana_crystals_cost=0.0,
             Texture2D[] idle_textures=null, Texture2D[] attack_textures=null, Texture2D[] move_textures=null)
         {
+            this.name = name;
             this.max_health = max_health;
             this.attack_type = attack_type;
             this.attack_strength = attack_strength;
@@ -64,6 +71,9 @@ namespace mst_boredom_remover
             this.movement_speed = movement_speed;
             this.actions = actions ?? new List<Action>();
             this.spells = spells ?? new List<Spell>();
+            this.gold_cost = gold_cost;
+            this.iron_cost = iron_cost;
+            this.mana_crystals_cost = mana_crystals_cost;
             this.idle_textures = idle_textures ?? new Texture2D[] { };
             this.attack_textures = attack_textures ?? new Texture2D[] { };
             this.move_textures = move_textures ?? new Texture2D[] { };

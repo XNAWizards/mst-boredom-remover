@@ -8,6 +8,7 @@ namespace mst_boredom_remover
     class Tile
     {
         public int id;
+        public Position position;
         public TileType tile_type;
 
         public enum TileModifier
@@ -17,5 +18,9 @@ namespace mst_boredom_remover
             Windy
         };
         public List<TileModifier> tile_modifiers;
+
+        public List<Tile> neighbors;
+
+        public int temp; // TROLOLOL
     }
 }

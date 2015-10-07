@@ -23,6 +23,11 @@ namespace mst_boredom_remover
             return Math.Abs(other.y - y) + Math.Abs(other.x - x);
         }
 
+        public static Position operator+(Position left, Position right)
+        {
+            return new Position(left.x + right.x, left.y + right.y);
+        }
+
         public override bool Equals(System.Object obj)
         {
             // If parameter is null return false.
@@ -56,6 +61,13 @@ namespace mst_boredom_remover
         public Vector2 ToVector2()
         {
             return new Vector2(x, y);
+        }
+
+        public override int GetHashCode()
+        {
+            // From: http://stackoverflow.com/questions/2634690/good-hash-function-for-a-2d-index
+            return (x.GetHashCode() + 51) * 51 + y.GetHashCode();
+            // Maybe consider?: http://stackoverflow.com/a/22826582
         }
     }
 }

@@ -31,7 +31,11 @@ namespace mst_boredom_remover
         private List<string> tileNames;
         //private string debugText = "";
         private Engine game;
+        private List<Unit> selected_units = new List<Unit>();
         private int lastScrollValue;
+
+        private ButtonState previous_left_mouse_state = ButtonState.Released;
+        private ButtonState previous_right_mouse_state = ButtonState.Released;
 
         private Vector2 mouseTile = new Vector2();
 
@@ -278,22 +282,57 @@ namespace mst_boredom_remover
 
             lastScrollValue = m.ScrollWheelValue;
 
-            if (m.LeftButton == ButtonState.Pressed)
+            Position mouse_game_tile_position = new Position((int)mouseTile.X, (int)mouseTile.Y);
+            
+            // Select units
+            if (m.RightButton == ButtonState.Pressed && previous_right_mouse_state == ButtonState.Released)
             {
-                int i = 0;
-                foreach (Unit unit in game.units)
+                if (game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y] != null)
                 {
-                    unit.orders.Add(Order.CreateMoveOrder(new Position((m.X / (TILE_PX_SIZE + px_mod)) + (int)tileIndex.X, (m.Y / (TILE_PX_SIZE + px_mod)) + (int)tileIndex.Y)));
-                    game.ScheduleUpdate(10, unit);
-                    i++;
+                    Unit target_unit = game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y];
+                    if (selected_units.Contains(target_unit))
+                    {
+                        selected_units.Remove(target_unit);
+                    }
+                    else
+                    {
+                        selected_units.Add(target_unit);
+                    }
                 }
             }
 
+            
+            if (m.LeftButton == ButtonState.Pressed && previous_left_mouse_state == ButtonState.Released)
+            {
+                var enumerator = game.map.BreadthFirst(mouse_game_tile_position).GetEnumerator();
+                enumerator.MoveNext();
+                foreach (Unit unit in selected_units)
+                {
+                    if (game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y] == unit) // Produce units
+                    {
+                        game.OrderProduce(unit, game.unit_types[0]);
+                        break;
+                    }
+                    else // Move units
+                    {
+                        while (game.unit_grid[enumerator.Current.x, enumerator.Current.y] != null)
+                        {
+                            enumerator.MoveNext();
+                        }
+                        game.OrderMove(unit, enumerator.Current);
+                        enumerator.MoveNext();
+                    }
+                }
+            }
+            
             if (debugMode)
             {
                 debugUpdate(gt);
             }
-            //base.Update(gt);
+            
+            // Update mouse states
+            previous_left_mouse_state = m.LeftButton;
+            previous_right_mouse_state = m.RightButton;
         }
 
         public override void Draw(SpriteBatch sb)
