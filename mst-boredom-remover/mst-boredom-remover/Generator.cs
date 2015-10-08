@@ -174,7 +174,7 @@ namespace mst_boredom_remover
 				}
 				
 				//make this random length
-				field[riverX,riverY] = '~';//Designed for '-' character, but use ocean biome for now.
+				field[riverX,riverY] = '-';//Designed for '-' character, but use ocean biome for now.
 				for(int j=0;j<riverLength;j++){
 					int minHeight = 100;
 					if(lastDir != 2 &&elevation[riverX-1,riverY]<minHeight){
@@ -213,7 +213,7 @@ namespace mst_boredom_remover
 					if(field[riverX,riverY]=='~')
 						break;
 					else
-						field[riverX,riverY]='~';
+						field[riverX,riverY]='-';
 				}
 			}
             //Adding Resources.
