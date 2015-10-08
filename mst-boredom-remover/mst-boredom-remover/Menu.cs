@@ -71,12 +71,6 @@ namespace mst_boredom_remover
             font = f;
         }
 
-        public override void mapMove(int deltaX, int deltaY)
-        {
-
-            //base.mapMove(deltaX, deltaY);
-        }
-
         private void debugUpdate(GameTime gt)
         {
             // reset the debug text

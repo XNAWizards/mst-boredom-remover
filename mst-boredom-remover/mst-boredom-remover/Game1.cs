@@ -187,7 +187,7 @@ namespace mst_boredom_remover
                 move_textures: new Texture2D[] { swordUnitTexture },
                 attack_textures: new Texture2D[] { swordUnitTexture }));
 
-            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine);
+            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
 
             gameControls.Add(m);
 
@@ -235,6 +235,7 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.LeftAlt) && keyboard.IsKeyDown(Keys.Enter))
             {
                 graphics.ToggleFullScreen();
+                
             }
             // Toggle debug info
             if (keyboard.IsKeyDown(Keys.F1))
@@ -290,6 +291,8 @@ namespace mst_boredom_remover
             spriteBatch.End();
             base.Draw(gameTime);
         }
+
+        
         public void newButton_Clicked(object sender, EventArgs e)
         {
             //this.Exit();

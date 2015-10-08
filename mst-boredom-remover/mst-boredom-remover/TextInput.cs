@@ -47,12 +47,6 @@ namespace mst_boredom_remover
             //base.toggleDebugMode();
         }
 
-        public override void mapMove(int deltaX, int deltaY)
-        {
-
-            //base.mapMove(deltaX, deltaY);
-        }
-
         public override void changeContext(int id)
         {
 

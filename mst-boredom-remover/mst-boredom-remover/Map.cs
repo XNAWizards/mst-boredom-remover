@@ -17,12 +17,33 @@ namespace mst_boredom_remover
         private Vector2 position;
         private List<Texture2D> tileTextures;
         private char[,] charmap;
+        GraphicsDevice graphicsDevice;
+        bool buildMapCache = true;
+
+        // max x = 11520
+        // max y = 6480
+
+        // 4096 6 px tiles
+        // 8192 12 px tiles
+        // 12288 18 px tiles
+        // 3x2 array of textures for the whole map
+        // outer textures are shorter.
+        //  768 extra on right side
+        //  1712 extra on bottom
+        // =
+        /*
+         *  4096x4096, 4096x4096, 3328x4096
+         *  4096x2384, 4096x2384, 3328x2384
+         * 
+         *  create 6 megatextures by copying data of tiles rendered at 18x18 pixels.
+         * */
 
         public int width;
         public int height;
-        private const int TILE_PX_SIZE = 8;
-        private const int TILE_PX_SMALL = 2;
+        private const int TILE_PX_SIZE = 18;
         private int px_mod = 0;
+        private int savePx_mod = 0;
+        private float zoom = 1.0f;
         private const int RES_X = 1280;
         private const int RES_Y = 720;
         private bool smallMode = false;
@@ -33,9 +54,11 @@ namespace mst_boredom_remover
         private Engine game;
         private List<Unit> selected_units = new List<Unit>();
         private int lastScrollValue;
-
+        
         private ButtonState previous_left_mouse_state = ButtonState.Released;
         private ButtonState previous_right_mouse_state = ButtonState.Released;
+
+        RenderTarget2D[,] mapCaches;
 
         private Vector2 mouseTile = new Vector2();
 
@@ -47,7 +70,7 @@ namespace mst_boredom_remover
             Mage            // 3
         };
 
-        public Map(Vector2 position, List<Texture2D> tileTextures, int width, int height, ref Engine game)
+        public Map(Vector2 position, List<Texture2D> tileTextures, int width, int height, ref Engine game, GraphicsDevice graphicsDevice)
         {
             this.width = width;
             this.height = height;
@@ -73,6 +96,30 @@ namespace mst_boredom_remover
             tileNames.Add("Forest");
             
             this.game = game;
+
+            this.graphicsDevice = graphicsDevice;
+            mapCaches = new RenderTarget2D[3, 2];
+            RenderTarget2D r1 = new RenderTarget2D(graphicsDevice, 214 * TILE_PX_SIZE, 214 * TILE_PX_SIZE);
+            RenderTarget2D r2 = new RenderTarget2D(graphicsDevice, 214 * TILE_PX_SIZE, 214 * TILE_PX_SIZE);
+            RenderTarget2D r3 = new RenderTarget2D(graphicsDevice, 214 * TILE_PX_SIZE, 214 * TILE_PX_SIZE);
+            RenderTarget2D r4 = new RenderTarget2D(graphicsDevice, 214 * TILE_PX_SIZE, 214 * TILE_PX_SIZE);
+            RenderTarget2D r5 = new RenderTarget2D(graphicsDevice, 214 * TILE_PX_SIZE, 214 * TILE_PX_SIZE);
+            RenderTarget2D r6 = new RenderTarget2D(graphicsDevice, 214 * TILE_PX_SIZE, 214 * TILE_PX_SIZE);
+            mapCaches[0, 0] = r1;
+            mapCaches[1, 0] = r2;
+            mapCaches[2, 0] = r3;
+            mapCaches[0, 1] = r4;
+            mapCaches[1, 1] = r5;
+            mapCaches[2, 1] = r6;
+            /*
+            for (int x = 0; x < 3; x++)
+            {
+                for (int y = 0; y < 2; y++)
+                {
+                    RenderTarget2D r = new RenderTarget2D(graphicsDevice, 214 * TILE_PX_SIZE, 214 * TILE_PX_SIZE);
+                    mapCaches[x, y] = r;
+                }
+            }*/
         }
 
         public override void changeContext(int id)
@@ -91,9 +138,10 @@ namespace mst_boredom_remover
             }
         }
 
-        public override void mapMove(int deltaX, int deltaY)
+        public void mapMove(int deltaX, int deltaY)
         {
             gDisable = false;
+            
             if (deltaX != 0)
             {
                 if (tileIndex.X + deltaX >= 0)
@@ -116,7 +164,6 @@ namespace mst_boredom_remover
                     }
                 }
             }
-            //base.mapMove(deltaX, deltaY);
         }
         
         public override void toggleDebugMode()
@@ -170,7 +217,6 @@ namespace mst_boredom_remover
         private void debugDraw(SpriteBatch sb)
         {
             // menu draws all of its controls' debug texts
-            //sb.DrawString(font, debugText, new Vector2(0, 0), Color.Black);
         }
 
         public override void changeFont(SpriteFont f)
@@ -206,8 +252,10 @@ namespace mst_boredom_remover
             if (px_mod < 18)
             {
                 px_mod += 2;
+                // calculate zoom factor for drawing.
 
-
+                zoom = (float)(TILE_PX_SIZE + px_mod) / (float)TILE_PX_SIZE;
+                
                 // calculate number of tiles after zoom
                 int tilesX = RES_X / (TILE_PX_SIZE + px_mod);
                 int tilesY = RES_Y / (TILE_PX_SIZE + px_mod);
@@ -221,11 +269,12 @@ namespace mst_boredom_remover
         private void zoomOut()
         {
             // zoom out
-            if (px_mod > -6)
+            if (px_mod > -16)
             {
                 px_mod -= 2;
-
-
+                
+                zoom = (float)(TILE_PX_SIZE + px_mod) / (float)TILE_PX_SIZE;
+                
                 // calculate number of tiles after zoom
                 int tilesX = RES_X / (TILE_PX_SIZE + px_mod);
                 int tilesY = RES_Y / (TILE_PX_SIZE + px_mod);
@@ -237,29 +286,54 @@ namespace mst_boredom_remover
             }
         }
 
+        private void rebuildMapCache(SpriteBatch sb, RenderTarget2D cache, int numX, int numY)
+        {
+            int startX = numX * 214;
+            int startY = numY * 214;
+            sb.End();
+            graphicsDevice.SetRenderTarget(cache);
+            sb.Begin();
+
+            for (int x = startX; x < startX + 214 && x < width; x++)
+            {
+                for (int y = startY; y < startY + 214 && y < height; y++)
+                {
+                    sb.Draw(tileTextures[charToInt(charmap[x, y])], new Rectangle((x - (numX * 214)) * (TILE_PX_SIZE + px_mod), (y - (numY * 214)) * (TILE_PX_SIZE + px_mod), (TILE_PX_SIZE + px_mod), (TILE_PX_SIZE + px_mod)), Color.White);
+                }
+             }
+                
+            sb.End();
+            graphicsDevice.SetRenderTarget(null);
+            sb.Begin();
+        }
+
         public override void Update(GameTime gt)
         {
             KeyboardState keyboard = Keyboard.GetState();
 
             if (keyboard.IsKeyDown(Keys.G) && gDisable == false)
             {
-                // generate a new map quickly
+                // generate a new map, reconstruct cache
                 charmap = Generator.generate(width, height);
                 gDisable = true;
+                buildMapCache = true;
+                savePx_mod = px_mod;
+                px_mod = 0;
             }
+
             if (keyboard.IsKeyDown(Keys.W))
             {
                 mapMove(0, -1);
             }
-            else if (keyboard.IsKeyDown(Keys.A))
+            if (keyboard.IsKeyDown(Keys.A))
             {
                 mapMove(-1, 0);
             }
-            else if (keyboard.IsKeyDown(Keys.S))
+            if (keyboard.IsKeyDown(Keys.S))
             {
                 mapMove(0, 1);
             }
-            else if (keyboard.IsKeyDown(Keys.D))
+            if (keyboard.IsKeyDown(Keys.D))
             {
                 mapMove(1, 0);
             }
@@ -337,30 +411,58 @@ namespace mst_boredom_remover
 
         public override void Draw(SpriteBatch sb)
         {
-            // not small mode
-            if (!smallMode)
+            // if the cache was erased for whatever reason, reconstruct
+            if (mapCaches[0, 0].IsContentLost)
             {
-                // keep drawing until we run out of screen space, x and y
-                for (int x = (int)position.X; x < ((RES_X / (TILE_PX_SIZE + px_mod))); x++)
+                buildMapCache = true;
+                savePx_mod = px_mod;
+                px_mod = 0;
+            }
+
+            // build the cache texture. takes a bit of time, avoid as much as possible
+            if (buildMapCache)
+            {
+                for (int x = 0; x < 3; x++)
                 {
-                    if (tileIndex.X < width)
+                    for (int y = 0; y < 2; y++)
                     {
-                        for (int y = (int)position.Y; y < ((RES_Y / (TILE_PX_SIZE + px_mod))); y++)
-                        {
-                            if (tileIndex.Y < height)
-                            {
-                                // 2D array draw tiles at their designated spots, in TILE_PX x TILE_PX squares
-                                sb.Draw(tileTextures[charToInt(charmap[(int)tileIndex.X + x, (int)tileIndex.Y + y])],
-                                    new Rectangle((int)position.X + (TILE_PX_SIZE + px_mod) * x, (int)position.Y + (TILE_PX_SIZE + px_mod) * y, (TILE_PX_SIZE + px_mod) + 4, (TILE_PX_SIZE + px_mod) + 4), Color.White);
-                            }
-                        }
+                        rebuildMapCache(sb, mapCaches[x, y], x, y);
                     }
                 }
+
+                buildMapCache = false;
+                px_mod = savePx_mod;
             }
-            // small mode for zoomed out view
-            else
+
+            int xPos = 0;
+            int yPos = 0;
+
+            for (int x = 0; x < 3; x++)
             {
-                
+                for (int y = 0; y < 2; y++)
+                {
+                    // base position
+                    xPos = x * mapCaches[x, y].Width;
+                    yPos = y * mapCaches[x, y].Height;
+
+                    // up/down/left/right translation
+                    xPos += (int)-tileIndex.X * (TILE_PX_SIZE + px_mod);
+                    yPos += (int)-tileIndex.Y * (TILE_PX_SIZE + px_mod);
+
+                    // zoom offset
+                    xPos -= x * (int)(mapCaches[x, y].Width - ((float)mapCaches[x, y].Width * zoom));
+                    yPos -= y * (int)(mapCaches[x, y].Height - ((float)mapCaches[x, y].Height * zoom));
+
+                    // extra offset to account for float inaccuracy, does not occur when zoomed in
+                    if (zoom < 1.0f)
+                    {
+                        xPos -= x;
+                        yPos -= y;
+                    }
+
+                    // finally draw the cache
+                    sb.Draw(mapCaches[x, y], new Vector2(xPos, yPos), null, Color.White, 0f, Vector2.Zero, zoom, SpriteEffects.None, 1f);
+                }
             }
 
             // Draw units
