@@ -150,6 +150,7 @@ namespace mst_boredom_remover
 					int riverY = r.Next(50,MAP_Y-50);
 				}
 				int Direction; //0=North, 1=East, 2=South 3=West
+				int lastDir;
 				int riverLength = r.Next(0,6);
 				switch(riverLength){//0=medium, 1=long, 2=extensive, else small
 					case 0:
@@ -170,19 +171,19 @@ namespace mst_boredom_remover
 				field[riverY,riverX] = '~';//Designed for '-' character, but use ocean biome for now.
 				for(int j=0;j<riverLength;j++){
 					int minHeight = 100;
-					if(Direction != 2 &&elevation[riverX-1,riverY]<minHeight){
+					if(lastDir != 2 &&elevation[riverX-1,riverY]<minHeight){
 						minHeight = elevation[riverX-1,riverY];
 						Direction=0;
 					}
-					if(Direction != 3 &&elevation[riverX,riverY+1]<minHeight){
+					if(lastDir != 3 &&elevation[riverX,riverY+1]<minHeight){
 						minHeight = elevation[riverX,riverY+1];
 						Direction=1;
 					}
-					if(Direction != 0 &&elevation[riverX+1,riverY]<minHeight){
+					if(lastDir != 0 &&elevation[riverX+1,riverY]<minHeight){
 						minHeight = elevation[riverX+1,riverY];
 						Direction=2;
 					}
-					if(Direction != 1 &&elevation[riverX,riverY-1]<minHeight){
+					if(lastDir != 1 &&elevation[riverX,riverY-1]<minHeight){
 						minHeight = elevation[riverX,riverY-1];
 						Direction=3
 					}
@@ -202,6 +203,7 @@ namespace mst_boredom_remover
 						default:
 							break;
 					}
+					lastDir = Direction;
 					if(field[riverX,riverY]=='~')
 						break;
 					else
