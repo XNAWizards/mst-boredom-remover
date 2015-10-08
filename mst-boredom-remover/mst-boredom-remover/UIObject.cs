@@ -35,11 +35,6 @@ namespace mst_boredom_remover
 
         }
 
-        public virtual void mapMove(int deltaX, int deltaY)
-        {
-
-        }
-
         public UIObject(SpriteFont font = null)
         {
             this.font = font;

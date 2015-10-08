@@ -16,8 +16,6 @@ namespace mst_boredom_remover
     {
         private Texture2D texture;      // background texture
         private Vector2 position;       // top left corner of the background
-        private SpriteFont font;        // font of the text
-        private Rectangle bounds;       // rectangle bounds containing the background
         private Color color;            // color of the text
 
         private string text = "";       // the text
@@ -69,12 +67,6 @@ namespace mst_boredom_remover
         public override void toggleDebugMode()
         {
             //base.toggleDebugMode();
-        }
-
-        public override void mapMove(int deltaX, int deltaY)
-        {
-
-            //base.mapMove(deltaX, deltaY);
         }
 
         private void debugUpdate(GameTime gt)
