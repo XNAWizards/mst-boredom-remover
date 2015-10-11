@@ -113,7 +113,7 @@ namespace mst_boredom_remover
                     field[j, i] = nearest;
                 }
             }
-            /*for (int i = 0; i < height; i++)
+            for (int i = 0; i < height; i++)
             {
                 field[0, i] = '~';          // left side
                 field[width - 1, i] = '~';  // right side
@@ -122,7 +122,7 @@ namespace mst_boredom_remover
             {
                 field[j, 0] = '~';          // top
                 field[j, height - 1] = '~';  // bottom
-            }*/
+            }
 			
 			//River Algorithm
 			for(int i=0;i<100;i++){
@@ -239,6 +239,74 @@ namespace mst_boredom_remover
 
                 }
             }
+			//Generates coastlines and gives rivers a direction.
+			//each direction of river/Ocean will be set to a different character.
+			for(int j=0;j<width;j++)
+			{
+				for(int i=0;i<height;i++)
+				{
+					//******Ocean Border*****//
+					if(field[j,i]=='~')
+					{
+						if(field[j-1,i]!='~' && field[j-1,i-1]!='~' && field[j-1,i+1]!='~')
+						{
+							field[j,i]='@';//Coast tile with land on north.
+						}
+						if(field[j+1,i+1]!='~' && field[j,i+1]!='~' && field[j-1,i+1]!='~')
+						{
+							field[j,i]='%';//Coast tile with land on east.
+						}
+						if(field[j+1,i]!='~' && field[j+1,i-1]!='~' && field[j+1,i+1]!='~')
+						{
+							field[j,i]='&';//Coast tile with land on south.
+						}
+						if(field[j+1,i-1]!='~' && field[j,i-1]!='~' && field[j-1,i-1]!='~')
+						{
+							field[j,i]='#';//Coast tile with land on west.
+						}
+						if()
+						{
+						}
+						if()
+						{
+						}
+						if()
+						{
+						}
+						if()
+						{
+						}
+					}
+					//*****River Direction*****//
+					if(field[j,i]=='-')
+					{
+						if(field[j-1,i]=='-' && field[j+1,i]=='-')
+						{
+							field[j,i]='^';//River running north to south.
+						}
+						if(field[j,i-1]=='-' && field[j+i+1]=='-')
+						{
+							field[j,i]=',';//River running east to west.
+						}
+						if(field[j+1,i]=='-' && field[j,i+1]=='-')
+						{
+							field[j,i]='<';//River mouths at east and south.
+						}
+						if(field[j+1,i]=='-' && field[j,i-1]=='-')
+						{
+							field[j,i]='>';//River mouths at west and south.
+						}
+						if(field[j-1,i]=='-' && field[j,i-1]=='-')
+						{
+							field[j,i]=']';//River mouths at west and north.
+						}
+						if(field[j-1,i]=='-' && field[j,i+1]=='-')
+						{
+							field[j,i]='[';//River mouths at east and north.
+						}
+					}
+				}
+			}
             return field;
         }
     }
