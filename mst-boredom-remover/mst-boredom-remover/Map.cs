@@ -380,12 +380,21 @@ namespace mst_boredom_remover
             {
                 var enumerator = game.map.BreadthFirst(mouse_game_tile_position).GetEnumerator();
                 enumerator.MoveNext();
+                Unit clickedSpot = game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y];
                 foreach (Unit unit in selected_units)
                 {
-                    if (game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y] == unit) // Produce units
+                    if (clickedSpot == unit) // Produce units
                     {
                         game.OrderProduce(unit, game.unit_types[0]);
                         break;
+                    }
+                    else if ( clickedSpot != null ) //Clicked a different unit TODO:make it so you don't attack your buddies
+                    {
+                        if ( selected_units.Contains(clickedSpot) ) //this check makes it so that you can produce without have the other selected units attack
+                        {
+                            continue;
+                        }
+                        game.OrderAttack(unit, clickedSpot);
                     }
                     else // Move units
                     {

@@ -45,5 +45,16 @@ namespace mst_boredom_remover
                 unit_type_build = unit_type
             };
         }
+
+        public static Order CreateAttackOrder(Unit target)
+        {
+            return new Order()
+            {
+                order_type = OrderType.Attack,
+                target_unit = target,
+                target_position = target.position,
+                unit_type_build = null
+            };
+        }
     }
 }
