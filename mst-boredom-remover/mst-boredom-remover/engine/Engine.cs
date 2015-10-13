@@ -66,13 +66,16 @@ namespace mst_boredom_remover
 
         public void ScheduleUpdate(int ticks_from_now, Unit unit)
         {
-            if (!future_updates.ContainsKey(current_tick + ticks_from_now))
+            if (unit.nextMove <= current_tick)
             {
-                future_updates[current_tick + ticks_from_now] = new List<Unit>();
-            }
+                if (!future_updates.ContainsKey(current_tick + ticks_from_now))
+                {
+                    future_updates[current_tick + ticks_from_now] = new List<Unit>();
+                }
 
-            future_updates[current_tick + ticks_from_now].Add(unit);
-            unit.nextMove = current_tick + ticks_from_now;
+                future_updates[current_tick + ticks_from_now].Add(unit);
+                unit.nextMove = current_tick + ticks_from_now;
+            }
         }
 
         public void RemoveUpdate(Unit unit)
