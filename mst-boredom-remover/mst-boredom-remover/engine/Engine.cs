@@ -72,6 +72,19 @@ namespace mst_boredom_remover
             }
 
             future_updates[current_tick + ticks_from_now].Add(unit);
+            unit.nextMove = current_tick + ticks_from_now;
+        }
+
+        public void RemoveUpdate(Unit unit)
+        {
+            if (!future_updates.ContainsKey(unit.nextMove))
+            {
+                return;
+            }
+            if( future_updates[unit.nextMove].Contains(unit))
+            {
+                future_updates[unit.nextMove].Remove(unit);
+            }
         }
 
         public void MoveUnit(Unit unit, Position target_position)
@@ -91,6 +104,32 @@ namespace mst_boredom_remover
         {
             factory.orders.Add(Order.CreateProduceOrder(unit_type));
             ScheduleUpdate(1, factory);
+        }
+
+        public void OrderAttack(Unit attacker, Unit target)
+        {
+            attacker.orders.Add(Order.CreateAttackOrder(target));
+            ScheduleUpdate(1, attacker);
+        }
+
+        private double Max(double a, double b) { if (a > b) return a; return b; }
+
+        public void Attack( Unit attacker, Unit target )
+        {
+            //check to make sure you are in range
+            if ( attacker.AttackRange() < attacker.position.Distance(target.position))
+            {
+                return;
+            }
+            target.health -= Max(1, attacker.AttackStrength() - target.Defense());
+            if (target.health<=0) //target dead
+            {
+                RemoveUpdate(target);
+                unit_grid[target.position.x,target.position.y] = null;
+                units.Remove(target);
+                target.status = Unit.Status.Dead;
+            }
+
         }
     }
 }
