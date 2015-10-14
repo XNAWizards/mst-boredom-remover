@@ -65,7 +65,7 @@ namespace mst_boredom_remover
 
         public bool CanMove(Position position)
         {
-            return (engine.map.Inside(position) && engine.unit_grid[position.x, position.y] == null);
+            return (engine.map.Inside(position) && engine.unitGrid[position.x, position.y] == null);
         }
 
         public int AttackRange()
@@ -163,7 +163,7 @@ namespace mst_boredom_remover
                     Position produce_position = null;
                     foreach (var test_position in engine.map.BreadthFirst(target_location, distance: 1))
                     {
-                        if (engine.unit_grid[test_position.x, test_position.y] == null)
+                        if (engine.unitGrid[test_position.x, test_position.y] == null)
                         {
                             produce_position = test_position;
                             break;

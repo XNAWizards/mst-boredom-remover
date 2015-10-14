@@ -361,9 +361,9 @@ namespace mst_boredom_remover
             // Select units
             if (m.RightButton == ButtonState.Pressed && previous_right_mouse_state == ButtonState.Released)
             {
-                if (game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y] != null)
+                if (game.unitGrid[mouse_game_tile_position.x, mouse_game_tile_position.y] != null)
                 {
-                    Unit target_unit = game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y];
+                    Unit target_unit = game.unitGrid[mouse_game_tile_position.x, mouse_game_tile_position.y];
                     if (selected_units.Contains(target_unit))
                     {
                         selected_units.Remove(target_unit);
@@ -380,12 +380,12 @@ namespace mst_boredom_remover
             {
                 var enumerator = game.map.BreadthFirst(mouse_game_tile_position).GetEnumerator();
                 enumerator.MoveNext();
-                Unit clickedSpot = game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y];
+                Unit clickedSpot = game.unitGrid[mouse_game_tile_position.x, mouse_game_tile_position.y];
                 foreach (Unit unit in selected_units)
                 {
                     if (clickedSpot == unit) // Produce units
                     {
-                        game.OrderProduce(unit, game.unit_types[0]);
+                        game.OrderProduce(unit, game.unitTypes[0]);
                         break;
                     }
                     else if ( clickedSpot != null ) //Clicked a different unit TODO:make it so you don't attack your buddies
@@ -398,7 +398,7 @@ namespace mst_boredom_remover
                     }
                     else // Move units
                     {
-                        while (game.unit_grid[enumerator.Current.x, enumerator.Current.y] != null)
+                        while (game.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
                         {
                             enumerator.MoveNext();
                         }
@@ -498,7 +498,7 @@ namespace mst_boredom_remover
                 Vector2 draw_position = (unit.position.ToVector2() - tileIndex) * (TILE_PX_SIZE + px_mod);
           
                 // finally draw the unit
-                sb.Draw(current_textures[(game.current_tick - unit.animation_start_tick) % current_textures.Length],
+                sb.Draw(current_textures[(game.currentTick - unit.animation_start_tick) % current_textures.Length],
                     new Rectangle((int)draw_position.X, (int)draw_position.Y, (TILE_PX_SIZE + px_mod), (TILE_PX_SIZE + px_mod)), Color.White);
             }
 

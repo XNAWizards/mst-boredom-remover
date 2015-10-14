@@ -182,7 +182,7 @@ namespace mst_boredom_remover
             Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
             Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
 
-            engine.unit_types.Add(new UnitType(name: "Swordsman",
+            engine.unitTypes.Add(new UnitType(name: "Swordsman",
                 idle_textures: new Texture2D[] { swordUnitTexture },
                 move_textures: new Texture2D[] { swordUnitTexture },
                 attack_textures: new Texture2D[] { swordUnitTexture }));
@@ -254,11 +254,11 @@ namespace mst_boredom_remover
 
             // TODO: Remove
             // Create testing units on the first tick
-            if (engine.current_tick == 0)
+            if (engine.currentTick == 0)
             {
                 for (int i = 0; i < 15; ++i)
                 {
-                    engine.AddUnit(new Unit(engine, engine.unit_types[0], new Position(0, i), engine.players[0]));
+                    engine.AddUnit(new Unit(engine, engine.unitTypes[0], new Position(0, i), engine.players[0]));
                 }
             }
             engine.Tick();
@@ -281,8 +281,8 @@ namespace mst_boredom_remover
                 x.Draw(spriteBatch);
             }
 
-            spriteBatch.DrawString(debug_font, "Current tick: " + engine.current_tick, new Vector2(1, 1), Color.Black);
-            if (engine.current_tick > 1)
+            spriteBatch.DrawString(debug_font, "Current tick: " + engine.currentTick, new Vector2(1, 1), Color.Black);
+            if (engine.currentTick > 1)
             {
                 spriteBatch.DrawString(debug_font, "x: " + engine.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
                 spriteBatch.DrawString(debug_font, "y: " + engine.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
