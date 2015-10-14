@@ -9,7 +9,7 @@ namespace mst_boredom_remover
     {
         public int id;
         public Position position;
-        public TileType tile_type;
+        public TileType tileType;
 
         public enum TileModifier
         {
@@ -17,7 +17,7 @@ namespace mst_boredom_remover
             Freezing,
             Windy
         };
-        public List<TileModifier> tile_modifiers;
+        public List<TileModifier> tileModifiers;
 
         public List<Tile> neighbors;
 
