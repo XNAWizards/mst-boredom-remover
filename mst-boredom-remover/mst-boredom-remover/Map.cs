@@ -498,7 +498,7 @@ namespace mst_boredom_remover
                 Vector2 draw_position = (unit.position.ToVector2() - tileIndex) * (TILE_PX_SIZE + px_mod);
           
                 // finally draw the unit
-                sb.Draw(current_textures[(game.currentTick - unit.animation_start_tick) % current_textures.Length],
+                sb.Draw(current_textures[(game.currentTick - unit.animationStartTick) % current_textures.Length],
                     new Rectangle((int)draw_position.X, (int)draw_position.Y, (TILE_PX_SIZE + px_mod), (TILE_PX_SIZE + px_mod)), Color.White);
             }
 

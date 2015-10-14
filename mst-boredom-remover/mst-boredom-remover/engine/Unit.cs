@@ -15,7 +15,7 @@ namespace mst_boredom_remover
         public UnitType type;
         public double health;
         public Position position;
-        public Position previous_position;
+        public Position previousPosition;
         public int nextMove; //This is the tick that the unit gets its next move
 
         public enum Status
@@ -43,7 +43,7 @@ namespace mst_boredom_remover
         };
         public List<UnitModifier> modifiers;
 
-        public int animation_start_tick; // This tells us on which tick an animation was started
+        public int animationStartTick; // This tells us on which tick an animation was started
 
         public Unit(Engine engine, UnitType unit_type, Position position, Player owner)
         {
@@ -51,7 +51,7 @@ namespace mst_boredom_remover
             this.engine = engine;
             this.type = unit_type;
             this.position = position;
-            this.previous_position = position;
+            this.previousPosition = position;
             this.nextMove = -1;
             this.owner = owner;
 
@@ -60,7 +60,7 @@ namespace mst_boredom_remover
             orders = new List<Order>();
             modifiers = new List<UnitModifier>();
 
-            animation_start_tick = 0;
+            animationStartTick = 0;
         }
 
         public bool CanMove(Position position)
@@ -96,46 +96,46 @@ namespace mst_boredom_remover
             {
                 return;
             }
-            var current_order = orders.First();
+            var currentOrder = orders.First();
 
-            switch (current_order.order_type)
+            switch (currentOrder.order_type)
             {
                 case Order.OrderType.Move:
-                    if (position.Equals(current_order.target_position))
+                    if (position.Equals(currentOrder.target_position))
                     {
                         status = Status.Idle;
                         NextOrder();
                         Update();
                         break;
                     }
-                    Position next_position = Pathfinder.findNextStep(engine, this, position, current_order.target_position);
+                    Position nextPosition = Pathfinder.findNextStep(engine, this, position, currentOrder.target_position);
 
-                    if (next_position != null)
+                    if (nextPosition != null)
                     {
-                        engine.MoveUnit(this, next_position);
+                        engine.MoveUnit(this, nextPosition);
                     }
                     status = Status.Moving;
                     // TODO: Calculate cooldown based on speed and tile and modifiers
                     engine.ScheduleUpdate(10, this);
                     break;
                 case Order.OrderType.Attack:
-                    if (current_order.target_unit.status == Status.Dead)
+                    if (currentOrder.target_unit.status == Status.Dead)
                     {
                         status = Status.Idle;
                         NextOrder();
                         Update();
                         break;
                     }
-                    current_order.target_position = current_order.target_unit.position;
-                    if (position.Distance(current_order.target_unit.position) > type.attack_range)
+                    currentOrder.target_position = currentOrder.target_unit.position;
+                    if (position.Distance(currentOrder.target_unit.position) > type.attack_range)
                     {
                         // TODO: Move into range
 
-                        next_position = Pathfinder.findNextStep(engine, this, position, current_order.target_position);
+                        nextPosition = Pathfinder.findNextStep(engine, this, position, currentOrder.target_position);
 
-                        if (next_position != null)
+                        if (nextPosition != null)
                         {
-                            engine.MoveUnit(this, next_position);
+                            engine.MoveUnit(this, nextPosition);
                         }
 
                         // TODO: Calculate cooldown based on speed and tile and modifiers
@@ -143,14 +143,14 @@ namespace mst_boredom_remover
                         break;
                     }
                     // TODO: Attack
-                    engine.Attack(this, current_order.target_unit);
+                    engine.Attack(this, currentOrder.target_unit);
                     // TODO: Calculate cooldown based on attack cooldown and modifiers
                     engine.ScheduleUpdate(10, this);
                     break;
                 case Order.OrderType.Produce:
-                    if (owner.gold < current_order.unit_type_build.gold_cost ||
-                        owner.iron < current_order.unit_type_build.iron_cost ||
-                        owner.mana_cystals < current_order.unit_type_build.mana_crystals_cost)
+                    if (owner.gold < currentOrder.unit_type_build.gold_cost ||
+                        owner.iron < currentOrder.unit_type_build.iron_cost ||
+                        owner.mana_cystals < currentOrder.unit_type_build.mana_crystals_cost)
                     {
                         // TODO: Decide what happens here
                         // Wait a certain amount of time and check again
@@ -159,29 +159,29 @@ namespace mst_boredom_remover
                         break;
                     }
                     // Find place to put unit
-                    Position target_location = position;
-                    Position produce_position = null;
-                    foreach (var test_position in engine.map.BreadthFirst(target_location, distance: 1))
+                    Position targetLocation = position;
+                    Position producePosition = null;
+                    foreach (var test_position in engine.map.BreadthFirst(targetLocation, distance: 1))
                     {
                         if (engine.unitGrid[test_position.x, test_position.y] == null)
                         {
-                            produce_position = test_position;
+                            producePosition = test_position;
                             break;
                         }
                     }
-                    if (produce_position == null)
+                    if (producePosition == null)
                     {
                         // Try again in the future
                         engine.ScheduleUpdate(5, this);
                         break;
                     }
                     // Subtract resources
-                    owner.gold -= current_order.unit_type_build.gold_cost;
-                    owner.iron -= current_order.unit_type_build.iron_cost;
-                    owner.mana_cystals -= current_order.unit_type_build.mana_crystals_cost;
+                    owner.gold -= currentOrder.unit_type_build.gold_cost;
+                    owner.iron -= currentOrder.unit_type_build.iron_cost;
+                    owner.mana_cystals -= currentOrder.unit_type_build.mana_crystals_cost;
                     // Create the unit
                     // TODO: Apply orders to the new unit, such as a rally point
-                    engine.AddUnit(new Unit(engine, current_order.unit_type_build, produce_position, owner));
+                    engine.AddUnit(new Unit(engine, currentOrder.unit_type_build, producePosition, owner));
                     NextOrder();
                     break;
             }
