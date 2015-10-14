@@ -483,13 +483,13 @@ namespace mst_boredom_remover
                 switch (unit.status)
                 {
                     case Unit.Status.Idle:
-                        current_textures = unit.type.idle_textures;
+                        current_textures = unit.type.idleTextures;
                         break;
                     case Unit.Status.Moving:
-                        current_textures = unit.type.move_textures;
+                        current_textures = unit.type.moveTextures;
                         break;
                     case Unit.Status.Attacking:
-                        current_textures = unit.type.attack_textures;
+                        current_textures = unit.type.attackTextures;
                         break;
                 }
 

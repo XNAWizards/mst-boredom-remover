@@ -183,9 +183,9 @@ namespace mst_boredom_remover
             Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
 
             engine.unitTypes.Add(new UnitType(name: "Swordsman",
-                idle_textures: new Texture2D[] { swordUnitTexture },
-                move_textures: new Texture2D[] { swordUnitTexture },
-                attack_textures: new Texture2D[] { swordUnitTexture }));
+                idleTextures: new Texture2D[] { swordUnitTexture },
+                moveTextures: new Texture2D[] { swordUnitTexture },
+                attackTextures: new Texture2D[] { swordUnitTexture }));
 
             Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
 

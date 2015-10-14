@@ -55,7 +55,7 @@ namespace mst_boredom_remover
             this.nextMove = -1;
             this.owner = owner;
 
-            health = type.max_health;
+            health = type.maxHealth;
             status = Status.Idle;
             orders = new List<Order>();
             modifiers = new List<UnitModifier>();
@@ -71,13 +71,13 @@ namespace mst_boredom_remover
         public int AttackRange()
         {
             //TODO: make this account for modifiers and decide how to go from double to int, floor always?
-            return (int) type.attack_range;
+            return (int) type.attackRange;
         }
 
         public int AttackStrength()
         {
             //TODO: make this account for modifiers
-            return (int)type.attack_strength;
+            return (int)type.attackStrength;
         }
 
         public int Defense()
@@ -127,7 +127,7 @@ namespace mst_boredom_remover
                         break;
                     }
                     currentOrder.target_position = currentOrder.target_unit.position;
-                    if (position.Distance(currentOrder.target_unit.position) > type.attack_range)
+                    if (position.Distance(currentOrder.target_unit.position) > type.attackRange)
                     {
                         // TODO: Move into range
 
@@ -148,9 +148,9 @@ namespace mst_boredom_remover
                     engine.ScheduleUpdate(10, this);
                     break;
                 case Order.OrderType.Produce:
-                    if (owner.gold < currentOrder.unit_type_build.gold_cost ||
-                        owner.iron < currentOrder.unit_type_build.iron_cost ||
-                        owner.mana_cystals < currentOrder.unit_type_build.mana_crystals_cost)
+                    if (owner.gold < currentOrder.unit_type_build.goldCost ||
+                        owner.iron < currentOrder.unit_type_build.ironCost ||
+                        owner.mana_cystals < currentOrder.unit_type_build.manaCrystalsCost)
                     {
                         // TODO: Decide what happens here
                         // Wait a certain amount of time and check again
@@ -176,9 +176,9 @@ namespace mst_boredom_remover
                         break;
                     }
                     // Subtract resources
-                    owner.gold -= currentOrder.unit_type_build.gold_cost;
-                    owner.iron -= currentOrder.unit_type_build.iron_cost;
-                    owner.mana_cystals -= currentOrder.unit_type_build.mana_crystals_cost;
+                    owner.gold -= currentOrder.unit_type_build.goldCost;
+                    owner.iron -= currentOrder.unit_type_build.ironCost;
+                    owner.mana_cystals -= currentOrder.unit_type_build.manaCrystalsCost;
                     // Create the unit
                     // TODO: Apply orders to the new unit, such as a rally point
                     engine.AddUnit(new Unit(engine, currentOrder.unit_type_build, producePosition, owner));
