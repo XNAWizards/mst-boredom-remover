@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using mst_boredom_remover.engine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -16,18 +17,18 @@ namespace mst_boredom_remover
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager _graphics;
-        SpriteBatch _spriteBatch;
+        GraphicsDeviceManager graphics;
+        SpriteBatch spriteBatch;
         
         // TODO: Remove this
-        private SpriteFont _debugFont;
+        private SpriteFont debugFont;
 
-        private Engine _engine;
+        private Engine engine;
         
         public const int width = 1280 / 2;
         public const int height = 720 / 2;
 
-        List<UiObject> _userInterface;
+        List<UiObject> userInterface;
         public enum MenuScreen
         {
             Main,           // 0 main menu screen
@@ -37,13 +38,13 @@ namespace mst_boredom_remover
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             
-            _engine = new Engine(width, height);
+            engine = new Engine(width, height);
 
-            _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 720;
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
 
             IsMouseVisible = true;
             //graphics.ToggleFullScreen(); // activate full screen mode. toggle with alt + enter
@@ -69,10 +70,10 @@ namespace mst_boredom_remover
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
 
-            _debugFont = Content.Load<SpriteFont>("debug_font");
+            debugFont = Content.Load<SpriteFont>("debug_font");
 
             // UIObjects
             #region Buttons
@@ -80,44 +81,44 @@ namespace mst_boredom_remover
             Texture2D newButtonTexture = Content.Load<Texture2D>("Buttons\\BtnNew");
             Texture2D newButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnNewHover");
             Button newButton = new Button(newButtonTexture, newButtonTextureHover, newButtonTextureHover, new Vector2(150,117));
-            newButton.OnPress += new EventHandler(newButton_OnPress);
-            newButton.Clicked += new EventHandler(newButton_Clicked);
+            newButton.OnPress += newButton_OnPress;
+            newButton.Clicked += newButton_Clicked;
 
             // Load Game Button
             Texture2D loadButtonTexture = Content.Load<Texture2D>("Buttons\\BtnLoad");
             Texture2D loadButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnLoadHover");
             Button loadButton = new Button(loadButtonTexture, loadButtonTextureHover, loadButtonTextureHover, new Vector2(150, 217));
-            loadButton.OnPress += new EventHandler(loadButton_OnPress);
-            loadButton.Clicked += new EventHandler(loadButton_Clicked);
+            loadButton.OnPress += loadButton_OnPress;
+            loadButton.Clicked += loadButton_Clicked;
             // Settings/Options Button
 
             // main menu Exit Button
             Texture2D mmExitButtonTexture = Content.Load<Texture2D>("Buttons\\BtnExit");
             Texture2D mmExitButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnExitHover");
             Button mmExitButton = new Button(mmExitButtonTexture, mmExitButtonTextureHover, mmExitButtonTextureHover, new Vector2(150, 317));
-            mmExitButton.OnPress += new EventHandler(mmExitButton_OnPress);
-            mmExitButton.Clicked += new EventHandler(mmExitButton_Clicked);
+            mmExitButton.OnPress += mmExitButton_OnPress;
+            mmExitButton.Clicked += mmExitButton_Clicked;
 
             // Back Button for ingame screen
             Texture2D backButtonTexture = Content.Load<Texture2D>("Buttons\\BtnBack");
             Texture2D backButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnBackHover");
             Button backButton = new Button(backButtonTexture, backButtonTextureHover, backButtonTextureHover, new Vector2(1250, 27), .5f);
-            backButton.OnPress += new EventHandler(backButton_OnPress);
-            backButton.Clicked += new EventHandler(backButton_Clicked);
+            backButton.OnPress += backButton_OnPress;
+            backButton.Clicked += backButton_Clicked;
 
             // Go Button for New Game screen
             Texture2D goButtonTexture = Content.Load<Texture2D>("Buttons\\BtnGo");
             Texture2D goButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnGoHover");
             Button goButton = new Button(goButtonTexture, goButtonTextureHover, goButtonTextureHover, new Vector2(600, 500));
-            goButton.OnPress += new EventHandler(goButton_OnPress);
-            goButton.Clicked += new EventHandler(goButton_Clicked);
+            goButton.OnPress += goButton_OnPress;
+            goButton.Clicked += goButton_Clicked;
 
             // back button for new game
             Texture2D ngbackButtonTexture = Content.Load<Texture2D>("Buttons\\BtnBack");
             Texture2D ngbackButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnBackHover");
             Button ngbackButton = new Button(backButtonTexture, backButtonTextureHover, backButtonTextureHover, new Vector2(20, 675), .5f);
-            ngbackButton.OnPress += new EventHandler(ngbackButton_OnPress);
-            ngbackButton.Clicked += new EventHandler(ngbackButton_Clicked);
+            ngbackButton.OnPress += ngbackButton_OnPress;
+            ngbackButton.Clicked += ngbackButton_Clicked;
 
             #endregion
             #region TextDisplays
@@ -182,12 +183,12 @@ namespace mst_boredom_remover
             Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
             Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
 
-            _engine.unitTypes.Add(new UnitType(name: "Swordsman",
-                idleTextures: new Texture2D[] { swordUnitTexture },
-                moveTextures: new Texture2D[] { swordUnitTexture },
-                attackTextures: new Texture2D[] { swordUnitTexture }));
+            engine.unitTypes.Add(new UnitType(name: "Swordsman",
+                idleTextures: new[] { swordUnitTexture },
+                moveTextures: new[] { swordUnitTexture },
+                attackTextures: new[] { swordUnitTexture }));
 
-            Map m = new Map(Vector2.Zero, tiles, width, height, ref _engine, GraphicsDevice);
+            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
 
             gameControls.Add(m);
 
@@ -195,14 +196,14 @@ namespace mst_boredom_remover
             #endregion
 
             // list of all UI objects to be drawn/updated
-            _userInterface = new List<UiObject>();
+            userInterface = new List<UiObject>();
 
-            _userInterface.Add(mainMenu);
-            _userInterface.Add(gameMenu);
-            _userInterface.Add(newGameMenu);
+            userInterface.Add(mainMenu);
+            userInterface.Add(gameMenu);
+            userInterface.Add(newGameMenu);
             mainMenu.Activate(); // activate the main menu first
 
-            foreach (UiObject u in _userInterface)
+            foreach (UiObject u in userInterface)
             {
                 u.ChangeFont(font);
             }
@@ -234,34 +235,34 @@ namespace mst_boredom_remover
             // Toggle fullscreen
             if (keyboard.IsKeyDown(Keys.LeftAlt) && keyboard.IsKeyDown(Keys.Enter))
             {
-                _graphics.ToggleFullScreen();
+                graphics.ToggleFullScreen();
                 
             }
             // Toggle debug info
             if (keyboard.IsKeyDown(Keys.F1))
             {
-                foreach (UiObject u in _userInterface)
+                foreach (UiObject u in userInterface)
                 {
                     u.ToggleDebugMode();
                 }
             }
 
             // Update every UIObject
-            foreach (UiObject x in _userInterface)
+            foreach (UiObject x in userInterface)
             {
                 x.Update(gameTime);
             }
 
             // TODO: Remove
             // Create testing units on the first tick
-            if (_engine.currentTick == 0)
+            if (engine.currentTick == 0)
             {
                 for (int i = 0; i < 15; ++i)
                 {
-                    _engine.AddUnit(new Unit(_engine, _engine.unitTypes[0], new Position(0, i), _engine.players[0]));
+                    engine.AddUnit(new Unit(engine, engine.unitTypes[0], new Position(0, i), engine.players[0]));
                 }
             }
-            _engine.Tick();
+            engine.Tick();
 
             base.Update(gameTime);
         }
@@ -274,21 +275,21 @@ namespace mst_boredom_remover
         {
             GraphicsDevice.Clear(Color.MediumSlateBlue);
 
-            _spriteBatch.Begin();
+            spriteBatch.Begin();
 
-            foreach (UiObject x in _userInterface)
+            foreach (UiObject x in userInterface)
             {
-                x.Draw(_spriteBatch);
+                x.Draw(spriteBatch);
             }
 
-            _spriteBatch.DrawString(_debugFont, "Current tick: " + _engine.currentTick, new Vector2(1, 1), Color.Black);
-            if (_engine.currentTick > 1)
+            spriteBatch.DrawString(debugFont, "Current tick: " + engine.currentTick, new Vector2(1, 1), Color.Black);
+            if (engine.currentTick > 1)
             {
-                _spriteBatch.DrawString(_debugFont, "x: " + _engine.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
-                _spriteBatch.DrawString(_debugFont, "y: " + _engine.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
+                spriteBatch.DrawString(debugFont, "x: " + engine.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
+                spriteBatch.DrawString(debugFont, "y: " + engine.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
             }
 
-            _spriteBatch.End();
+            spriteBatch.End();
             base.Draw(gameTime);
         }
 
@@ -348,9 +349,9 @@ namespace mst_boredom_remover
         private void ChangeScreen(MenuScreen menu)
         {
             int id;
-            foreach (UiObject x in _userInterface)
+            foreach (UiObject x in userInterface)
             {
-                id = System.Convert.ToInt32(menu);
+                id = Convert.ToInt32(menu);
                 x.ChangeContext(id); // switch to game screen
             }
         }

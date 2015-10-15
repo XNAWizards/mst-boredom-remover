@@ -1,35 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
     public class TextDisplay : UiObject
     {
-        private Texture2D _texture;      // background texture
-        private Vector2 _position;       // top left corner of the background
-        private Color _color;            // color of the text
+        private Texture2D texture;      // background texture
+        private Vector2 position;       // top left corner of the background
+        private Color color;            // color of the text
 
-        private string _text = "";       // the text
-        private Vector2 _textPosition;   // calculated position of the text
+        private string text = "";       // the text
+        private Vector2 textPosition;   // calculated position of the text
 
-        private int _test = 1;
+        private int test = 1;
 
         public TextDisplay(Texture2D texture, Vector2 position, SpriteFont font, Color color)
-            : base()
         {
-            this._texture = texture;
-            this._position = position;
+            this.texture = texture;
+            this.position = position;
             this.font = font;
-            this._color = color;
+            this.color = color;
             CalculateCenter();
         }
 
@@ -37,12 +27,12 @@ namespace mst_boredom_remover
         private void CalculateCenter()
         {
             // if string is not empty
-            if (_text != "")
+            if (text != "")
             {
                 // centers the string inside the texture
                 // top left corner of background + half the texture pixel size - half the pixel size of the string
-                _textPosition = new Vector2((_position.X + _texture.Width / 2) - font.MeasureString(_text).X / 2, 
-                    (_position.Y + _texture.Height / 2) - font.MeasureString(_text).Y / 2);
+                textPosition = new Vector2((position.X + texture.Width / 2) - font.MeasureString(text).X / 2, 
+                    (position.Y + texture.Height / 2) - font.MeasureString(text).Y / 2);
             }
         }
 
@@ -50,7 +40,7 @@ namespace mst_boredom_remover
         // Recenters the text
         public void ChangeText(string newText)
         {
-            _text = newText;
+            text = newText;
             CalculateCenter();
         }
 
@@ -81,16 +71,16 @@ namespace mst_boredom_remover
         // ?
         public override void Update(GameTime gt)
         {
-            _test++;
-            ChangeText(_test.ToString());
+            test++;
+            ChangeText(test.ToString());
             //base.Update(gt);
         }
 
         // Draws the background and text
         public override void Draw(SpriteBatch sb)
         {
-            sb.Draw(_texture, _position, Color.White);
-            sb.DrawString(font, _text, _textPosition, _color);
+            sb.Draw(texture, position, Color.White);
+            sb.DrawString(font, text, textPosition, color);
             //base.Draw(sb);
         }
     }

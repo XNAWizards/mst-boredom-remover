@@ -1,43 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
     class TextInput : UiObject
     {
-        private Texture2D _texture;
-        private Texture2D _activeTexture;
-        private Vector2 _position;
+        private Texture2D texture;
+        private Texture2D activeTexture;
+        private Vector2 position;
         private SpriteFont _font;
 
-        private string _currentText = "";
-        private bool _active = true;
+        private string currentText = "";
+        private bool active = true;
 
         // stores the last mouse state
-        private MouseState _previousState;
-        private KeyboardState _previousKeys;
-        private Rectangle _bounds;
+        private MouseState previousState;
+        private KeyboardState previousKeys;
+        private Rectangle bounds;
 
         //public event EventHandler newInput;
 
         public TextInput(Texture2D texture, Texture2D activeTexture, Vector2 position, SpriteFont font)
             : base()
         {
-            this._texture = texture;
-            this._activeTexture = activeTexture;
-            this._position = position;
+            this.texture = texture;
+            this.activeTexture = activeTexture;
+            this.position = position;
             this._font = font;
 
-            _bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
+            bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
         }
 
         
@@ -72,33 +65,33 @@ namespace mst_boredom_remover
             MouseState mouse = Mouse.GetState();
             KeyboardState keys = Keyboard.GetState();
 
-            bool isMouseOver = _bounds.Contains(mouse.X, mouse.Y); // check if the mouse is touching the button
+            bool isMouseOver = bounds.Contains(mouse.X, mouse.Y); // check if the mouse is touching the button
             // first determine whether the text field needs to be activated or deactivated
             if (isMouseOver)
             {
                 // if clicked on the field
-                if (_previousState.LeftButton == ButtonState.Pressed && mouse.LeftButton == ButtonState.Released)
+                if (previousState.LeftButton == ButtonState.Pressed && mouse.LeftButton == ButtonState.Released)
                 {
                     // activate the field
-                    _active = true;
+                    active = true;
                 }
             }
             else
             {
                 // if clicked anywhere but the field
-                if (_previousState.LeftButton == ButtonState.Pressed && mouse.LeftButton == ButtonState.Released)
+                if (previousState.LeftButton == ButtonState.Pressed && mouse.LeftButton == ButtonState.Released)
                 {
                     // deactivate the field
-                    _active = false;
+                    active = false;
                 }
             }
 
             // only update the string if the field is active
-            if (_active)
+            if (active)
             {
                 // key input from user
                 char c = ' ';
-                foreach (Keys k in _previousKeys.GetPressedKeys())
+                foreach (Keys k in previousKeys.GetPressedKeys())
                 {
                     if (keys.IsKeyUp(k))
                     {
@@ -112,7 +105,7 @@ namespace mst_boredom_remover
                             {
                                 c = Convert.ToChar(k);
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
                                 // k is not a key convertable to a char
                             }
@@ -123,41 +116,41 @@ namespace mst_boredom_remover
                 // if key was backspace
                 if (c == '<')
                 {
-                    if (_currentText.Length > 0)
+                    if (currentText.Length > 0)
                     {
-                        _currentText = _currentText.Remove(_currentText.Length - 1);
+                        currentText = currentText.Remove(currentText.Length - 1);
                     }
                 }
                 else
                 {
                     // verify string length
-                    if (_font.MeasureString((_currentText + "W")).X < _texture.Width - 10)
+                    if (_font.MeasureString((currentText + "W")).X < texture.Width - 10)
                     {
                         // verify string contents
                         if (c != ' ' && (c > 65 && c <= 90) || (c > 96 && c <= 122))
                         {
-                            _currentText += c;
+                            currentText += c;
                         }
                     }
                 }
             }
             
-            _previousState = mouse;
-            _previousKeys = keys;
+            previousState = mouse;
+            previousKeys = keys;
             //base.Update(gt);
         }
 
         public override void Draw(SpriteBatch sb)
         {
-            if (!_active)
+            if (!active)
             {
-                sb.Draw(_texture, _position, Color.White);
+                sb.Draw(texture, position, Color.White);
             }
             else
             {
-                sb.Draw(_activeTexture, _position, Color.White);
+                sb.Draw(activeTexture, position, Color.White);
             }
-            sb.DrawString(_font, _currentText, _position + new Vector2(10, 12), Color.Black);
+            sb.DrawString(_font, currentText, position + new Vector2(10, 12), Color.Black);
             //base.Draw(sb);
         }
     }

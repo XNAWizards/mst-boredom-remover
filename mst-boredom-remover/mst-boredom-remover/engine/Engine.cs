@@ -46,8 +46,9 @@ namespace mst_boredom_remover.engine
         {
             if (futureUpdates.ContainsKey(currentTick))
             {
+                var x = futureUpdates[currentTick];
                 // Apply all updates for this tick
-                foreach (var unit in futureUpdates[currentTick])
+                foreach (var unit in x)
                 {
                     unit.Update();
                 }

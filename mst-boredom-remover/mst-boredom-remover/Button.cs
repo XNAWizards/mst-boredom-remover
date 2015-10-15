@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
@@ -20,27 +13,27 @@ namespace mst_boredom_remover
     }
     public class Button : UiObject
     {
-        private Texture2D _texture;
-        private bool _visible = true;
-        private Vector2 _position;
+        private Texture2D texture;
+        private bool visible = true;
+        private Vector2 position;
         // stores the last mouse state
-        private MouseState _previousState;
+        private MouseState previousState;
 
         // different textures
-        private Texture2D _hoverTexture;
-        private Texture2D _pressedTexture;
+        private Texture2D hoverTexture;
+        private Texture2D pressedTexture;
 
         // rectangle that covers the button
-        private Rectangle _bounds;
+        private Rectangle bounds;
 
         // current button state
-        private ButtonStatus _state = ButtonStatus.Normal;
+        private ButtonStatus state = ButtonStatus.Normal;
 
-        private float _scale = 1.0f;
+        private float scale = 1.0f;
 
         public ButtonStatus GetButtonStatus
         {
-            get { return _state; }
+            get { return state; }
         }
 
         // event upon being pressed
@@ -51,16 +44,15 @@ namespace mst_boredom_remover
 
         // button constructor
         public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position, float scale = 1.0f)
-            : base ()
         {
-            this._texture = texture;
-            this._hoverTexture = hoverTexture;
-            this._pressedTexture = pressedTexture;
-            this._position = position;
+            this.texture = texture;
+            this.hoverTexture = hoverTexture;
+            this.pressedTexture = pressedTexture;
+            this.position = position;
 
             // draw bounds around the button
-            this._bounds = new Rectangle((int)position.X - texture.Width/2, (int)position.Y-texture.Height/2, texture.Width, texture.Height);
-            this._scale = scale;
+            this.bounds = new Rectangle((int)position.X - texture.Width/2, (int)position.Y-texture.Height/2, texture.Width, texture.Height);
+            this.scale = scale;
         }
 
         public override void ToggleDebugMode()
@@ -85,7 +77,7 @@ namespace mst_boredom_remover
         // update button state/fire events as necessary
         public override void Update(GameTime gameTime)
         {
-            if (_visible)
+            if (visible)
             {
                 // tracks mouse position
                 MouseState mouseState = Mouse.GetState();
@@ -93,21 +85,21 @@ namespace mst_boredom_remover
                 int mouseX = mouseState.X; // sets mouse x position
                 int mouseY = mouseState.Y; // sets mouse y position
 
-                bool isMouseOver = _bounds.Contains(mouseX, mouseY); // check if the mouse is touching the button
+                bool isMouseOver = bounds.Contains(mouseX, mouseY); // check if the mouse is touching the button
 
                 if (isMouseOver)
                 {
                     // update the button state
-                    if (_state != ButtonStatus.Pressed)
+                    if (state != ButtonStatus.Pressed)
                     {
-                        _state = ButtonStatus.MouseOver; // button uses the mouseover state
+                        state = ButtonStatus.MouseOver; // button uses the mouseover state
                     }                    
 
                     // check if player begins to hold the button
-                    if (mouseState.LeftButton == ButtonState.Pressed && _previousState.LeftButton == ButtonState.Released)
+                    if (mouseState.LeftButton == ButtonState.Pressed && previousState.LeftButton == ButtonState.Released)
                     {
                         // update the button state
-                        _state = ButtonStatus.Pressed;
+                        state = ButtonStatus.Pressed;
 
                         if (OnPress != null)
                         {
@@ -117,10 +109,10 @@ namespace mst_boredom_remover
                     }
 
                     // check if the player releases the click on the button
-                    else if (mouseState.LeftButton == ButtonState.Released && _previousState.LeftButton == ButtonState.Pressed)
+                    else if (mouseState.LeftButton == ButtonState.Released && previousState.LeftButton == ButtonState.Pressed)
                     {
                         // update the button state
-                        _state = ButtonStatus.MouseOver;
+                        state = ButtonStatus.MouseOver;
 
                         if (Clicked != null)
                         {
@@ -129,40 +121,40 @@ namespace mst_boredom_remover
                         }
 
                         // if the button has been clicked
-                        else if (_state == ButtonStatus.Pressed)
+                        else if (state == ButtonStatus.Pressed)
                         {
-                            _state = ButtonStatus.Normal;
+                            state = ButtonStatus.Normal;
                         }
                     }
                 }
                 // mouse is not on the button
                 else // !isMouseOver
                 {
-                    _state = ButtonStatus.Normal;
+                    state = ButtonStatus.Normal;
                 }
 
-                _previousState = mouseState;
+                previousState = mouseState;
             }
         } // end update method
         public override void Draw(SpriteBatch spriteBatch)
         {   
-            if (_visible)
+            if (visible)
             {
                 // draw the button using a switch on the status of the button
-                switch (_state)
+                switch (state)
                 {
                     // draw the normal state of the button
                     case ButtonStatus.Normal:
-                        spriteBatch.Draw(_texture, _position, null, Color.White, 0, new Vector2(_texture.Width / 2, _texture.Height / 2), _scale, SpriteEffects.None, 0);
+                        spriteBatch.Draw(texture, position, null, Color.White, 0, new Vector2(texture.Width / 2, texture.Height / 2), scale, SpriteEffects.None, 0);
                         //spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height), Color.White);
                         break;
                     // draw the mouseover state of the button
                     case ButtonStatus.MouseOver:
-                        spriteBatch.Draw(_hoverTexture, _position, null, Color.White, 0, new Vector2(_texture.Width / 2, _texture.Height / 2), _scale, SpriteEffects.None, 0);
+                        spriteBatch.Draw(hoverTexture, position, null, Color.White, 0, new Vector2(texture.Width / 2, texture.Height / 2), scale, SpriteEffects.None, 0);
                         break;
                     // draw the pressed state of the button
                     case ButtonStatus.Pressed:
-                        spriteBatch.Draw(_hoverTexture, _position, null, Color.White, 0, new Vector2(_texture.Width/2, _texture.Height/2), _scale + .2f, SpriteEffects.None, 0);
+                        spriteBatch.Draw(hoverTexture, position, null, Color.White, 0, new Vector2(texture.Width/2, texture.Height/2), scale + .2f, SpriteEffects.None, 0);
                         break;
                     // impossible case
                     default:
@@ -178,19 +170,19 @@ namespace mst_boredom_remover
 
         public void ChangeTexture(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture)
         {
-            this._texture = texture;
-            this._hoverTexture = hoverTexture;
-            this._pressedTexture = pressedTexture;
+            this.texture = texture;
+            this.hoverTexture = hoverTexture;
+            this.pressedTexture = pressedTexture;
         }
         public void ToggleVisibility()
         {
-            if (_visible)
+            if (visible)
             {
-                _visible = false;
+                visible = false;
             }
             else
             {
-                _visible = true;
+                visible = true;
             }
         }
     }

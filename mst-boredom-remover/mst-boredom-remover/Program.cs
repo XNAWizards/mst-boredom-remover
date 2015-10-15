@@ -1,5 +1,3 @@
-using System;
-
 namespace mst_boredom_remover
 {
 #if WINDOWS || XBOX

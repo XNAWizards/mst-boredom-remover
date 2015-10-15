@@ -1,55 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
     public class Menu : UiObject
     {
-        private Texture2D _texture;
-        private Vector2 _position;
-        private List<UiObject> _controls;
-        private Color _color;
-        private int _thisId;
+        private Texture2D texture;
+        private Vector2 position;
+        private List<UiObject> controls;
+        private Color color;
+        private int thisId;
 
-        private bool _active = false;
+        private bool active = false;
 
         public Menu(Texture2D texture, Vector2 position, List<UiObject> controls, Color color, int thisId)
             : base()
         {
-            this._texture = texture;
-            this._position = position;
-            this._controls = controls;
-            this._color = color;
-            this._thisId = thisId;
+            this.texture = texture;
+            this.position = position;
+            this.controls = controls;
+            this.color = color;
+            this.thisId = thisId;
         }
 
         public void Activate()
         {
-            _active = true;
+            active = true;
         }
 
         public void Deactivate()
         {
-            _active = false;
+            active = false;
             // reset?
         }
 
         public override void ChangeContext(int id)
         {
-            if (id != _thisId)
+            if (id != thisId)
             {
                 Deactivate();
             }
-            else if (id == _thisId)
+            else if (id == thisId)
             {
                 Activate();
             }
@@ -57,7 +49,7 @@ namespace mst_boredom_remover
 
         public override void ToggleDebugMode()
         {
-            foreach (UiObject u in _controls)
+            foreach (UiObject u in controls)
             {
                 u.ToggleDebugMode();
             }
@@ -76,7 +68,7 @@ namespace mst_boredom_remover
             // reset the debug text
             debugText = "";
             // compile each subobject's debug text
-            foreach (UiObject x in _controls)
+            foreach (UiObject x in controls)
             {
                 debugText += x.debugText;
             }
@@ -88,9 +80,9 @@ namespace mst_boredom_remover
 
         public override void Update(GameTime gt)
         {
-            if (_active)
+            if (active)
             {
-                foreach (UiObject x in _controls)
+                foreach (UiObject x in controls)
                 {
                     x.Update(gt);
                 }
@@ -105,10 +97,10 @@ namespace mst_boredom_remover
 
         public override void Draw(SpriteBatch sb)
         {
-            if (_active)
+            if (active)
             {
-                sb.Draw(_texture, _position, _color);
-                foreach (UiObject x in _controls)
+                sb.Draw(texture, position, color);
+                foreach (UiObject x in controls)
                 {
                     x.Draw(sb);
                 }
