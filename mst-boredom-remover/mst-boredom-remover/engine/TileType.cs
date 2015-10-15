@@ -8,6 +8,7 @@ namespace mst_boredom_remover
 {
     class TileType
     {
+        public string name;
         public double movement_cost;
 
         public enum Biome
@@ -28,9 +29,10 @@ namespace mst_boredom_remover
         public ResourceType resource_type;
         Texture2D texture;
 
-        TileType(Texture2D texture = null, double movement_cost=1.0, Biome biome=Biome.Grassland,
+        TileType(string name="", Texture2D texture = null, double movement_cost=1.0, Biome biome=Biome.Grassland,
             List<UnitType.MovementType> allowed_movement_types=null, ResourceType resource_type=ResourceType.None)
         {
+            this.name = name;
             this.texture = texture;
             this.movement_cost = movement_cost;
             this.biome = biome;

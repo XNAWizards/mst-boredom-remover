@@ -10,21 +10,21 @@ namespace mst_boredom_remover
     {
         private class Node : IComparable<Node>
         {
-            public Position position;
+            public Tile tile;
             public Node parent;    
             public int value;
             public int distance;
 
-            public Node( Position p, Node par, int d, int v)
+            public Node(Tile tile, Node par, int d, int v)
             {
-                this.position = p;
+                this.tile = tile;
                 this.parent = par;
                 this.distance = d;
                 this.value = v;
             }
             public override string ToString()
             {
-                return this.position.ToString() + ',' + this.distance.ToString() + ',' + this.value.ToString();
+                return this.tile.ToString() + ',' + this.distance.ToString() + ',' + this.value.ToString();
             }
             public int CompareTo(Node n)
             {
@@ -38,20 +38,38 @@ namespace mst_boredom_remover
             }
 
         }
-        public static Position findNextStep( Unit unit, Position start, Position end )
+
+        public static Position findNextStep( Engine engine, Unit unit, Position start, Position end)
+        {
+            return findNextStep(engine, unit, engine.map.tiles[start.x, start.y], engine.map.tiles[end.x, end.y]);
+        }
+
+        public static Position findNextStep( Engine engine, Unit unit, Tile start, Tile end )
         {
             List<Position> temp = null;
-            temp = findPath(unit, start, end);
+            temp = findPath(engine, unit, start, end);
             if (temp != null && temp.Count > 1)
                 return temp[1];
             else
                 return null;
         }
 
-        public static List<Position> findPath ( Unit unit, Position start, Position end )
+        public static List<Position> findPath ( Engine engine, Unit unit, Tile start, Tile end )
         {
             List<Position> path = null;
             int numPossibleMoves = Enum.GetNames(typeof(EngineMap.Directions)).Length;
+            
+            if (!unit.CanMove(end.position))
+            {
+                foreach (Position pos in engine.map.BreadthFirst(end.position, -1, -1))
+                {
+                    if (unit.CanMove(pos))
+                    {
+                        end = engine.map.tiles[pos.x, pos.y];
+                        break;
+                    }
+                }
+            }
 
             bool stop = false;
             bool success = false;
@@ -59,10 +77,11 @@ namespace mst_boredom_remover
             Node currentBest = null;
             Position tempPosition = new Position(0,0);
             PriorityQueues.PriorityQueue<Node> openSet = new PriorityQueues.PriorityQueue<Node>();
-            HashSet<Position> visitedPositions = new HashSet<Position>();
-            var possibleMoves = Enum.GetValues(typeof (EngineMap.Directions));
+            HashSet<Position> visitedTiles = new HashSet<Position>();
+            int phase = 0;
             openSet.Enqueue(tempNode);
-            visitedPositions.Add(tempNode.position);
+            visitedTiles.Add(tempNode.tile.position);
+            
             //generate path
             while ( !stop )
             {
@@ -74,40 +93,27 @@ namespace mst_boredom_remover
                 }
                 currentBest = openSet.Dequeue();
                 //if we are at the goal end
-                if ( currentBest.position.Equals(end) )
+                if ( currentBest.tile.Equals(end) )
                 {
                     stop = true;
                     success = true;
                     break;
                 }
                 //take current best, generate all possible nodes, push them onto queue
-                foreach (EngineMap.Directions move in possibleMoves )
+                Tile neighbor = null;
+                for ( int i = phase; i < currentBest.tile.neighbors.Count+phase; i++)
                 {
-                    switch ( move )
+                    neighbor = currentBest.tile.neighbors[i % currentBest.tile.neighbors.Count];
+                    tempNode = new Node(neighbor, currentBest, currentBest.distance + 1, currentBest.distance + 1 + fValue(neighbor, end));
+
+                    if (unit.CanMove(neighbor.position) && !visitedTiles.Contains(neighbor.position))
                     {
-                        case EngineMap.Directions.North:
-                            tempPosition = new Position(currentBest.position.x + 1,currentBest.position.y);
-                            tempNode = new Node( tempPosition , currentBest, currentBest.distance+1, currentBest.distance+1+fValue(tempPosition,end));
-                            break;
-                        case EngineMap.Directions.South:
-                            tempPosition = new Position(currentBest.position.x - 1,currentBest.position.y);
-                            tempNode = new Node( tempPosition , currentBest, currentBest.distance+1, currentBest.distance+1+fValue(tempPosition,end));
-                            break;
-                        case EngineMap.Directions.East:
-                            tempPosition = new Position(currentBest.position.x,currentBest.position.y + 1);
-                            tempNode = new Node( tempPosition , currentBest, currentBest.distance+1, currentBest.distance+1+fValue(tempPosition,end));
-                            break;
-                        case EngineMap.Directions.West:
-                            tempPosition = new Position(currentBest.position.x,currentBest.position.y - 1);
-                            tempNode = new Node( tempPosition , currentBest, currentBest.distance+1, currentBest.distance+1+fValue(tempPosition,end));
-                            break;
-                    }
-                    if ( unit.CanMove( tempPosition ) && !visitedPositions.Contains(tempPosition) )
-                    {
-                        visitedPositions.Add(tempPosition);
+                        visitedTiles.Add(neighbor.position);
                         openSet.Enqueue(tempNode);
                     }
                 }
+                phase = (phase + 1) % currentBest.tile.neighbors.Count;
+                
             }
             if ( success )
             {
@@ -116,7 +122,7 @@ namespace mst_boredom_remover
                 tempNode = currentBest;
                 while(tempNode != null )
                 {
-                    path.Insert(0, tempNode.position);
+                    path.Insert(0, tempNode.tile.position);
                     tempNode = tempNode.parent;
                 }
             }
@@ -124,9 +130,9 @@ namespace mst_boredom_remover
             return path;
         }
 
-        private static int fValue( Position start, Position end )
+        private static int fValue( Tile start, Tile end )
         {
-            return start.Distance(end);
+            return start.position.Distance(end.position);
         }
     }
 }
