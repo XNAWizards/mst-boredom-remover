@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{011EC6DA-3AE7-482F-872C-952A6DBBF520}</ProjectGuid>
+    <ProjectGuid>{ED7394A5-25A3-45AD-8886-A16BA65508A0}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>mst_boredom_remover</RootNamespace>
-    <AssemblyName>mst-boredom-remover</AssemblyName>
+    <RootNamespace>Creare</RootNamespace>
+    <AssemblyName>Creare</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>HiDef</XnaProfile>
-    <XnaCrossPlatformGroupID>338aca41-1ad3-44df-acdc-cc00ee4f670d</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>9f872a82-b3b9-4828-8fc3-5b2f682f7e5a</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
-    <ApplicationIcon>Game.ico</ApplicationIcon>
+    <ApplicationIcon>CreareIcon %281%29.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -107,35 +107,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="engine\Engine.cs" />
-    <Compile Include="engine\EngineMap.cs" />
-    <Compile Include="Generator.cs" />
-    <Compile Include="Map.cs" />
-    <Compile Include="engine\Order.cs" />
-    <Compile Include="engine\Pathfinder.cs" />
-    <Compile Include="engine\Player.cs" />
-    <Compile Include="engine\Position.cs" />
-    <Compile Include="engine\PriorityQueuesProgram.cs" />
-    <Compile Include="Game1.cs" />
-    <Compile Include="engine\Tile.cs" />
-    <Compile Include="engine\TileType.cs" />
-    <Compile Include="engine\Unit.cs" />
-    <Compile Include="engine\UnitType.cs" />
+    <Compile Include="Area.cs" />
     <Compile Include="Button.cs" />
-    <Compile Include="Menu.cs" />
+    <Compile Include="Crafting.cs" />
+    <Compile Include="Debug.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="TextDisplay.cs" />
-    <Compile Include="TextInput.cs" />
-    <Compile Include="UIObject.cs" />
+    <Compile Include="Game1.cs" />
+    <Compile Include="Recipe.cs" />
+    <Compile Include="UI.cs" />
+    <Compile Include="World.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Game.ico" />
+    <Content Include="CreareIcon %281%29.ico" />
     <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\mst-boredom-removerContent\mst-boredom-removerContent.contentproj">
-      <Name>mst_boredom_removerContent</Name>
+    <ProjectReference Include="..\CreareContent\CreareContent.contentproj">
+      <Name>CreareContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>
