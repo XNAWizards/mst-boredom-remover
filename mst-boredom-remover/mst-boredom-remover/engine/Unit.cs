@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
-using System.Text;
 
-namespace mst_boredom_remover
+namespace mst_boredom_remover.engine
 {
     class Unit
     {
@@ -45,11 +42,11 @@ namespace mst_boredom_remover
 
         public int animationStartTick; // This tells us on which tick an animation was started
 
-        public Unit(Engine engine, UnitType unit_type, Position position, Player owner)
+        public Unit(Engine engine, UnitType unitType, Position position, Player owner)
         {
             // TODO: Set id
             this.engine = engine;
-            this.type = unit_type;
+            this.type = unitType;
             this.position = position;
             this.previousPosition = position;
             this.nextMove = -1;
@@ -63,9 +60,9 @@ namespace mst_boredom_remover
             animationStartTick = 0;
         }
 
-        public bool CanMove(Position position)
+        public bool CanMove(Position targetPosition)
         {
-            return (engine.map.Inside(position) && engine.unitGrid[position.x, position.y] == null);
+            return (engine.map.Inside(targetPosition) && engine.unitGrid[targetPosition.x, targetPosition.y] == null);
         }
 
         public int AttackRange()
@@ -98,17 +95,17 @@ namespace mst_boredom_remover
             }
             var currentOrder = orders.First();
 
-            switch (currentOrder.order_type)
+            switch (currentOrder.orderType)
             {
                 case Order.OrderType.Move:
-                    if (position.Equals(currentOrder.target_position))
+                    if (position.Equals(currentOrder.targetPosition))
                     {
                         status = Status.Idle;
                         NextOrder();
                         Update();
                         break;
                     }
-                    Position nextPosition = Pathfinder.findNextStep(engine, this, position, currentOrder.target_position);
+                    Position nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
 
                     if (nextPosition != null)
                     {
@@ -119,19 +116,19 @@ namespace mst_boredom_remover
                     engine.ScheduleUpdate(10, this);
                     break;
                 case Order.OrderType.Attack:
-                    if (currentOrder.target_unit.status == Status.Dead)
+                    if (currentOrder.targetUnit.status == Status.Dead)
                     {
                         status = Status.Idle;
                         NextOrder();
                         Update();
                         break;
                     }
-                    currentOrder.target_position = currentOrder.target_unit.position;
-                    if (position.Distance(currentOrder.target_unit.position) > type.attackRange)
+                    currentOrder.targetPosition = currentOrder.targetUnit.position;
+                    if (position.Distance(currentOrder.targetUnit.position) > type.attackRange)
                     {
                         // TODO: Move into range
 
-                        nextPosition = Pathfinder.findNextStep(engine, this, position, currentOrder.target_position);
+                        nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
 
                         if (nextPosition != null)
                         {
@@ -143,14 +140,14 @@ namespace mst_boredom_remover
                         break;
                     }
                     // TODO: Attack
-                    engine.Attack(this, currentOrder.target_unit);
+                    engine.Attack(this, currentOrder.targetUnit);
                     // TODO: Calculate cooldown based on attack cooldown and modifiers
                     engine.ScheduleUpdate(10, this);
                     break;
                 case Order.OrderType.Produce:
-                    if (owner.gold < currentOrder.unit_type_build.goldCost ||
-                        owner.iron < currentOrder.unit_type_build.ironCost ||
-                        owner.mana_cystals < currentOrder.unit_type_build.manaCrystalsCost)
+                    if (owner.gold < currentOrder.unitTypeBuild.goldCost ||
+                        owner.iron < currentOrder.unitTypeBuild.ironCost ||
+                        owner.manaCystals < currentOrder.unitTypeBuild.manaCrystalsCost)
                     {
                         // TODO: Decide what happens here
                         // Wait a certain amount of time and check again
@@ -161,11 +158,11 @@ namespace mst_boredom_remover
                     // Find place to put unit
                     Position targetLocation = position;
                     Position producePosition = null;
-                    foreach (var test_position in engine.map.BreadthFirst(targetLocation, distance: 1))
+                    foreach (var testPosition in engine.map.BreadthFirst(targetLocation, distance: 1))
                     {
-                        if (engine.unitGrid[test_position.x, test_position.y] == null)
+                        if (engine.unitGrid[testPosition.x, testPosition.y] == null)
                         {
-                            producePosition = test_position;
+                            producePosition = testPosition;
                             break;
                         }
                     }
@@ -176,12 +173,12 @@ namespace mst_boredom_remover
                         break;
                     }
                     // Subtract resources
-                    owner.gold -= currentOrder.unit_type_build.goldCost;
-                    owner.iron -= currentOrder.unit_type_build.ironCost;
-                    owner.mana_cystals -= currentOrder.unit_type_build.manaCrystalsCost;
+                    owner.gold -= currentOrder.unitTypeBuild.goldCost;
+                    owner.iron -= currentOrder.unitTypeBuild.ironCost;
+                    owner.manaCystals -= currentOrder.unitTypeBuild.manaCrystalsCost;
                     // Create the unit
                     // TODO: Apply orders to the new unit, such as a rally point
-                    engine.AddUnit(new Unit(engine, currentOrder.unit_type_build, producePosition, owner));
+                    engine.AddUnit(new Unit(engine, currentOrder.unitTypeBuild, producePosition, owner));
                     NextOrder();
                     break;
             }

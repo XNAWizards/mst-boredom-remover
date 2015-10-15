@@ -12,57 +12,57 @@ using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
-    class TextInput : UIObject
+    class TextInput : UiObject
     {
-        private Texture2D texture;
-        private Texture2D activeTexture;
-        private Vector2 position;
-        private SpriteFont font;
+        private Texture2D _texture;
+        private Texture2D _activeTexture;
+        private Vector2 _position;
+        private SpriteFont _font;
 
-        private string currentText = "";
-        private bool active = true;
+        private string _currentText = "";
+        private bool _active = true;
 
         // stores the last mouse state
-        private MouseState previousState;
-        private KeyboardState previousKeys;
-        private Rectangle bounds;
+        private MouseState _previousState;
+        private KeyboardState _previousKeys;
+        private Rectangle _bounds;
 
         //public event EventHandler newInput;
 
         public TextInput(Texture2D texture, Texture2D activeTexture, Vector2 position, SpriteFont font)
             : base()
         {
-            this.texture = texture;
-            this.activeTexture = activeTexture;
-            this.position = position;
-            this.font = font;
+            this._texture = texture;
+            this._activeTexture = activeTexture;
+            this._position = position;
+            this._font = font;
 
-            bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
+            _bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
         }
 
         
 
-        public override void toggleDebugMode()
+        public override void ToggleDebugMode()
         {
             //base.toggleDebugMode();
         }
 
-        public override void changeContext(int id)
+        public override void ChangeContext(int id)
         {
 
             //base.changeContext(id);
         }
 
-        public override void changeFont(SpriteFont f)
+        public override void ChangeFont(SpriteFont f)
         {
-            base.changeFont(f);
+            base.ChangeFont(f);
         }
 
-        private void debugUpdate(GameTime gt)
+        private void DebugUpdate(GameTime gt)
         {
 
         }
-        private void debugDraw(SpriteBatch sb)
+        private void DebugDraw(SpriteBatch sb)
         {
 
         }
@@ -72,33 +72,33 @@ namespace mst_boredom_remover
             MouseState mouse = Mouse.GetState();
             KeyboardState keys = Keyboard.GetState();
 
-            bool isMouseOver = bounds.Contains(mouse.X, mouse.Y); // check if the mouse is touching the button
+            bool isMouseOver = _bounds.Contains(mouse.X, mouse.Y); // check if the mouse is touching the button
             // first determine whether the text field needs to be activated or deactivated
             if (isMouseOver)
             {
                 // if clicked on the field
-                if (previousState.LeftButton == ButtonState.Pressed && mouse.LeftButton == ButtonState.Released)
+                if (_previousState.LeftButton == ButtonState.Pressed && mouse.LeftButton == ButtonState.Released)
                 {
                     // activate the field
-                    active = true;
+                    _active = true;
                 }
             }
             else
             {
                 // if clicked anywhere but the field
-                if (previousState.LeftButton == ButtonState.Pressed && mouse.LeftButton == ButtonState.Released)
+                if (_previousState.LeftButton == ButtonState.Pressed && mouse.LeftButton == ButtonState.Released)
                 {
                     // deactivate the field
-                    active = false;
+                    _active = false;
                 }
             }
 
             // only update the string if the field is active
-            if (active)
+            if (_active)
             {
                 // key input from user
                 char c = ' ';
-                foreach (Keys k in previousKeys.GetPressedKeys())
+                foreach (Keys k in _previousKeys.GetPressedKeys())
                 {
                     if (keys.IsKeyUp(k))
                     {
@@ -123,41 +123,41 @@ namespace mst_boredom_remover
                 // if key was backspace
                 if (c == '<')
                 {
-                    if (currentText.Length > 0)
+                    if (_currentText.Length > 0)
                     {
-                        currentText = currentText.Remove(currentText.Length - 1);
+                        _currentText = _currentText.Remove(_currentText.Length - 1);
                     }
                 }
                 else
                 {
                     // verify string length
-                    if (font.MeasureString((currentText + "W")).X < texture.Width - 10)
+                    if (_font.MeasureString((_currentText + "W")).X < _texture.Width - 10)
                     {
                         // verify string contents
                         if (c != ' ' && (c > 65 && c <= 90) || (c > 96 && c <= 122))
                         {
-                            currentText += c;
+                            _currentText += c;
                         }
                     }
                 }
             }
             
-            previousState = mouse;
-            previousKeys = keys;
+            _previousState = mouse;
+            _previousKeys = keys;
             //base.Update(gt);
         }
 
         public override void Draw(SpriteBatch sb)
         {
-            if (!active)
+            if (!_active)
             {
-                sb.Draw(texture, position, Color.White);
+                sb.Draw(_texture, _position, Color.White);
             }
             else
             {
-                sb.Draw(activeTexture, position, Color.White);
+                sb.Draw(_activeTexture, _position, Color.White);
             }
-            sb.DrawString(font, currentText, position + new Vector2(10, 12), Color.Black);
+            sb.DrawString(_font, _currentText, _position + new Vector2(10, 12), Color.Black);
             //base.Draw(sb);
         }
     }

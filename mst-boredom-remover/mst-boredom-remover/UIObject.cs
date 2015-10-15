@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
-    public class UIObject
+    public class UiObject
     {
         // Master class to contain all UI objects
         //private Texture2D texture;
@@ -21,21 +21,21 @@ namespace mst_boredom_remover
         protected SpriteFont font;
         public string debugText = "";
 
-        public virtual void changeFont(SpriteFont f)
+        public virtual void ChangeFont(SpriteFont f)
         {
             //this.font = f;
         }
 
-        public virtual void toggleDebugMode()
+        public virtual void ToggleDebugMode()
         {
             //debugMode = !debugMode;
         }
-        public virtual void changeContext(int id)
+        public virtual void ChangeContext(int id)
         {
 
         }
 
-        public UIObject(SpriteFont font = null)
+        public UiObject(SpriteFont font = null)
         {
             this.font = font;
         }

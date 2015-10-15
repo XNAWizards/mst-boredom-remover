@@ -12,85 +12,85 @@ using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
-    public class Menu : UIObject
+    public class Menu : UiObject
     {
-        private Texture2D texture;
-        private Vector2 position;
-        private List<UIObject> controls;
-        private Color color;
-        private int thisId;
+        private Texture2D _texture;
+        private Vector2 _position;
+        private List<UiObject> _controls;
+        private Color _color;
+        private int _thisId;
 
-        private bool active = false;
+        private bool _active = false;
 
-        public Menu(Texture2D texture, Vector2 position, List<UIObject> controls, Color color, int thisId)
+        public Menu(Texture2D texture, Vector2 position, List<UiObject> controls, Color color, int thisId)
             : base()
         {
-            this.texture = texture;
-            this.position = position;
-            this.controls = controls;
-            this.color = color;
-            this.thisId = thisId;
+            this._texture = texture;
+            this._position = position;
+            this._controls = controls;
+            this._color = color;
+            this._thisId = thisId;
         }
 
-        public void activate()
+        public void Activate()
         {
-            active = true;
+            _active = true;
         }
 
-        public void deactivate()
+        public void Deactivate()
         {
-            active = false;
+            _active = false;
             // reset?
         }
 
-        public override void changeContext(int id)
+        public override void ChangeContext(int id)
         {
-            if (id != thisId)
+            if (id != _thisId)
             {
-                deactivate();
+                Deactivate();
             }
-            else if (id == thisId)
+            else if (id == _thisId)
             {
-                activate();
+                Activate();
             }
         }
 
-        public override void toggleDebugMode()
+        public override void ToggleDebugMode()
         {
-            foreach (UIObject u in controls)
+            foreach (UiObject u in _controls)
             {
-                u.toggleDebugMode();
+                u.ToggleDebugMode();
             }
 
             debugMode = !debugMode;
             //base.toggleDebugMode();
         }
 
-        public override void changeFont(SpriteFont f)
+        public override void ChangeFont(SpriteFont f)
         {
             font = f;
         }
 
-        private void debugUpdate(GameTime gt)
+        private void DebugUpdate(GameTime gt)
         {
             // reset the debug text
             debugText = "";
             // compile each subobject's debug text
-            foreach (UIObject x in controls)
+            foreach (UiObject x in _controls)
             {
                 debugText += x.debugText;
             }
         }
-        private void debugDraw(SpriteBatch sb)
+        private void DebugDraw(SpriteBatch sb)
         {
             sb.DrawString(font, debugText, Vector2.Zero, Color.White);
         }
 
         public override void Update(GameTime gt)
         {
-            if (active)
+            if (_active)
             {
-                foreach (UIObject x in controls)
+                foreach (UiObject x in _controls)
                 {
                     x.Update(gt);
                 }
@@ -98,24 +98,24 @@ namespace mst_boredom_remover
 
                 if (debugMode)
                 {
-                    debugUpdate(gt);
+                    DebugUpdate(gt);
                 }
             }
         }
 
         public override void Draw(SpriteBatch sb)
         {
-            if (active)
+            if (_active)
             {
-                sb.Draw(texture, position, color);
-                foreach (UIObject x in controls)
+                sb.Draw(_texture, _position, _color);
+                foreach (UiObject x in _controls)
                 {
                     x.Draw(sb);
                 }
                 //base.Draw(sb);
                 if (debugMode)
                 {
-                    debugDraw(sb);
+                    DebugDraw(sb);
                 }
             }
         }

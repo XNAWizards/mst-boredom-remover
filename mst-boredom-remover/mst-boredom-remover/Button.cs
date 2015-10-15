@@ -18,29 +18,29 @@ namespace mst_boredom_remover
         MouseOver, // when a mouse is on the button
         Pressed, // when the button is clicked
     }
-    public class Button : UIObject
+    public class Button : UiObject
     {
-        private Texture2D texture;
-        private bool visible = true;
-        private Vector2 position;
+        private Texture2D _texture;
+        private bool _visible = true;
+        private Vector2 _position;
         // stores the last mouse state
-        private MouseState previousState;
+        private MouseState _previousState;
 
         // different textures
-        private Texture2D hoverTexture;
-        private Texture2D pressedTexture;
+        private Texture2D _hoverTexture;
+        private Texture2D _pressedTexture;
 
         // rectangle that covers the button
-        private Rectangle bounds;
+        private Rectangle _bounds;
 
         // current button state
-        private ButtonStatus state = ButtonStatus.Normal;
+        private ButtonStatus _state = ButtonStatus.Normal;
 
-        private float scale = 1.0f;
+        private float _scale = 1.0f;
 
         public ButtonStatus GetButtonStatus
         {
-            get { return state; }
+            get { return _state; }
         }
 
         // event upon being pressed
@@ -53,31 +53,31 @@ namespace mst_boredom_remover
         public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position, float scale = 1.0f)
             : base ()
         {
-            this.texture = texture;
-            this.hoverTexture = hoverTexture;
-            this.pressedTexture = pressedTexture;
-            this.position = position;
+            this._texture = texture;
+            this._hoverTexture = hoverTexture;
+            this._pressedTexture = pressedTexture;
+            this._position = position;
 
             // draw bounds around the button
-            this.bounds = new Rectangle((int)position.X - texture.Width/2, (int)position.Y-texture.Height/2, texture.Width, texture.Height);
-            this.scale = scale;
+            this._bounds = new Rectangle((int)position.X - texture.Width/2, (int)position.Y-texture.Height/2, texture.Width, texture.Height);
+            this._scale = scale;
         }
 
-        public override void toggleDebugMode()
+        public override void ToggleDebugMode()
         {
             //base.toggleDebugMode();
         }
 
-        public override void changeFont(SpriteFont f)
+        public override void ChangeFont(SpriteFont f)
         {
 
         }
 
-        private void debugUpdate(GameTime gt)
+        private void DebugUpdate(GameTime gt)
         {
 
         }
-        private void debugDraw(SpriteBatch sb)
+        private void DebugDraw(SpriteBatch sb)
         {
 
         }
@@ -85,29 +85,29 @@ namespace mst_boredom_remover
         // update button state/fire events as necessary
         public override void Update(GameTime gameTime)
         {
-            if (visible)
+            if (_visible)
             {
                 // tracks mouse position
                 MouseState mouseState = Mouse.GetState();
 
-                int MouseX = mouseState.X; // sets mouse x position
-                int MouseY = mouseState.Y; // sets mouse y position
+                int mouseX = mouseState.X; // sets mouse x position
+                int mouseY = mouseState.Y; // sets mouse y position
 
-                bool isMouseOver = bounds.Contains(MouseX, MouseY); // check if the mouse is touching the button
+                bool isMouseOver = _bounds.Contains(mouseX, mouseY); // check if the mouse is touching the button
 
                 if (isMouseOver)
                 {
                     // update the button state
-                    if (state != ButtonStatus.Pressed)
+                    if (_state != ButtonStatus.Pressed)
                     {
-                        state = ButtonStatus.MouseOver; // button uses the mouseover state
+                        _state = ButtonStatus.MouseOver; // button uses the mouseover state
                     }                    
 
                     // check if player begins to hold the button
-                    if (mouseState.LeftButton == ButtonState.Pressed && previousState.LeftButton == ButtonState.Released)
+                    if (mouseState.LeftButton == ButtonState.Pressed && _previousState.LeftButton == ButtonState.Released)
                     {
                         // update the button state
-                        state = ButtonStatus.Pressed;
+                        _state = ButtonStatus.Pressed;
 
                         if (OnPress != null)
                         {
@@ -117,10 +117,10 @@ namespace mst_boredom_remover
                     }
 
                     // check if the player releases the click on the button
-                    else if (mouseState.LeftButton == ButtonState.Released && previousState.LeftButton == ButtonState.Pressed)
+                    else if (mouseState.LeftButton == ButtonState.Released && _previousState.LeftButton == ButtonState.Pressed)
                     {
                         // update the button state
-                        state = ButtonStatus.MouseOver;
+                        _state = ButtonStatus.MouseOver;
 
                         if (Clicked != null)
                         {
@@ -129,40 +129,40 @@ namespace mst_boredom_remover
                         }
 
                         // if the button has been clicked
-                        else if (state == ButtonStatus.Pressed)
+                        else if (_state == ButtonStatus.Pressed)
                         {
-                            state = ButtonStatus.Normal;
+                            _state = ButtonStatus.Normal;
                         }
                     }
                 }
                 // mouse is not on the button
                 else // !isMouseOver
                 {
-                    state = ButtonStatus.Normal;
+                    _state = ButtonStatus.Normal;
                 }
 
-                previousState = mouseState;
+                _previousState = mouseState;
             }
         } // end update method
         public override void Draw(SpriteBatch spriteBatch)
         {   
-            if (visible)
+            if (_visible)
             {
                 // draw the button using a switch on the status of the button
-                switch (state)
+                switch (_state)
                 {
                     // draw the normal state of the button
                     case ButtonStatus.Normal:
-                        spriteBatch.Draw(texture, position, null, Color.White, 0, new Vector2(texture.Width / 2, texture.Height / 2), scale, SpriteEffects.None, 0);
+                        spriteBatch.Draw(_texture, _position, null, Color.White, 0, new Vector2(_texture.Width / 2, _texture.Height / 2), _scale, SpriteEffects.None, 0);
                         //spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height), Color.White);
                         break;
                     // draw the mouseover state of the button
                     case ButtonStatus.MouseOver:
-                        spriteBatch.Draw(hoverTexture, position, null, Color.White, 0, new Vector2(texture.Width / 2, texture.Height / 2), scale, SpriteEffects.None, 0);
+                        spriteBatch.Draw(_hoverTexture, _position, null, Color.White, 0, new Vector2(_texture.Width / 2, _texture.Height / 2), _scale, SpriteEffects.None, 0);
                         break;
                     // draw the pressed state of the button
                     case ButtonStatus.Pressed:
-                        spriteBatch.Draw(hoverTexture, position, null, Color.White, 0, new Vector2(texture.Width/2, texture.Height/2), scale + .2f, SpriteEffects.None, 0);
+                        spriteBatch.Draw(_hoverTexture, _position, null, Color.White, 0, new Vector2(_texture.Width/2, _texture.Height/2), _scale + .2f, SpriteEffects.None, 0);
                         break;
                     // impossible case
                     default:
@@ -171,26 +171,26 @@ namespace mst_boredom_remover
             }
         }
 
-        public override void changeContext(int id)
+        public override void ChangeContext(int id)
         {
 
         }
 
         public void ChangeTexture(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture)
         {
-            this.texture = texture;
-            this.hoverTexture = hoverTexture;
-            this.pressedTexture = pressedTexture;
+            this._texture = texture;
+            this._hoverTexture = hoverTexture;
+            this._pressedTexture = pressedTexture;
         }
-        public void toggleVisibility()
+        public void ToggleVisibility()
         {
-            if (visible)
+            if (_visible)
             {
-                visible = false;
+                _visible = false;
             }
             else
             {
-                visible = true;
+                _visible = true;
             }
         }
     }
