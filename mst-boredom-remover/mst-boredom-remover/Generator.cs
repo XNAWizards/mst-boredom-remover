@@ -151,12 +151,9 @@ namespace mst_boredom_remover
 					riverX = r.Next(50,width-50);
 					riverY = r.Next(50,height-50);
 				}
-<<<<<<< HEAD
-				int Direction; //0=North, 1=East, 2=South 3=West
-				int lastDir;
-=======
+				
+				int lastDir =5;
 				int Direction = r.Next(0, 4); //0=North, 1=East, 2=South 3=West
->>>>>>> origin/MapGen
 				int riverLength = r.Next(0,6);
 				switch(riverLength){//0=medium, 1=long, 2=extensive, else small
 					case 0:
@@ -241,9 +238,9 @@ namespace mst_boredom_remover
             }
 			//Generates coastlines and gives rivers a direction.
 			//each direction of river/Ocean will be set to a different character.
-			for(int j=0;j<width;j++)
+			for(int j=1;j<width-1;j++)
 			{
-				for(int i=0;i<height;i++)
+				for(int i=1;i<height-1;i++)
 				{
 					//******Ocean Border*****//
 					if(field[j,i]=='~')
@@ -263,18 +260,6 @@ namespace mst_boredom_remover
 						if(field[j+1,i-1]!='~' && field[j,i-1]!='~' && field[j-1,i-1]!='~')
 						{
 							field[j,i]='#';//Coast tile with land on west.
-						}
-						if()
-						{
-						}
-						if()
-						{
-						}
-						if()
-						{
-						}
-						if()
-						{
 						}
 					}
 					//*****River Direction*****//
