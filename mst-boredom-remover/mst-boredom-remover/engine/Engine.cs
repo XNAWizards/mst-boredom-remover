@@ -32,7 +32,7 @@ namespace mst_boredom_remover
             future_updates = new Dictionary<int, List<Unit>>();
             map = new EngineMap(map_width, map_height);
             unit_types = new List<UnitType>();
-            players = new List<Player>() {new Player("Frodo")};
+            players = new List<Player>() {new Player("Frodo",0), new Player("Harry",1)};
             units = new List<Unit>();
             unit_grid = new Unit[map.width, map.height];
         }
@@ -113,6 +113,12 @@ namespace mst_boredom_remover
         {
             attacker.orders.Add(Order.CreateAttackOrder(target));
             ScheduleUpdate(1, attacker);
+        }
+
+        public void OrderGather(Unit gatherer, Position target)
+        {
+            gatherer.orders.Add(Order.CreateGatherOrder(target));
+            ScheduleUpdate(1, gatherer);
         }
 
         private double Max(double a, double b) { if (a > b) return a; return b; }

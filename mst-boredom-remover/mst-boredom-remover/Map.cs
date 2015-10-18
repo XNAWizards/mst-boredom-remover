@@ -380,24 +380,30 @@ namespace mst_boredom_remover
             {
                 var enumerator = game.map.BreadthFirst(mouse_game_tile_position).GetEnumerator();
                 enumerator.MoveNext();
-                Unit clickedSpot = game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y];
+                
+                Unit clickedUnit = game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y];
                 foreach (Unit unit in selected_units)
                 {
-                    if (clickedSpot == unit) // Produce units
+                    if (clickedUnit == unit) // Produce units
                     {
                         game.OrderProduce(unit, game.unit_types[0]);
                         break;
                     }
-                    else if ( clickedSpot != null ) //Clicked a different unit TODO:make it so you don't attack your buddies
+                    else if ( clickedUnit != null ) //Clicked a different unit TODO:make it so you don't attack your buddies
                     {
-                        if ( selected_units.Contains(clickedSpot) ) //this check makes it so that you can produce without have the other selected units attack
+                        if ( selected_units.Contains(clickedUnit) ) //this check makes it so that you can produce without have the other selected units attack
                         {
                             continue;
                         }
-                        game.OrderAttack(unit, clickedSpot);
+                        game.OrderAttack(unit, clickedUnit);
                     }
                     else // Move units
                     {
+                        if ( game.map.tiles[ mouse_game_tile_position.x, mouse_game_tile_position.y].tile_type != null )
+                        {
+                            game.OrderGather(unit, enumerator.Current);
+                        }
+                        //TODO: this check at ordertime gives you the move order that is the closes unoccupied spot, should we be doing this adjustment?
                         while (game.unit_grid[enumerator.Current.x, enumerator.Current.y] != null)
                         {
                             enumerator.MoveNext();

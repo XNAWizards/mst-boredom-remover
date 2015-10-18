@@ -28,7 +28,7 @@ namespace mst_boredom_remover
             new Position(0, -1)
         };
 
-        public EngineMap(int width, int height)
+        public EngineMap(int width, int height, char[,] charMap)
         {
             this.width = width;
             this.height = height;

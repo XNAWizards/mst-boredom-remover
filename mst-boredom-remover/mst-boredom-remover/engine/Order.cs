@@ -14,6 +14,7 @@ namespace mst_boredom_remover
             Follow,
             AttackMove,
             Patrol,
+            Gather,
             Gaurd,
             Idle,
             Build,
@@ -53,6 +54,17 @@ namespace mst_boredom_remover
                 order_type = OrderType.Attack,
                 target_unit = target,
                 target_position = target.position,
+                unit_type_build = null
+            };
+        }
+
+        public static Order CreateGatherOrder(Position target)
+        {
+            return new Order()
+            {
+                order_type = OrderType.Gather,
+                target_unit = null,
+                target_position = target,
                 unit_type_build = null
             };
         }

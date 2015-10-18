@@ -286,6 +286,9 @@ namespace mst_boredom_remover
             {
                 spriteBatch.DrawString(debug_font, "x: " + engine.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
                 spriteBatch.DrawString(debug_font, "y: " + engine.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
+                spriteBatch.DrawString(debug_font, "player gold: " + engine.players[0].gold, new Vector2(1, 1 + 32 * 3), Color.Black);
+                spriteBatch.DrawString(debug_font, "player iron: " + engine.players[0].iron, new Vector2(1, 1 + 32 * 4), Color.Black);
+                spriteBatch.DrawString(debug_font, "player mc  : " + engine.players[0].mana_cystals, new Vector2(1, 1 + 32 * 5), Color.Black);
             }
 
             spriteBatch.End();
