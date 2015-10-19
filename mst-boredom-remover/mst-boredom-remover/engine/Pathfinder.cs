@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 
 namespace mst_boredom_remover.engine
 {
@@ -91,10 +90,8 @@ namespace mst_boredom_remover.engine
                     break;
                 }
                 //take current best, generate all possible nodes, push them onto queue
-                int phase = 0;
-                for ( int i = phase; i < currentBest.tile.neighbors.Count+phase; i++)
+                foreach (var neighbor in currentBest.tile.neighbors)
                 {
-                    Tile neighbor = currentBest.tile.neighbors[i % currentBest.tile.neighbors.Count];
                     tempNode = new Node(neighbor, currentBest, currentBest.distance + 1, currentBest.distance + 1 + FValue(neighbor, end));
 
                     if (unit.CanMove(neighbor.position) && !visitedTiles.Contains(neighbor.position))
