@@ -20,6 +20,11 @@ namespace mst_boredom_remover.engine
             return Math.Abs(other.y - y) + Math.Abs(other.x - x);
         }
 
+        public int EuclideanDistanceSquared(Position other)
+        {
+            return (other.y - y)*(other.y - y) + (other.x - x)*(other.x - x);
+        }
+
         public static Position operator+(Position left, Position right)
         {
             return new Position(left.x + right.x, left.y + right.y);
