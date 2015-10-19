@@ -72,9 +72,6 @@ namespace mst_boredom_remover.engine
                 futureUpdates[currentTick + ticksFromNow].Add(unit);
                 unit.nextMove = currentTick + ticksFromNow;
             }
-
-            futureUpdates[currentTick + ticksFromNow].Add(unit);
-            unit.nextMove = currentTick + ticksFromNow;
         }
 
         public void RemoveUpdate(Unit unit)
