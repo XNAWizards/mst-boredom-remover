@@ -52,7 +52,7 @@ namespace mst_boredom_remover
             else if (id == thisId)
             {
                 activate();
-            }
+            }            
         }
 
         public override void toggleDebugMode()
@@ -79,6 +79,7 @@ namespace mst_boredom_remover
             foreach (UIObject x in controls)
             {
                 debugText += x.debugText;
+                debugText += "\n";
             }
         }
         private void debugDraw(SpriteBatch sb)

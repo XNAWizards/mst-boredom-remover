@@ -52,8 +52,9 @@ namespace mst_boredom_remover
         private List<string> tileNames;
         //private string debugText = "";
         private Engine game;
-        private List<Unit> selected_units = new List<Unit>();
+        //private List<Unit> selected_units = new List<Unit>();
         private int lastScrollValue;
+        private List<Unit> selectedUnits;
         
         private ButtonState previous_left_mouse_state = ButtonState.Released;
         private ButtonState previous_right_mouse_state = ButtonState.Released;
@@ -111,6 +112,8 @@ namespace mst_boredom_remover
             mapCaches[0, 1] = r4;
             mapCaches[1, 1] = r5;
             mapCaches[2, 1] = r6;
+
+            selectedUnits = new List<Unit>();
             /*
             for (int x = 0; x < 3; x++)
             {
@@ -164,6 +167,40 @@ namespace mst_boredom_remover
                     }
                 }
             }
+        }
+
+        // returns a list of units in the bounds provided.
+        public List<Unit> select(Rectangle bounds)
+        {
+            int startTileX;
+            int startTileY;
+            int tileWidth;
+            int tileHeight;
+
+            // determine which tile the selection box is starting at
+            startTileX = bounds.X / (int)((TILE_PX_SIZE + px_mod) + tileIndex.X);
+            startTileY = bounds.Y / (int)((TILE_PX_SIZE + px_mod) + tileIndex.Y);
+            tileWidth = Math.Max(bounds.Width / (int)((TILE_PX_SIZE + px_mod) + tileIndex.X), 1);
+            tileHeight = Math.Max(bounds.Height / (int)((TILE_PX_SIZE + px_mod) + tileIndex.Y), 1);
+
+            selectedUnits.Clear();
+
+            int masterX = startTileX;
+            int masterY = startTileY;
+            // search only the grid. hopefully small n^24
+            for (int y = 0; y < tileHeight; y++)
+            {
+                for (int x = 0; x < tileWidth; x++)
+                {
+                    if (game.unit_grid[masterX + x, masterY + y] != null)
+                    {
+                        game.unit_grid[masterX + x, masterY + y].selected = true;
+                        selectedUnits.Add(game.unit_grid[masterX+ x, masterY + y]);
+                    }
+                }
+            }
+
+            return selectedUnits;
         }
         
         public override void toggleDebugMode()
@@ -307,6 +344,31 @@ namespace mst_boredom_remover
             sb.Begin();
         }
 
+        public void unitGroupMove(List<Unit> selected_units)
+        {
+            Position mouse_game_tile_position = new Position((int)mouseTile.X, (int)mouseTile.Y);
+
+            var enumerator = game.map.BreadthFirst(mouse_game_tile_position).GetEnumerator();
+            enumerator.MoveNext();
+            foreach (Unit unit in selected_units)
+            {
+                if (game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y] == unit) // Produce units
+                {
+                    game.OrderProduce(unit, game.unit_types[0]);
+                    break;
+                }
+                else // Move units
+                {
+                    while (game.unit_grid[enumerator.Current.x, enumerator.Current.y] != null)
+                    {
+                        enumerator.MoveNext();
+                    }
+                    game.OrderMove(unit, enumerator.Current);
+                    enumerator.MoveNext();
+                }
+            }
+        }
+
         public override void Update(GameTime gt)
         {
             KeyboardState keyboard = Keyboard.GetState();
@@ -356,10 +418,10 @@ namespace mst_boredom_remover
 
             lastScrollValue = m.ScrollWheelValue;
 
-            Position mouse_game_tile_position = new Position((int)mouseTile.X, (int)mouseTile.Y);
+            
             
             // Select units
-            if (m.RightButton == ButtonState.Pressed && previous_right_mouse_state == ButtonState.Released)
+            /*if (m.RightButton == ButtonState.Pressed && previous_right_mouse_state == ButtonState.Released)
             {
                 if (game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y] != null)
                 {
@@ -378,27 +440,9 @@ namespace mst_boredom_remover
             
             if (m.LeftButton == ButtonState.Pressed && previous_left_mouse_state == ButtonState.Released)
             {
-                var enumerator = game.map.BreadthFirst(mouse_game_tile_position).GetEnumerator();
-                enumerator.MoveNext();
-                foreach (Unit unit in selected_units)
-                {
-                    if (game.unit_grid[mouse_game_tile_position.x, mouse_game_tile_position.y] == unit) // Produce units
-                    {
-                        game.OrderProduce(unit, game.unit_types[0]);
-                        break;
-                    }
-                    else // Move units
-                    {
-                        while (game.unit_grid[enumerator.Current.x, enumerator.Current.y] != null)
-                        {
-                            enumerator.MoveNext();
-                        }
-                        game.OrderMove(unit, enumerator.Current);
-                        enumerator.MoveNext();
-                    }
-                }
+                
             }
-            
+            */
             if (debugMode)
             {
                 debugUpdate(gt);
@@ -487,10 +531,17 @@ namespace mst_boredom_remover
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
                 Vector2 draw_position = (unit.position.ToVector2() - tileIndex) * (TILE_PX_SIZE + px_mod);
-          
+
+                Color c = Color.White;
+
+                if (unit.selected)
+                {
+                    c = c * .5f;
+                }
+
                 // finally draw the unit
                 sb.Draw(current_textures[(game.current_tick - unit.animation_start_tick) % current_textures.Length],
-                    new Rectangle((int)draw_position.X, (int)draw_position.Y, (TILE_PX_SIZE + px_mod), (TILE_PX_SIZE + px_mod)), Color.White);
+                    new Rectangle((int)draw_position.X, (int)draw_position.Y, (TILE_PX_SIZE + px_mod), (TILE_PX_SIZE + px_mod)), c);
             }
 
             if (debugMode)

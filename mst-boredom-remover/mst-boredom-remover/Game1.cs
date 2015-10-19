@@ -133,6 +133,7 @@ namespace mst_boredom_remover
             TextInput testTextInput = new TextInput(textInBackground, textInBackgroundActive, new Vector2(100, 50), font);
             //testTextInput.newInput += new EventHandler(testTextInput_newInput);
             #endregion
+            
             #region Menus
             Texture2D mainBackground = Content.Load<Texture2D>("MainBackground");
 
@@ -193,6 +194,12 @@ namespace mst_boredom_remover
 
             Menu newGameMenu = new Menu(blankBackground, Vector2.Zero, newGameControls, Color.White, 2);
             #endregion
+
+            // hud
+            Texture2D boxSelect = Content.Load<Texture2D>("BoxSelect");
+            Hud hud = new Hud(ref engine, ref m, boxSelect);
+
+            gameControls.Add(hud);
 
             // list of all UI objects to be drawn/updated
             userInterface = new List<UIObject>();

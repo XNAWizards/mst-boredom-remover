@@ -16,6 +16,7 @@ namespace mst_boredom_remover
         public double health;
         public Position position;
         public Position previous_position;
+        public bool selected;
 
         public enum Status
         {
