@@ -71,7 +71,6 @@ namespace mst_boredom_remover.engine
             Node currentBest = null;
             PriorityQueues.PriorityQueue<Node> openSet = new PriorityQueues.PriorityQueue<Node>();
             HashSet<Position> visitedTiles = new HashSet<Position>();
-            int phase = 0;
             openSet.Enqueue(tempNode);
             visitedTiles.Add(tempNode.tile.position);
             
@@ -91,9 +90,8 @@ namespace mst_boredom_remover.engine
                     break;
                 }
                 //take current best, generate all possible nodes, push them onto queue
-                for ( int i = phase; i < currentBest.tile.neighbors.Count+phase; i++)
+                foreach (var neighbor in currentBest.tile.neighbors)
                 {
-                    Tile neighbor = currentBest.tile.neighbors[i % currentBest.tile.neighbors.Count];
                     tempNode = new Node(neighbor, currentBest, currentBest.distance + 1, currentBest.distance + 1 + FValue(neighbor, end));
 
                     if (unit.CanMove(neighbor.position) && !visitedTiles.Contains(neighbor.position))
@@ -102,8 +100,6 @@ namespace mst_boredom_remover.engine
                         openSet.Enqueue(tempNode);
                     }
                 }
-                phase = (phase + 1) % currentBest.tile.neighbors.Count;
-                
             }
             if ( success )
             {
@@ -122,7 +118,7 @@ namespace mst_boredom_remover.engine
 
         private static int FValue( Tile start, Tile end )
         {
-            return start.position.Distance(end.position);
+            return start.position.EuclideanDistanceSquared(end.position);
         }
     }
 }
