@@ -32,40 +32,170 @@ namespace mst_boredom_remover
             {
                 bio[i] = new BiomeInfo();
             }
-            for (int a = 0; a < (NumBio / 8); a++)
-            {
-                bio[a * 8].Type = '~'; //Ocean
-                bio[a * 8].X = r.Next(0, width);
-                bio[a * 8].Y = r.Next(0, height);
+            
+			//start terrain set
+            int p = 0;
+            while (p < 750){
+                //check for NO or LOW biome values.
+              if (tundraAmount == 0) { }
+              else
+              {
+                    bio[p].Type = 'T';//Tundra
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (forestAmount == 0) { }
+              else
+              {
+                    bio[p].Type = 'F';//Forest
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (mountainAmount == 0) { }
+              else
+              {
+                    bio[p].Type = 'M';//Mountain
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (plainAmount == 0) { }
+              else
+              {
+                    bio[p].Type = '+';//Plain
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (dreadlandAmount == 0) { }
+              else
+              {
+                    bio[p].Type = '%';//Dreadland
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (desertAmount == 0) { }
+              else
+              {
+                    bio[p].Type = 'D';//Desert
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (oceanAmount == 0) { }
+              else
+              {
+                    bio[p].Type = '~'; //Ocean
+                    bio[p].X = r.Next(0, width);
+                    bio[p].Y = r.Next(0, height);
+                    p++;
+              }
 
-                bio[a * 8 + 1].Type = '+';//Plain
-                bio[a * 8 + 1].X = r.Next(10, RX);
-                bio[a * 8 + 1].Y = r.Next(10, RY);
-
-                bio[a * 8 + 2].Type = 'M';//Mountain
-                bio[a * 8 + 2].X = r.Next(10, RX);
-                bio[a * 8 + 2].Y = r.Next(10, RY);
-
-                bio[a * 8 + 3].Type = 'F';//Forest
-                bio[a * 8 + 3].X = r.Next(10, RX);
-                bio[a * 8 + 3].Y = r.Next(10, RY);
-
-                bio[a * 8 + 4].Type = '%';//Dreadlands
-                bio[a * 8 + 4].X = r.Next(10, RX);
-                bio[a * 8 + 4].Y = r.Next(10, RY);
-
-                bio[a * 8 + 5].Type = 'D';//Desert
-                bio[a * 8 + 5].X = r.Next(10, RX);
-                bio[a * 8 + 5].Y = r.Next(10, RY);
-
-                bio[a * 8 + 6].Type = 'T';//Tundra
-                bio[a * 8 + 6].X = r.Next(10, RX);
-                bio[a * 8 + 6].Y = r.Next(10, RY);
-
-                bio[a * 8 + 7].Type = '~'; //Ocean
-                bio[a * 8 + 7].X = r.Next(0, width);
-                bio[a * 8 + 7].Y = r.Next(0, height);
+              //checks for DEFAULT/NORMAL biome value
+              if (tundraAmount >= 2)
+              {
+                    bio[p].Type = 'T';//Tundra
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (forestAmount >= 2)
+              {
+                    bio[p].Type = 'F';//Forest
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (mountainAmount >= 2)
+              {
+                    bio[p].Type = 'M';//Mountain
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (plainAmount >= 2)
+              {
+                    bio[p].Type = '+';//Plain
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (dreadlandAmount >= 2)
+              {
+                    bio[p].Type = '%';//Dreadland
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (desertAmount >= 2)
+              {
+                    bio[p].Type = 'D';//Desert
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (oceanAmount >= 2)
+              {
+                    bio[p].Type = '~'; //Ocean
+                    bio[p].X = r.Next(0, width);
+                    bio[p].Y = r.Next(0, height);
+                    p++;
+                }
+              //checks for HIGH biome value
+              if (tundraAmount >= 3)
+              {
+                    bio[p].Type = 'T';//Tundra
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (forestAmount >= 3)
+              {
+                    bio[p].Type = 'F';//Forest
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (mountainAmount >= 3)
+              {
+                    bio[p].Type = 'M';//Mountain
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (plainAmount >= 3)
+              {
+                    bio[p].Type = '+';//Plain
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (dreadlandAmount >= 3)
+              {
+                    bio[p].Type = '%';//Dreadland
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (desertAmount >= 3)
+              {
+                    bio[p].Type = 'D';//Desert
+                    bio[p].X = r.Next(10, RX);
+                    bio[p].Y = r.Next(10, RY);
+                    p++;
+                }
+              if (oceanAmount >= 3)
+              {
+                    bio[p].Type = '~'; //Ocean
+                    bio[p].X = r.Next(0, width);
+                    bio[p].Y = r.Next(0, height);
+                    p++;
+                }
             }
+			
             //Sets Border To Ocean Biome
             for (int k = 0; k < width; k++)
             {//goes through and sets top and bottom rows to Ocean biome.
