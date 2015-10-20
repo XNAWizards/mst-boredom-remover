@@ -16,7 +16,13 @@ namespace mst_boredom_remover
         public static char[,] generate(int width, int height)
         {
             // chance out of 1000
-            
+            int tundraAmount = 2;
+            int forestAmount = 2;
+            int mountainAmount = 2;
+            int plainAmount = 2;
+            int dreadlandAmount = 2;
+            int desertAmount = 2;
+            int oceanAmount = 2;
             int RX = width - 10;
             int RY = height - 10;
             const int MAX_CHANCE = 1000;
