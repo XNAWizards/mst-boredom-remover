@@ -71,6 +71,7 @@ namespace mst_boredom_remover
             foreach (UiObject x in controls)
             {
                 debugText += x.debugText;
+                debugText += "\n";
             }
         }
         private void DebugDraw(SpriteBatch sb)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 //using Microsoft.Xna.Framework.Audio;
 //using Microsoft.Xna.Framework.Content;
@@ -50,8 +51,8 @@ namespace mst_boredom_remover
         private List<string> tileNames;
         //private string debugText = "";
         private Engine engine;
-        private List<Unit> selectedUnits = new List<Unit>();
         private int lastScrollValue;
+        private List<Unit> selectedUnits;
         
         private ButtonState previousLeftMouseState = ButtonState.Released;
         private ButtonState previousRightMouseState = ButtonState.Released;
@@ -109,12 +110,14 @@ namespace mst_boredom_remover
             mapCaches[0, 1] = r4;
             mapCaches[1, 1] = r5;
             mapCaches[2, 1] = r6;
+
+            selectedUnits = new List<Unit>();
             /*
             for (int x = 0; x < 3; x++)
             {
                 for (int y = 0; y < 2; y++)
                 {
-                    RenderTarget2D r = new RenderTarget2D(graphicsDevice, 214 * TILE_PX_SIZE, 214 * TILE_PX_SIZE);
+                    RenderTarget2D r = new RenderTarget2D(graphicsDevice, 214 * tilePxSize, 214 * tilePxSize);
                     mapCaches[x, y] = r;
                 }
             }*/
@@ -163,6 +166,40 @@ namespace mst_boredom_remover
                 }
             }
         }
+
+        // returns a list of units in the bounds provided.
+        public List<Unit> select(Rectangle bounds)
+        {
+            int startTileX;
+            int startTileY;
+            int tileWidth;
+            int tileHeight;
+
+            // determine which tile the selection box is starting at
+            startTileX = bounds.X / (int)((tilePxSize + pxMod) + tileIndex.X);
+            startTileY = bounds.Y / (int)((tilePxSize + pxMod) + tileIndex.Y);
+            tileWidth = Math.Max(bounds.Width / (int)((tilePxSize + pxMod) + tileIndex.X), 1);
+            tileHeight = Math.Max(bounds.Height / (int)((tilePxSize + pxMod) + tileIndex.Y), 1);
+
+            selectedUnits.Clear();
+
+            int masterX = startTileX;
+            int masterY = startTileY;
+            // search only the grid. hopefully small n^24
+            for (int y = 0; y < tileHeight; y++)
+            {
+                for (int x = 0; x < tileWidth; x++)
+                {
+                    if (engine.unitGrid[masterX + x, masterY + y] != null)
+                    {
+                        engine.unitGrid[masterX + x, masterY + y].selected = true;
+                        selectedUnits.Add(engine.unitGrid[masterX+ x, masterY + y]);
+                    }
+                }
+            }
+
+            return selectedUnits;
+        }
         
         public override void ToggleDebugMode()
         {
@@ -176,7 +213,7 @@ namespace mst_boredom_remover
             char c = ' ';
             bool fail = false;
 
-            // find out what tile is at tileIndex + MousePos / tile_px_size
+            // find out what tile is at tileIndex + MousePos / tilePxSize
 
             Vector2 mouseIndex = new Vector2(m.X / tilePxSize, m.Y / tilePxSize);
 
@@ -297,6 +334,31 @@ namespace mst_boredom_remover
             sb.Begin();
         }
 
+        public void unitGroupMove(List<Unit> selected_units)
+        {
+            Position mouse_game_tile_position = new Position((int)mouseTile.X, (int)mouseTile.Y);
+
+            var enumerator = engine.map.BreadthFirst(mouse_game_tile_position).GetEnumerator();
+            enumerator.MoveNext();
+            foreach (Unit unit in selected_units)
+            {
+                if (engine.unitGrid[mouse_game_tile_position.x, mouse_game_tile_position.y] == unit) // Produce units
+                {
+                    engine.OrderProduce(unit, engine.unitTypes[0]);
+                    break;
+                }
+                else // Move units
+                {
+                    while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
+                    {
+                        enumerator.MoveNext();
+                    }
+                    engine.OrderMove(unit, enumerator.Current);
+                    enumerator.MoveNext();
+                }
+            }
+        }
+
         public override void Update(GameTime gt)
         {
             KeyboardState keyboard = Keyboard.GetState();
@@ -345,58 +407,6 @@ namespace mst_boredom_remover
             }
 
             lastScrollValue = m.ScrollWheelValue;
-
-            Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
-            
-            // Select units
-            if (m.RightButton == ButtonState.Pressed && previousRightMouseState == ButtonState.Released)
-            {
-                if (engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y] != null)
-                {
-                    Unit targetUnit = engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y];
-                    if (selectedUnits.Contains(targetUnit))
-                    {
-                        selectedUnits.Remove(targetUnit);
-                    }
-                    else
-                    {
-                        selectedUnits.Add(targetUnit);
-                    }
-                }
-            }
-
-            
-            if (m.LeftButton == ButtonState.Pressed && previousLeftMouseState == ButtonState.Released)
-            {
-                var enumerator = engine.map.BreadthFirst(mouseGameTilePosition).GetEnumerator();
-                enumerator.MoveNext();
-                Unit clickedSpot = engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y];
-                foreach (Unit unit in selectedUnits)
-                {
-                    if (clickedSpot == unit) // Produce units
-                    {
-                        engine.OrderProduce(unit, engine.unitTypes[0]);
-                        break;
-                    }
-                    else if ( clickedSpot != null ) //Clicked a different unit TODO:make it so you don't attack your buddies
-                    {
-                        if ( selectedUnits.Contains(clickedSpot) ) //this check makes it so that you can produce without have the other selected units attack
-                        {
-                            continue;
-                        }
-                        engine.OrderAttack(unit, clickedSpot);
-                    }
-                    else // Move units
-                    {
-                        while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
-                        {
-                            enumerator.MoveNext();
-                        }
-                        engine.OrderMove(unit, enumerator.Current);
-                        enumerator.MoveNext();
-                    }
-                }
-            }
             
             if (debugMode)
             {
@@ -483,10 +493,17 @@ namespace mst_boredom_remover
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
                 Vector2 drawPosition = (unit.position.ToVector2() - tileIndex) * (tilePxSize + pxMod);
-          
+
+                Color c = Color.White;
+
+                if (unit.selected)
+                {
+                    c = c * .5f;
+                }
+
                 // finally draw the unit
-                sb.Draw(currentTextures[(engine.currentTick - unit.animationStartTick) % currentTextures.Length],
-                    new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (tilePxSize + pxMod), (tilePxSize + pxMod)), Color.White);
+                sb.Draw(currentTextures[(engine.currentTick- unit.animationStartTick) % currentTextures.Length],
+                    new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (tilePxSize + pxMod), (tilePxSize + pxMod)), c);
             }
 
             if (debugMode)
