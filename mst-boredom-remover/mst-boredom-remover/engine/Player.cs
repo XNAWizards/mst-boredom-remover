@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace mst_boredom_remover
+namespace mst_boredom_remover.engine
 {
     class Player
     {
@@ -11,10 +8,10 @@ namespace mst_boredom_remover
         public string name;
         public int team;
         public double gold;
-        public double mana_cystals;
+        public double manaCystals;
         public double iron;
-        public bool is_alive;
-        public int unit_count;
+        public bool isAlive;
+        public int unitCount;
 
         public enum PlayerModifier
         {
@@ -33,11 +30,11 @@ namespace mst_boredom_remover
             this.team = team;
 
             this.gold = 0.0;
-            this.mana_cystals = 0.0;
+            this.manaCystals = 0.0;
             this.iron = 0.0;
-            this.is_alive = true;
+            this.isAlive = true;
             this.modifiers = new List<PlayerModifier>();
-            this.unit_count = 0;
+            this.unitCount = 0;
         }
     }
 }

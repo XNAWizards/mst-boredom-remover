@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace mst_boredom_remover
 {
@@ -9,11 +6,11 @@ namespace mst_boredom_remover
     {
         public struct BiomeInfo
         {
-            public char Type;
-            public int X;
-            public int Y;
+            public char type;
+            public int x;
+            public int y;
         };
-        public static char[,] generate(int width, int height)
+        public static char[,] Generate(int width, int height)
         {
             // chance out of 1000
             int tundraAmount = 2;
@@ -23,17 +20,18 @@ namespace mst_boredom_remover
             int dreadlandAmount = 2;
             int desertAmount = 2;
             int oceanAmount = 2;
-            int RX = width - 10;
-            int RY = height - 10;
-            const int MAX_CHANCE = 1000;
-            const int GOLD_CHANCE = 5;
-            const int IRON_CHANCE = 2;
-            const int MANA_CHANCE = 2;
-            const int NumBio = 800;
-            const int Border = 2000;
+            int rx = width - 10;
+            int ry = height - 10;
+            const int maxChance = 1000;
+            const int goldChance = 5;
+            const int ironChance = 2;
+            const int manaChance = 2;
+            const int numBio = 800;
+            const int border = 2000;
             const int numRivers = 50;
+
             Random r = new Random();
-            BiomeInfo[] bio = new BiomeInfo[NumBio + Border];
+            BiomeInfo[] bio = new BiomeInfo[numBio + border];
             for (int i = 0; i < bio.Length; i++)
             {
                 bio[i] = new BiomeInfo();
@@ -46,158 +44,158 @@ namespace mst_boredom_remover
               if (tundraAmount == 0) { }
               else
               {
-                    bio[p].Type = 'T';//Tundra
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'T';//Tundra
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (forestAmount == 0) { }
               else
               {
-                    bio[p].Type = 'F';//Forest
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'F';//Forest
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (mountainAmount == 0) { }
               else
               {
-                    bio[p].Type = 'M';//Mountain
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'M';//Mountain
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (plainAmount == 0) { }
               else
               {
-                    bio[p].Type = '+';//Plain
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = '+';//Plain
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (dreadlandAmount == 0) { }
               else
               {
-                    bio[p].Type = '%';//Dreadland
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = '%';//Dreadland
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (desertAmount == 0) { }
               else
               {
-                    bio[p].Type = 'D';//Desert
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'D';//Desert
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (oceanAmount == 0) { }
               else
               {
-                    bio[p].Type = '~'; //Ocean
-                    bio[p].X = r.Next(0, width);
-                    bio[p].Y = r.Next(0, height);
+                    bio[p].type = '~'; //Ocean
+                    bio[p].x = r.Next(0, width);
+                    bio[p].y = r.Next(0, height);
                     p++;
               }
 
               //checks for DEFAULT/NORMAL biome value
               if (tundraAmount >= 2)
               {
-                    bio[p].Type = 'T';//Tundra
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'T';//Tundra
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (forestAmount >= 2)
               {
-                    bio[p].Type = 'F';//Forest
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'F';//Forest
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (mountainAmount >= 2)
               {
-                    bio[p].Type = 'M';//Mountain
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'M';//Mountain
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (plainAmount >= 2)
               {
-                    bio[p].Type = '+';//Plain
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = '+';//Plain
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (dreadlandAmount >= 2)
               {
-                    bio[p].Type = '%';//Dreadland
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = '%';//Dreadland
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (desertAmount >= 2)
               {
-                    bio[p].Type = 'D';//Desert
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'D';//Desert
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (oceanAmount >= 2)
               {
-                    bio[p].Type = '~'; //Ocean
-                    bio[p].X = r.Next(0, width);
-                    bio[p].Y = r.Next(0, height);
+                    bio[p].type = '~'; //Ocean
+                    bio[p].x = r.Next(0, width);
+                    bio[p].y = r.Next(0, height);
                     p++;
                 }
               //checks for HIGH biome value
               if (tundraAmount >= 3)
               {
-                    bio[p].Type = 'T';//Tundra
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'T';//Tundra
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (forestAmount >= 3)
               {
-                    bio[p].Type = 'F';//Forest
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'F';//Forest
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (mountainAmount >= 3)
               {
-                    bio[p].Type = 'M';//Mountain
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'M';//Mountain
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (plainAmount >= 3)
               {
-                    bio[p].Type = '+';//Plain
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = '+';//Plain
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (dreadlandAmount >= 3)
               {
-                    bio[p].Type = '%';//Dreadland
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = '%';//Dreadland
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (desertAmount >= 3)
               {
-                    bio[p].Type = 'D';//Desert
-                    bio[p].X = r.Next(10, RX);
-                    bio[p].Y = r.Next(10, RY);
+                    bio[p].type = 'D';//Desert
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
               if (oceanAmount >= 3)
               {
-                    bio[p].Type = '~'; //Ocean
-                    bio[p].X = r.Next(0, width);
-                    bio[p].Y = r.Next(0, height);
+                    bio[p].type = '~'; //Ocean
+                    bio[p].x = r.Next(0, width);
+                    bio[p].y = r.Next(0, height);
                     p++;
                 }
             }
@@ -205,23 +203,23 @@ namespace mst_boredom_remover
             //Sets Border To Ocean Biome
             for (int k = 0; k < width; k++)
             {//goes through and sets top and bottom rows to Ocean biome.
-                bio[NumBio + k * 2].Type = '~';
-                bio[NumBio + k * 2].X = k;
-                bio[NumBio + k * 2].Y = 0;
+                bio[numBio + k * 2].type = '~';
+                bio[numBio + k * 2].x = k;
+                bio[numBio + k * 2].y = 0;
 
-                bio[NumBio + k * 2 + 1].Type = '~';
-                bio[NumBio + k * 2 + 1].X = k;
-                bio[NumBio + k * 2 + 1].Y = height - 1;
+                bio[numBio + k * 2 + 1].type = '~';
+                bio[numBio + k * 2 + 1].x = k;
+                bio[numBio + k * 2 + 1].y = height - 1;
             }
             for (int l = 0; l < height; l++)
             {//Sets Left and Right border to Ocean biome
-                bio[NumBio + width + l * 2].Type = '~';
-                bio[NumBio + width + l * 2].X = 0;
-                bio[NumBio + width + l * 2].Y = l;
+                bio[numBio + width + l * 2].type = '~';
+                bio[numBio + width + l * 2].x = 0;
+                bio[numBio + width + l * 2].y = l;
 
-                bio[NumBio + width + l * 2 + 1].Type = '~';
-                bio[NumBio + width + l * 2 + 1].X = width - 1;
-                bio[NumBio + width + l * 2 + 1].Y = l;
+                bio[numBio + width + l * 2 + 1].type = '~';
+                bio[numBio + width + l * 2 + 1].x = width - 1;
+                bio[numBio + width + l * 2 + 1].y = l;
             }
 
             char[,] field = new char[width, height];
@@ -234,15 +232,15 @@ namespace mst_boredom_remover
                 {
                     char nearest = '~';
                     int dist = 5000;
-                    for (int z = 0; z < NumBio + Border; z++)
+                    for (int z = 0; z < numBio + border; z++)
                     {
-                        int Xdiff = bio[z].X - j;
-                        int Ydiff = bio[z].Y - i;
-                        int Cdist = Xdiff * Xdiff + Ydiff * Ydiff;
-                        if (Cdist < dist)
+                        int xdiff = bio[z].x - j;
+                        int ydiff = bio[z].y - i;
+                        int cdist = xdiff * xdiff + ydiff * ydiff;
+                        if (cdist < dist)
                         {
-                            nearest = bio[z].Type;
-                            dist = Cdist;
+                            nearest = bio[z].type;
+                            dist = cdist;
                         }
 
                     }
@@ -356,17 +354,17 @@ namespace mst_boredom_remover
                 {
                     if (field[j, i] == 'M')
                     {
-                        if (r.Next(0, MAX_CHANCE) <= GOLD_CHANCE)
+                        if (r.Next(0, maxChance) <= goldChance)
                             field[j, i] = 'G';//inserts gold mine resource
                     }
                     else if (field[j, i] == 'F')
                     {
-                        if (r.Next(0, MAX_CHANCE) <= IRON_CHANCE)
+                        if (r.Next(0, maxChance) <= ironChance)
                             field[j, i] = 'L';//sawmill for lumber
                     }
                     else if (field[j, i] == '%')
                     {
-                        if (r.Next(0, MAX_CHANCE) <= MANA_CHANCE)
+                        if (r.Next(0, maxChance) <= manaChance)
                             field[j, i] = '*';//magic crystal resource
                     }
 
@@ -405,7 +403,7 @@ namespace mst_boredom_remover
 						{
 							field[j,i]='^';//River running north to south.
 						}
-						if(field[j,i-1]=='-' && field[j+i+1]=='-')
+						if(field[j,i-1]=='-' && field[j,i+1]=='-')
 						{
 							field[j,i]=',';//River running east to west.
 						}
