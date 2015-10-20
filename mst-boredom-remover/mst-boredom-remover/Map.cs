@@ -498,7 +498,7 @@ namespace mst_boredom_remover
 
                 if (unit.selected)
                 {
-                    c = c * .5f;
+                    c = Color.Red;
                 }
 
                 // finally draw the unit
