@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
@@ -18,7 +11,7 @@ namespace mst_boredom_remover
         MouseOver, // when a mouse is on the button
         Pressed, // when the button is clicked
     }
-    public class Button : UIObject
+    public class Button : UiObject
     {
         private Texture2D texture;
         private bool visible = true;
@@ -51,7 +44,6 @@ namespace mst_boredom_remover
 
         // button constructor
         public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position, float scale = 1.0f)
-            : base ()
         {
             this.texture = texture;
             this.hoverTexture = hoverTexture;
@@ -63,21 +55,21 @@ namespace mst_boredom_remover
             this.scale = scale;
         }
 
-        public override void toggleDebugMode()
+        public override void ToggleDebugMode()
         {
             //base.toggleDebugMode();
         }
 
-        public override void changeFont(SpriteFont f)
+        public override void ChangeFont(SpriteFont f)
         {
 
         }
 
-        private void debugUpdate(GameTime gt)
+        private void DebugUpdate(GameTime gt)
         {
 
         }
-        private void debugDraw(SpriteBatch sb)
+        private void DebugDraw(SpriteBatch sb)
         {
 
         }
@@ -90,10 +82,10 @@ namespace mst_boredom_remover
                 // tracks mouse position
                 MouseState mouseState = Mouse.GetState();
 
-                int MouseX = mouseState.X; // sets mouse x position
-                int MouseY = mouseState.Y; // sets mouse y position
+                int mouseX = mouseState.X; // sets mouse x position
+                int mouseY = mouseState.Y; // sets mouse y position
 
-                bool isMouseOver = bounds.Contains(MouseX, MouseY); // check if the mouse is touching the button
+                bool isMouseOver = bounds.Contains(mouseX, mouseY); // check if the mouse is touching the button
 
                 if (isMouseOver)
                 {
@@ -171,7 +163,7 @@ namespace mst_boredom_remover
             }
         }
 
-        public override void changeContext(int id)
+        public override void ChangeContext(int id)
         {
 
         }
@@ -182,7 +174,7 @@ namespace mst_boredom_remover
             this.hoverTexture = hoverTexture;
             this.pressedTexture = pressedTexture;
         }
-        public void toggleVisibility()
+        public void ToggleVisibility()
         {
             if (visible)
             {
