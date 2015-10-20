@@ -1,40 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using System.Collections.Generic;
 
-namespace mst_boredom_remover
+namespace mst_boredom_remover.engine
 {
     class Engine
     {
         // In C# int's are always 32-bits, if we assume 60 ticks a second we should be able to handle
         //  a game that lasts a full year long without overflowing. =D
-        public int current_tick;
-        public Dictionary<int, List<Unit>> future_updates;
+        public int currentTick;
+        public Dictionary<int, List<Unit>> futureUpdates;
 
         // Map stuff
         public EngineMap map;
         
         // Game types
-        public List<UnitType> unit_types;
-        public List<TileType> tile_types;
+        public List<UnitType> unitTypes;
+        public List<TileType> tileTypes;
 
         // Game objects
         public List<Player> players;
         public List<Unit> units;
-        public Unit[,] unit_grid;
+        public Unit[,] unitGrid;
 
-        public Engine(int map_width, int map_height)
+        public Engine(int mapWidth, int mapHeight)
         {
-            current_tick = 0;
-            future_updates = new Dictionary<int, List<Unit>>();
-            map = new EngineMap(map_width, map_height);
-            unit_types = new List<UnitType>();
-            players = new List<Player>() {new Player("Frodo",0), new Player("Harry",1)};
+            currentTick = 0;
+            futureUpdates = new Dictionary<int, List<Unit>>();
+            map = new EngineMap(mapWidth, mapHeight);
+            unitTypes = new List<UnitType>();
+            players = new List<Player>() {new Player("Frodo")};
             units = new List<Unit>();
-            unit_grid = new Unit[map.width, map.height];
+            unitGrid = new Unit[map.width, map.height];
         }
 
         public void AddUnit(Unit unit)
@@ -43,69 +38,70 @@ namespace mst_boredom_remover
             if (unit.position.x >= 0 && unit.position.x < map.width && unit.position.y >= 0 &&
                 unit.position.y < map.height)
             {
-                unit_grid[unit.position.x, unit.position.y] = unit;
+                unitGrid[unit.position.x, unit.position.y] = unit;
             }
         }
 
         public void Tick()
         {
-            if (future_updates.ContainsKey(current_tick))
+            if (futureUpdates.ContainsKey(currentTick))
             {
+                var x = futureUpdates[currentTick];
                 // Apply all updates for this tick
-                foreach (var unit in future_updates[current_tick])
+                foreach (var unit in x)
                 {
                     unit.Update();
                 }
 
                 // We are done with all the updates for this tick
-                future_updates.Remove(current_tick);
+                futureUpdates.Remove(currentTick);
             }
 
-            current_tick += 1;
+            currentTick += 1;
         }
 
-        public void ScheduleUpdate(int ticks_from_now, Unit unit)
+        public void ScheduleUpdate(int ticksFromNow, Unit unit)
         {
-            if (unit.nextMove <= current_tick)
+            if (unit.nextMove <= currentTick)
             {
-                if (!future_updates.ContainsKey(current_tick + ticks_from_now))
+                if (!futureUpdates.ContainsKey(currentTick + ticksFromNow))
                 {
-                    future_updates[current_tick + ticks_from_now] = new List<Unit>();
+                    futureUpdates[currentTick + ticksFromNow] = new List<Unit>();
                 }
 
-                future_updates[current_tick + ticks_from_now].Add(unit);
-                unit.nextMove = current_tick + ticks_from_now;
+                futureUpdates[currentTick + ticksFromNow].Add(unit);
+                unit.nextMove = currentTick + ticksFromNow;
             }
         }
 
         public void RemoveUpdate(Unit unit)
         {
-            if (!future_updates.ContainsKey(unit.nextMove))
+            if (!futureUpdates.ContainsKey(unit.nextMove))
             {
                 return;
             }
-            if( future_updates[unit.nextMove].Contains(unit))
+            if( futureUpdates[unit.nextMove].Contains(unit))
             {
-                future_updates[unit.nextMove].Remove(unit);
+                futureUpdates[unit.nextMove].Remove(unit);
             }
         }
 
-        public void MoveUnit(Unit unit, Position target_position)
+        public void MoveUnit(Unit unit, Position targetPosition)
         {
-            unit_grid[unit.position.x, unit.position.y] = null;
-            unit_grid[target_position.x, target_position.y] = unit;
-            unit.position = target_position;
+            unitGrid[unit.position.x, unit.position.y] = null;
+            unitGrid[targetPosition.x, targetPosition.y] = unit;
+            unit.position = targetPosition;
         }
 
-        public void OrderMove(Unit unit, Position target_position)
+        public void OrderMove(Unit unit, Position targetPosition)
         {
-            unit.orders.Add(Order.CreateMoveOrder(target_position));
+            unit.orders.Add(Order.CreateMoveOrder(targetPosition));
             ScheduleUpdate(1, unit);
         }
 
-        public void OrderProduce(Unit factory, UnitType unit_type)
+        public void OrderProduce(Unit factory, UnitType unitType)
         {
-            factory.orders.Add(Order.CreateProduceOrder(unit_type));
+            factory.orders.Add(Order.CreateProduceOrder(unitType));
             ScheduleUpdate(1, factory);
         }
 
@@ -134,7 +130,7 @@ namespace mst_boredom_remover
             if (target.health<=0) //target dead
             {
                 RemoveUpdate(target);
-                unit_grid[target.position.x,target.position.y] = null;
+                unitGrid[target.position.x,target.position.y] = null;
                 units.Remove(target);
                 target.status = Unit.Status.Dead;
             }

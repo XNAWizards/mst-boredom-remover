@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace mst_boredom_remover
+namespace mst_boredom_remover.engine
 {
     class EngineMap
     {
@@ -20,7 +18,7 @@ namespace mst_boredom_remover
             West
         }
 
-        public static Position[] direction_deltas = new Position[]
+        public static Position[] directionDeltas = new Position[]
         {
             new Position(1, 0),
             new Position(0, 1),
@@ -33,24 +31,24 @@ namespace mst_boredom_remover
             this.width = width;
             this.height = height;
             this.tiles = new Tile[width, height];
-            Position target_position = new Position(0, 0);
-            for (target_position.y = 0; target_position.y < height; ++target_position.y)
+            Position targetPosition = new Position(0, 0);
+            for (targetPosition.y = 0; targetPosition.y < height; ++targetPosition.y)
             {
-                for (target_position.x = 0; target_position.x < width; ++target_position.x)
+                for (targetPosition.x = 0; targetPosition.x < width; ++targetPosition.x)
                 {
-                    Tile target_tile = new Tile();
-                    tiles[target_position.x, target_position.y] = target_tile;
-                    target_tile.position = new Position(target_position.x, target_position.y);
+                    Tile targetTile = new Tile();
+                    tiles[targetPosition.x, targetPosition.y] = targetTile;
+                    targetTile.position = new Position(targetPosition.x, targetPosition.y);
                 }
             }
-            for (target_position.y = 0; target_position.y < height; ++target_position.y)
+            for (targetPosition.y = 0; targetPosition.y < height; ++targetPosition.y)
             {
-                for (target_position.x = 0; target_position.x < width; ++target_position.x)
+                for (targetPosition.x = 0; targetPosition.x < width; ++targetPosition.x)
                 {
-                    Tile target_tile = tiles[target_position.x, target_position.y];
-                    target_tile.neighbors = new List<Tile>(from delta in direction_deltas
-                                             where Inside(target_position + delta)
-                                             select tiles[target_position.x + delta.x, target_position.y + delta.y]);
+                    Tile targetTile = tiles[targetPosition.x, targetPosition.y];
+                    targetTile.neighbors = new List<Tile>(from delta in directionDeltas
+                                             where Inside(targetPosition + delta)
+                                             select tiles[targetPosition.x + delta.x, targetPosition.y + delta.y]);
                 }
             }
         }
