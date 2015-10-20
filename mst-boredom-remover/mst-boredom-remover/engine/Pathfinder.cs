@@ -67,22 +67,18 @@ namespace mst_boredom_remover.engine
             }
             
             bool success = false;
-            Node tempNode = new Node(start, null, 0, FValue(start,end));
-            Node currentBest = null;
+            Node firstNode = new Node(start, null, 0, FValue(start,end));
             PriorityQueues.PriorityQueue<Node> openSet = new PriorityQueues.PriorityQueue<Node>();
             HashSet<Position> visitedTiles = new HashSet<Position>();
-            openSet.Enqueue(tempNode);
-            visitedTiles.Add(tempNode.tile.position);
-            
+            openSet.Enqueue(firstNode);
+            visitedTiles.Add(firstNode.tile.position);
+            Node currentBest = null;
+
             //generate path
-            while ( true )
+            while ( openSet.Count() > 0 )
             {
-                if ( openSet.Count() == 0 )
-                {
-                    success = false;
-                    break;
-                }
                 currentBest = openSet.Dequeue();
+                
                 //if we are at the goal end
                 if ( currentBest.tile.Equals(end) )
                 {
@@ -92,7 +88,7 @@ namespace mst_boredom_remover.engine
                 //take current best, generate all possible nodes, push them onto queue
                 foreach (var neighbor in currentBest.tile.neighbors)
                 {
-                    tempNode = new Node(neighbor, currentBest, currentBest.distance + 1, currentBest.distance + 1 + FValue(neighbor, end));
+                    Node tempNode = new Node(neighbor, currentBest, currentBest.distance + 1, currentBest.distance + 1 + FValue(neighbor, end));
 
                     if (unit.CanMove(neighbor.position) && !visitedTiles.Contains(neighbor.position))
                     {
@@ -105,7 +101,7 @@ namespace mst_boredom_remover.engine
             {
                 //generate path
                 path = new List<Position>();
-                tempNode = currentBest;
+                Node tempNode = currentBest;
                 while(tempNode != null )
                 {
                     path.Insert(0, tempNode.tile.position);

@@ -63,7 +63,16 @@ namespace mst_boredom_remover.engine
 
         public bool CanMove(Position targetPosition)
         {
-            return (engine.map.Inside(targetPosition) && engine.unitGrid[targetPosition.x, targetPosition.y] == null);
+            if (engine.map.Inside(targetPosition))
+            {
+                var targetUnit = engine.unitGrid[targetPosition.x, targetPosition.y];
+                if (targetUnit != null)
+                {
+                    return targetUnit.orders.Count == 0;
+                }
+                return true;
+            }
+            return false;
         }
 
         public int AttackRange()
