@@ -82,6 +82,8 @@ namespace mst_boredom_remover
 
             this.charmap = Generator.Generate(width, height);
 
+            engine.map.UpdateTiles(charmap);
+
             tileNames = new List<string>();
 
             tileNames.Add("null");
@@ -305,6 +307,7 @@ namespace mst_boredom_remover
             {
                 // generate a new map, reconstruct cache
                 charmap = Generator.Generate(width, height);
+                engine.map.UpdateTiles(charmap);
                 gDisable = true;
                 buildMapCache = true;
                 savePxMod = pxMod;
@@ -386,8 +389,15 @@ namespace mst_boredom_remover
                         }
                         engine.OrderAttack(unit, clickedUnit);
                     }
-                    else // Move units
+                    else // Move units or gather
                     {
+                        var resource = engine.map.tiles[enumerator.Current.x, enumerator.Current.y].tileType.resourceType;
+                        if ( resource != null )
+                        {
+                            engine.OrderGather(unit, enumerator.Current);
+                            continue;
+                        }
+
                         while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
                         {
                             enumerator.MoveNext();
