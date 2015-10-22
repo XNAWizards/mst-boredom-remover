@@ -179,6 +179,14 @@ namespace mst_boredom_remover
 
         public override void Draw(SpriteBatch sb)
         {
+            // draw unit HP bars
+            foreach (Unit u in engineUnits)
+            {
+                // calc hp percent
+                double percent = u.health / u.type.maxHealth;
+
+                Vector2 drawPosition = map.GetDrawPosition(u);
+            }
             if (rectangleSelect)
             {
                 // draw the select box. ideally all units contaned within or touching are selected when the click is released

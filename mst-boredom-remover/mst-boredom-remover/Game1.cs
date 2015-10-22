@@ -74,49 +74,42 @@ namespace mst_boredom_remover
 
 
             debugFont = Content.Load<SpriteFont>("debug_font");
+            SpriteFont bigFont = Content.Load<SpriteFont>("Arial Big");
+
+            Texture2D buttonTexture = Content.Load<Texture2D>("ButtonNormal");
+            Texture2D buttonHover = Content.Load<Texture2D>("ButtonHover");
+            Texture2D buttonActive = Content.Load<Texture2D>("ButtonActive");
 
             // UIObjects
             #region Buttons
             // New Game Button
-            Texture2D newButtonTexture = Content.Load<Texture2D>("Buttons\\BtnNew");
-            Texture2D newButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnNewHover");
-            Button newButton = new Button(newButtonTexture, newButtonTextureHover, newButtonTextureHover, new Vector2(150,117));
+            Button newButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150,117), 1.0f, "New", bigFont);
             newButton.OnPress += newButton_OnPress;
             newButton.Clicked += newButton_Clicked;
 
             // Load Game Button
-            Texture2D loadButtonTexture = Content.Load<Texture2D>("Buttons\\BtnLoad");
-            Texture2D loadButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnLoadHover");
-            Button loadButton = new Button(loadButtonTexture, loadButtonTextureHover, loadButtonTextureHover, new Vector2(150, 217));
+            Button loadButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150, 217), 1.0f, "Load", bigFont);
             loadButton.OnPress += loadButton_OnPress;
             loadButton.Clicked += loadButton_Clicked;
             // Settings/Options Button
 
             // main menu Exit Button
-            Texture2D mmExitButtonTexture = Content.Load<Texture2D>("Buttons\\BtnExit");
-            Texture2D mmExitButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnExitHover");
-            Button mmExitButton = new Button(mmExitButtonTexture, mmExitButtonTextureHover, mmExitButtonTextureHover, new Vector2(150, 317));
+            Button mmExitButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150, 317), 1.0f, "Exit", bigFont);
             mmExitButton.OnPress += mmExitButton_OnPress;
             mmExitButton.Clicked += mmExitButton_Clicked;
 
             // Back Button for ingame screen
-            Texture2D backButtonTexture = Content.Load<Texture2D>("Buttons\\BtnBack");
-            Texture2D backButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnBackHover");
-            Button backButton = new Button(backButtonTexture, backButtonTextureHover, backButtonTextureHover, new Vector2(1250, 27), .5f);
+            Button backButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(1250, 27), .5f, "Back", bigFont);
             backButton.OnPress += backButton_OnPress;
             backButton.Clicked += backButton_Clicked;
 
             // Go Button for New Game screen
-            Texture2D goButtonTexture = Content.Load<Texture2D>("Buttons\\BtnGo");
-            Texture2D goButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnGoHover");
-            Button goButton = new Button(goButtonTexture, goButtonTextureHover, goButtonTextureHover, new Vector2(600, 500));
+            Button goButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(600, 500), 1.0f, "Go", bigFont);
             goButton.OnPress += goButton_OnPress;
             goButton.Clicked += goButton_Clicked;
 
             // back button for new game
-            Texture2D ngbackButtonTexture = Content.Load<Texture2D>("Buttons\\BtnBack");
-            Texture2D ngbackButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnBackHover");
-            Button ngbackButton = new Button(backButtonTexture, backButtonTextureHover, backButtonTextureHover, new Vector2(20, 675), .5f);
+            Button ngbackButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(20, 675), .5f, "Back", bigFont);
             ngbackButton.OnPress += ngbackButton_OnPress;
             ngbackButton.Clicked += ngbackButton_Clicked;
 
@@ -181,13 +174,30 @@ namespace mst_boredom_remover
             tiles.Add(forestTexture);
 
             Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\knightbase");
-            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
+            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\magebase"); // temp
             Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
+            Texture2D baseTown = Content.Load<Texture2D>("basictownbase");
+            Texture2D baseGoldMine = Content.Load<Texture2D>("goldminebase");
 
             engine.unitTypes.Add(new UnitType(name: "Swordsman",
                 idleTextures: new[] { swordUnitTexture },
                 moveTextures: new[] { swordUnitTexture },
                 attackTextures: new[] { swordUnitTexture }));
+
+            engine.unitTypes.Add(new UnitType(name: "Archer",
+                idleTextures: new[] { archerUnitTexture },
+                moveTextures: new[] { archerUnitTexture },
+                attackTextures: new[] { archerUnitTexture }));
+
+            engine.unitTypes.Add(new UnitType(name: "Town",
+                idleTextures: new[] { baseTown },
+                moveTextures: new[] { baseTown },
+                attackTextures: new[] { baseTown }));
+
+            engine.unitTypes.Add(new UnitType(name: "Gold",
+                idleTextures: new[] { baseGoldMine },
+                moveTextures: new[] { baseGoldMine },
+                attackTextures: new[] { baseGoldMine }));
 
             Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
 
@@ -289,12 +299,12 @@ namespace mst_boredom_remover
                 x.Draw(spriteBatch);
             }
 
-            spriteBatch.DrawString(debugFont, "Current tick: " + engine.currentTick, new Vector2(1, 1), Color.Black);
+            /*spriteBatch.DrawString(debugFont, "Current tick: " + engine.currentTick, new Vector2(1, 1), Color.Black);
             if (engine.currentTick > 1)
             {
                 spriteBatch.DrawString(debugFont, "x: " + engine.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
                 spriteBatch.DrawString(debugFont, "y: " + engine.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
-            }
+            }*/
 
             spriteBatch.End();
             base.Draw(gameTime);
