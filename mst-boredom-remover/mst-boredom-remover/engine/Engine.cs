@@ -111,6 +111,12 @@ namespace mst_boredom_remover.engine
             ScheduleUpdate(1, attacker);
         }
 
+        public void OrderGather(Unit gatherer, Position target)
+        {
+            gatherer.orders.Add(Order.CreateGatherOrder(target));
+            ScheduleUpdate(1, gatherer);
+        }
+
         private double Max(double a, double b) { if (a > b) return a; return b; }
 
         public void Attack( Unit attacker, Unit target )

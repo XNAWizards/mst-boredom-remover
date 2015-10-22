@@ -9,6 +9,7 @@
             Follow,
             AttackMove,
             Patrol,
+            Gather,
             Gaurd,
             Idle,
             Build,
@@ -48,6 +49,17 @@
                 orderType = OrderType.Attack,
                 targetUnit = target,
                 targetPosition = target.position,
+                unitTypeBuild = null
+            };
+        }
+
+        public static Order CreateGatherOrder(Position target)
+        {
+            return new Order()
+            {
+                orderType = OrderType.Gather,
+                targetUnit = null,
+                targetPosition = target,
                 unitTypeBuild = null
             };
         }

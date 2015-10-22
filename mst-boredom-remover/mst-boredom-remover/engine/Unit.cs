@@ -182,6 +182,42 @@ namespace mst_boredom_remover.engine
                     engine.AddUnit(new Unit(engine, currentOrder.unitTypeBuild, producePosition, owner));
                     NextOrder();
                     break;
+                case Order.OrderType.Gather:
+                    if ( this.position != currentOrder.targetPosition )
+                    {
+                        // TODO: Move onto resource
+
+                        nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
+
+                        if (nextPosition != null)
+                        {
+                            engine.MoveUnit(this, nextPosition);
+                        }
+
+                        // TODO: Calculate cooldown based on speed and tile and modifiers
+                        engine.ScheduleUpdate(10, this);
+                        break;
+                    }
+                    // TODO: / ASSUPTION We have infinate resources, is that okay?
+                    var tileResoure = engine.map.tiles[currentOrder.targetPosition.x, currentOrder.targetPosition.y].tileType.resourceType;
+                    if ( tileResoure == TileType.ResourceType.Gold)
+                    {
+                        this.owner.gold += this.type.gatherRate;
+                    }
+                    else if ( tileResoure == TileType.ResourceType.Iron )
+                    {
+                        this.owner.iron += this.type.gatherRate;
+                    }
+                    else if ( tileResoure == TileType.ResourceType.ManaCrystals )
+                    {
+                        this.owner.iron += this.type.gatherRate;
+                    }
+                    engine.ScheduleUpdate(10, this);
+                    if ( orders.Count > 1 )
+                    {
+                        NextOrder();
+                    }
+                    break;
             }
         }
     }
