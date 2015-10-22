@@ -111,6 +111,7 @@ namespace mst_boredom_remover.engine
             var temp = a.position;
             a.position = b.position;
             b.position = temp;
+            OrderMove(b, a.position);
         }
 
         public void OrderMove(Unit unit, Position targetPosition)

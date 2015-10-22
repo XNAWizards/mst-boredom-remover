@@ -78,6 +78,10 @@ namespace mst_boredom_remover.engine
             while ( openSet.Count() > 0 )
             {
                 currentBest = openSet.Dequeue();
+                if (currentBest.value >= firstNode.value*2)
+                {
+                    break;
+                }
                 
                 //if we are at the goal end
                 if ( currentBest.tile.Equals(end) )
