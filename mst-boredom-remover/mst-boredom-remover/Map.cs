@@ -200,7 +200,7 @@ namespace mst_boredom_remover
                 {
                     c = charmap[(int)(mouseTile.X), (int)(mouseTile.Y)];
                 }
-                catch (Exception)
+                catch (System.Exception)
                 {
                     c = '!';
                 }
