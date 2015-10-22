@@ -14,6 +14,7 @@ namespace mst_boredom_remover.engine
         public Position position;
         public Position previousPosition;
         public int nextMove; //This is the tick that the unit gets its next move
+        public bool selected;
 
         public enum Status
         {
