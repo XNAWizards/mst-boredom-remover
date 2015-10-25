@@ -1,23 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace mst_boredom_remover
+namespace mst_boredom_remover.engine
 {
     class TileType
     {
         public string name;
-        public double movement_cost;
+        public double movementCost;
 
         public enum Biome
         {
-            Grassland,
-            Desert
+            Ocean,
+            Plain,
+            Mountain,
+            Forest,
+            Dreadlands,
+            Desert,
+            Tundra,
+            Gold,
+            Iron,
+            ManaCrystals
         };
         public Biome biome;
-        public List<UnitType.MovementType> allowed_movement_types;
+        public List<UnitType.MovementType> allowedMovementTypes;
 
         public enum ResourceType
         {
@@ -26,18 +31,18 @@ namespace mst_boredom_remover
             Iron,
             ManaCrystals
         };
-        public ResourceType resource_type;
-        Texture2D texture;
+        public ResourceType resourceType;
+        public Texture2D texture;
 
-        TileType(string name="", Texture2D texture = null, double movement_cost=1.0, Biome biome=Biome.Grassland,
-            List<UnitType.MovementType> allowed_movement_types=null, ResourceType resource_type=ResourceType.None)
+        public TileType(string name="", Texture2D texture = null, double movementCost=1.0, Biome biome=Biome.Plain,
+            List<UnitType.MovementType> allowedMovementTypes=null, ResourceType resourceType=ResourceType.None)
         {
             this.name = name;
             this.texture = texture;
-            this.movement_cost = movement_cost;
+            this.movementCost = movementCost;
             this.biome = biome;
-            this.allowed_movement_types = allowed_movement_types ?? new List<UnitType.MovementType>();
-            this.resource_type = resource_type;
+            this.allowedMovementTypes = allowedMovementTypes ?? new List<UnitType.MovementType>();
+            this.resourceType = resourceType;
         }
     }
 }

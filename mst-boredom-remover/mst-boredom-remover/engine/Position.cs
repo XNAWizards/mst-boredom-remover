@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace mst_boredom_remover
+namespace mst_boredom_remover.engine
 {
     
     class Position
@@ -21,6 +18,11 @@ namespace mst_boredom_remover
         public int Distance(Position other)
         {
             return Math.Abs(other.y - y) + Math.Abs(other.x - x);
+        }
+
+        public int EuclideanDistanceSquared(Position other)
+        {
+            return (other.y - y)*(other.y - y) + (other.x - x)*(other.x - x);
         }
 
         public static Position operator+(Position left, Position right)
