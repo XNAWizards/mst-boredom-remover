@@ -9,9 +9,9 @@ namespace mst_boredom_remover
     {
         public struct BiomeInfo
         {
-            public char Type;
-            public int X;
-            public int Y;
+            public char type;
+            public int x;
+            public int y;
         };
         public static char[,] generate(int width, int height)
         {
@@ -205,21 +205,21 @@ namespace mst_boredom_remover
             //Sets Border To Ocean Biome
             for (int k = 0; k < width; k++)
             {//goes through and sets top and bottom rows to Ocean biome.
-                bio[NumBio + k * 2].Type = '~';
+                bio[NumBio + k * 2].type = '~';
                 bio[NumBio + k * 2].X = k;
                 bio[NumBio + k * 2].Y = 0;
 
-                bio[NumBio + k * 2 + 1].Type = '~';
+                bio[NumBio + k * 2 + 1].type = '~';
                 bio[NumBio + k * 2 + 1].X = k;
                 bio[NumBio + k * 2 + 1].Y = height - 1;
             }
             for (int l = 0; l < height; l++)
             {//Sets Left and Right border to Ocean biome
-                bio[NumBio + width + l * 2].Type = '~';
+                bio[NumBio + width + l * 2].type = '~';
                 bio[NumBio + width + l * 2].X = 0;
                 bio[NumBio + width + l * 2].Y = l;
 
-                bio[NumBio + width + l * 2 + 1].Type = '~';
+                bio[NumBio + width + l * 2 + 1].type = '~';
                 bio[NumBio + width + l * 2 + 1].X = width - 1;
                 bio[NumBio + width + l * 2 + 1].Y = l;
             }
@@ -241,7 +241,7 @@ namespace mst_boredom_remover
                         int Cdist = Xdiff * Xdiff + Ydiff * Ydiff;
                         if (Cdist < dist)
                         {
-                            nearest = bio[z].Type;
+                            nearest = bio[z].type;
                             dist = Cdist;
                         }
 
@@ -261,8 +261,8 @@ namespace mst_boredom_remover
             }
 			
 			//River Algorithm
-			for(int i=0;i<100;i++){
-				for(int j=0;j<100;j++){
+			for(int i=0;i<height;i++){
+				for(int j=0;j<width;j++){
 					if(field[j, i]=='M')
 						elevation[j, i] = r.Next(40,90);
 					if(field[j, i]=='T')
@@ -281,11 +281,11 @@ namespace mst_boredom_remover
 			}
 			
 			for(int i=0;i<numRivers;i++){
-				int riveRX = r.Next(50,width-50);
-				int riveRY = r.Next(50,height-50);
-				if(elevation[riveRX,riveRX]<25){
-					riveRX = r.Next(50,width-50);
-					riveRY = r.Next(50,height-50);
+				int riveRX = r.Next(50,width - 50);
+				int riveRY = r.Next(50,height - 50);
+				if(elevation[riveRX,riveRX] < 25){
+					riveRX = r.Next(50,width - 50);
+					riveRY = r.Next(50,height - 50);
 				}
 				
 				int lastDir =5;
@@ -307,10 +307,10 @@ namespace mst_boredom_remover
 				}
 				
 				//make this random length
-				field[riveRX,riveRX] = '-';//Designed for '-' character, but use ocean biome for now.
+				field[riveRX,riveRY] = '-';//Designed for '-' character, but use ocean biome for now.
 				for(int j=0;j<riverLength;j++){
 					int minHeight = 100;
-					if(lastDir != 2 &&elevation[riveRX-1,riveRX]<minHeight){
+					if(lastDir != 2 &&elevation[riveRX-1,riveRY]<minHeight){
 						minHeight = elevation[riveRX-1,riveRY];
 						Direction=0;
 					}
@@ -343,10 +343,10 @@ namespace mst_boredom_remover
 							break;
 					}
 					lastDir = Direction;
-					if(field[riveRX,riveRY]=='~')
+					if(field[riveRX,riveRY] == '~')
 						break;
 					else
-						field[riveRX,riveRY]='-';
+						field[riveRX,riveRY] = '-';
 				}
 			}
             //Adding Resources.
@@ -362,7 +362,7 @@ namespace mst_boredom_remover
                     else if (field[j, i] == 'F')
                     {
                         if (r.Next(0, MAX_CHANCE) <= IRON_CHANCE)
-                            field[j, i] = 'L';//sawmill for lumber
+                            field[j, i] = 'I';//sawmill for iron
                     }
                     else if (field[j, i] == '%')
                     {
@@ -387,7 +387,7 @@ namespace mst_boredom_remover
 						}
 						if(field[j+1,i+1]!='~' && field[j,i+1]!='~' && field[j-1,i+1]!='~')
 						{
-							field[j,i]='%';//Coast tile with land on east.
+							field[j,i]='/';//Coast tile with land on east.
 						}
 						if(field[j+1,i]!='~' && field[j+1,i-1]!='~' && field[j+1,i+1]!='~')
 						{
