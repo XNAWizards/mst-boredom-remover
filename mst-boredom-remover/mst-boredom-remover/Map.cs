@@ -122,6 +122,11 @@ namespace mst_boredom_remover
                 }
             }*/
         }
+        
+        public int getPxSizeMod()
+        {
+            return tilePxSize + pxMod;
+        }
 
         public override void ChangeContext(int id)
         {
@@ -190,10 +195,10 @@ namespace mst_boredom_remover
             {
                 for (int x = 0; x < tileWidth; x++)
                 {
-                    if (engine.unitGrid[masterX + x, masterY + y] != null)
+                    if (engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y] != null)
                     {
-                        engine.unitGrid[masterX + x, masterY + y].selected = true;
-                        selectedUnits.Add(engine.unitGrid[masterX+ x, masterY + y]);
+                        engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y].selected = true;
+                        selectedUnits.Add(engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y]);
                     }
                 }
             }
@@ -345,8 +350,8 @@ namespace mst_boredom_remover
             drawPosition.X -= (float)(tileIndex.X * (tilePxSize + pxMod));
             drawPosition.Y -= (float)(tileIndex.Y * (tilePxSize + pxMod));
 
-
             // add offset for HP bar position
+            drawPosition.Y += tilePxSize + pxMod;
 
             return drawPosition;
         }
