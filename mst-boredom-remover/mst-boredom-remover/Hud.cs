@@ -103,7 +103,13 @@ namespace mst_boredom_remover
             }
             else if (m.RightButton == ButtonState.Released && m2.RightButton == ButtonState.Pressed)
             {
-                map.unitGroupMove(selectedUnits);
+                bool clearOrders = false;
+                if( k.IsKeyUp(Keys.LeftShift) && k.IsKeyUp(Keys.RightShift))
+                {
+                    clearOrders = true;
+                }
+
+                map.unitGroupMove(selectedUnits, clearOrders );
             }
             else
             {

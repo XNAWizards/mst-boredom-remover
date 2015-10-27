@@ -175,30 +175,39 @@ namespace mst_boredom_remover
 
 
             Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
-            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
-            Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
+            Texture2D swordUnitAttackTexture = Content.Load<Texture2D>("Units\\Kbaseatk");
+            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\Arcbase");
+            Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\Wbase");
             Texture2D baseTown = Content.Load<Texture2D>("basictownbase");
             Texture2D baseGoldMine = Content.Load<Texture2D>("goldminebase");
 
             engine.unitTypes.Add(new UnitType(name: "Swordsman",
                 idleTextures: new[] { swordUnitTexture },
                 moveTextures: new[] { swordUnitTexture },
-                attackTextures: new[] { swordUnitTexture }));
-
+                attackTextures: new[] { swordUnitAttackTexture },
+                attackStrength: 15, defense: 2, gatherRate: 2, goldCost: 50));
             engine.unitTypes.Add(new UnitType(name: "Archer",
                 idleTextures: new[] { archerUnitTexture },
                 moveTextures: new[] { archerUnitTexture },
-                attackTextures: new[] { archerUnitTexture }));
-
+                attackTextures: new[] { archerUnitTexture },
+                attackStrength: 10, attackRange: 5, defense: 0, gatherRate: 2, goldCost: 50));
+            engine.unitTypes.Add(new UnitType(name: "Peasent",
+                idleTextures: new[] { mageUnitTexture },
+                moveTextures: new[] { mageUnitTexture },
+                attackTextures: new[] { mageUnitTexture },
+                attackStrength: 2, defense: 0, gatherRate: 10, goldCost: 50));
             engine.unitTypes.Add(new UnitType(name: "Town",
                 idleTextures: new[] { baseTown },
                 moveTextures: new[] { baseTown },
-                attackTextures: new[] { baseTown }));
-
+                attackTextures: new[] { baseTown },
+                movementSpeed: 0, movementType: UnitType.MovementType.None,
+                attackStrength: 0, defense: 10, gatherRate: 20, goldCost: 100));
             engine.unitTypes.Add(new UnitType(name: "Gold",
                 idleTextures: new[] { baseGoldMine },
                 moveTextures: new[] { baseGoldMine },
-                attackTextures: new[] { baseGoldMine }));
+                attackTextures: new[] { baseGoldMine },
+                movementSpeed: 0, movementType: UnitType.MovementType.None,
+                attackStrength: 0, defense: 10, gatherRate: 20, goldCost: 100));
 
             Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
 

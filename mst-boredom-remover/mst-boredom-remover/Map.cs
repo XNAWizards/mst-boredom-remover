@@ -341,6 +341,7 @@ namespace mst_boredom_remover
             sb.Begin();
         }
 
+
         public Vector2 GetDrawPosition(Unit u)
         {
             Vector2 drawPosition = new Vector2();
@@ -358,7 +359,7 @@ namespace mst_boredom_remover
             return drawPosition;
         }
 
-        public void unitGroupMove(List<Unit> selected_units)
+        public void unitGroupMove(List<Unit> selected_units, bool clearOrders)
         {
             Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
 
@@ -367,9 +368,13 @@ namespace mst_boredom_remover
             enumerator.MoveNext();
             foreach (Unit unit in selected_units)
             {
+                if ( clearOrders )
+                {
+                    unit.orders.Clear();
+                }
                 if (clickedUnit == unit) // Produce units
                 {
-                    engine.OrderProduce(unit, engine.unitTypes[0]);
+                    engine.OrderProduce(unit, engine.unitTypes[1]);
                     break;
                 }
                 else if (clickedUnit != null) //Clicked a different unit TODO:make it so you don't attack your buddies
@@ -396,22 +401,6 @@ namespace mst_boredom_remover
                     engine.OrderMove(unit, enumerator.Current);
                     enumerator.MoveNext();
                 }
-                /*
-                if (engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y] == unit) // Produce units
-                {
-                    engine.OrderProduce(unit, engine.unitTypes[1]);
-                    break;
-                }
-                else // Move units
-                {
-                    while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
-                    {
-                        enumerator.MoveNext();
-                    }
-                    engine.OrderMove(unit, enumerator.Current);
-                    enumerator.MoveNext();
-                }
-                 */
             }
 
         }
