@@ -26,9 +26,10 @@ namespace mst_boredom_remover
         double timer = 0;
         bool rectangleSelect = false;
         const float HOLD_THRESH = .25f;
+        Texture2D HPbar;
 
         // handles context displays, selected units, resource counters, 
-        public Hud(ref Engine game, ref Map map, Texture2D boxSelect)
+        public Hud(ref Engine game, ref Map map, Texture2D boxSelect, Texture2D HPbar)
         {
             selectedUnits = new List<Unit>();
             engineUnits = game.units;
@@ -38,6 +39,7 @@ namespace mst_boredom_remover
 
             this.map = map;
             this.boxSelect = boxSelect;
+            this.HPbar = HPbar;
             // initialize
             m = Mouse.GetState();
             m2 = Mouse.GetState();
@@ -185,6 +187,16 @@ namespace mst_boredom_remover
 
         public override void Draw(SpriteBatch sb)
         {
+            // draw unit HP bars
+            foreach (Unit u in engineUnits)
+            {
+                // calc hp percent
+                double percent = u.health / u.type.maxHealth;
+
+                Vector2 drawPosition = map.GetDrawPosition(u);
+
+                sb.Draw(HPbar, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (int)(map.getPxSizeMod() * percent), 3), Color.White);
+            }
             if (rectangleSelect)
             {
                 // draw the select box. ideally all units contaned within or touching are selected when the click is released
