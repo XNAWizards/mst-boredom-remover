@@ -10,8 +10,16 @@ namespace mst_boredom_remover.engine
 
         public enum Biome
         {
-            Grassland,
-            Desert
+            Ocean,
+            Plain,
+            Mountain,
+            Forest,
+            Dreadlands,
+            Desert,
+            Tundra,
+            Gold,
+            Iron,
+            ManaCrystals
         };
         public Biome biome;
         public List<UnitType.MovementType> allowedMovementTypes;
@@ -26,7 +34,7 @@ namespace mst_boredom_remover.engine
         public ResourceType resourceType;
         public Texture2D texture;
 
-        TileType(string name="", Texture2D texture = null, double movementCost=1.0, Biome biome=Biome.Grassland,
+        public TileType(string name="", Texture2D texture = null, double movementCost=1.0, Biome biome=Biome.Plain,
             List<UnitType.MovementType> allowedMovementTypes=null, ResourceType resourceType=ResourceType.None)
         {
             this.name = name;

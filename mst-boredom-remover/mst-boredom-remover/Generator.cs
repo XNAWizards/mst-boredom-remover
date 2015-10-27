@@ -206,22 +206,22 @@ namespace mst_boredom_remover
             for (int k = 0; k < width; k++)
             {//goes through and sets top and bottom rows to Ocean biome.
                 bio[NumBio + k * 2].type = '~';
-                bio[NumBio + k * 2].X = k;
-                bio[NumBio + k * 2].Y = 0;
+                bio[NumBio + k * 2].x = k;
+                bio[NumBio + k * 2].y = 0;
 
                 bio[NumBio + k * 2 + 1].type = '~';
-                bio[NumBio + k * 2 + 1].X = k;
-                bio[NumBio + k * 2 + 1].Y = height - 1;
+                bio[NumBio + k * 2 + 1].x = k;
+                bio[NumBio + k * 2 + 1].y = height - 1;
             }
             for (int l = 0; l < height; l++)
             {//Sets Left and Right border to Ocean biome
                 bio[NumBio + width + l * 2].type = '~';
-                bio[NumBio + width + l * 2].X = 0;
-                bio[NumBio + width + l * 2].Y = l;
+                bio[NumBio + width + l * 2].x = 0;
+                bio[NumBio + width + l * 2].y = l;
 
                 bio[NumBio + width + l * 2 + 1].type = '~';
-                bio[NumBio + width + l * 2 + 1].X = width - 1;
-                bio[NumBio + width + l * 2 + 1].Y = l;
+                bio[NumBio + width + l * 2 + 1].x = width - 1;
+                bio[NumBio + width + l * 2 + 1].y = l;
             }
 
             char[,] field = new char[width, height];
@@ -236,8 +236,8 @@ namespace mst_boredom_remover
                     int dist = 5000;
                     for (int z = 0; z < NumBio + Border; z++)
                     {
-                        int Xdiff = bio[z].X - j;
-                        int Ydiff = bio[z].Y - i;
+                        int Xdiff = bio[z].x - j;
+                        int Ydiff = bio[z].y - i;
                         int Cdist = Xdiff * Xdiff + Ydiff * Ydiff;
                         if (Cdist < dist)
                         {
@@ -283,7 +283,7 @@ namespace mst_boredom_remover
 			for(int i=0;i<numRivers;i++){
 				int riveRX = r.Next(50,width - 50);
 				int riveRY = r.Next(50,height - 50);
-				if(elevation[riveRX,riveRX] < 25){
+				if(elevation[riveRX,riveRY] < 25){
 					riveRX = r.Next(50,width - 50);
 					riveRY = r.Next(50,height - 50);
 				}

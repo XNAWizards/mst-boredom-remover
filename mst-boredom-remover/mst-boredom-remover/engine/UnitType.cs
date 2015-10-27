@@ -24,7 +24,8 @@ namespace mst_boredom_remover.engine
             Walker,
             Swimmer,
             Flier,
-            Digger
+            Digger,
+            None
         };
         public MovementType movementType;
         public double movementSpeed;
@@ -45,6 +46,7 @@ namespace mst_boredom_remover.engine
         }
         public List<Spell> spells;
 
+        public double gatherRate;
         public double goldCost;
         public double ironCost;
         public double manaCrystalsCost;
@@ -56,8 +58,8 @@ namespace mst_boredom_remover.engine
 
         public UnitType(string name="", double maxHealth=100.0, AttackType attackType=AttackType.Melee,
             double attackStrength=1.0, double attackRange=1.0, double defense=0.0, MovementType movementType=MovementType.Walker,
-            double movementSpeed=1.0, List<Action> actions=null, List<Spell> spells=null,
-            double goldCost=0.0, double ironCost=0.0, double manaCrystalsCost=0.0,
+            double movementSpeed=1.0, List<Action> actions=null, List<Spell> spells=null, double gatherRate = 10.0,
+            double goldCost=10.0, double ironCost=0.0, double manaCrystalsCost=0.0,
             Texture2D[] idleTextures=null, Texture2D[] attackTextures=null, Texture2D[] moveTextures=null)
         {
             this.name = name;
@@ -70,6 +72,7 @@ namespace mst_boredom_remover.engine
             this.movementSpeed = movementSpeed;
             this.actions = actions ?? new List<Action>();
             this.spells = spells ?? new List<Spell>();
+            this.gatherRate = gatherRate;
             this.goldCost = goldCost;
             this.ironCost = ironCost;
             this.manaCrystalsCost = manaCrystalsCost;

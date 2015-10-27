@@ -53,6 +53,59 @@ namespace mst_boredom_remover.engine
             }
         }
 
+        public void UpdateTiles(char [,] charmap)
+        {
+            Position targetPosition = new Position(0, 0);
+            for (targetPosition.y = 0; targetPosition.y < height; ++targetPosition.y)
+            {
+                for (targetPosition.x = 0; targetPosition.x < width; ++targetPosition.x)
+                {
+                    tiles[targetPosition.x, targetPosition.y].tileType = new TileType();
+                    switch (charmap[targetPosition.x, targetPosition.y])
+                    {
+                        case '~':
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Ocean;
+                            break;
+                        case '+':
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Plain;
+                            
+                            break;
+                        case 'M':
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Mountain;
+                            break;
+                        case 'F':
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Forest;
+                            break;
+                        case '%':
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Dreadlands;
+                            break;
+                        case 'D':
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Desert;
+                            break;
+                        case 'T':
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Tundra;
+                            break;
+                        case 'G':
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Gold;
+                            tiles[targetPosition.x, targetPosition.y].tileType.resourceType = TileType.ResourceType.Gold;
+                            break;
+                        case 'L':
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Iron;
+                            tiles[targetPosition.x, targetPosition.y].tileType.resourceType = TileType.ResourceType.Iron;
+                            break;
+                        case '*':
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.ManaCrystals;
+                            tiles[targetPosition.x, targetPosition.y].tileType.resourceType = TileType.ResourceType.ManaCrystals;
+                            break;
+                        default:
+                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Ocean;
+                            break;
+                    }
+
+                }
+            }
+        }
+
         public bool Inside(Position position)
         {
             return (position.x >= 0 && position.y >= 0 && position.x < width && position.y < height);

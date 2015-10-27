@@ -13,11 +13,14 @@ namespace mst_boredom_remover
     }
     public class Button : UiObject
     {
+        private string text = "";
+        private Vector2 textPosition;
         private Texture2D texture;
         private bool visible = true;
         private Vector2 position;
         // stores the last mouse state
         private MouseState previousState;
+        
 
         // different textures
         private Texture2D hoverTexture;
@@ -43,7 +46,7 @@ namespace mst_boredom_remover
         public event EventHandler OnPress;
 
         // button constructor
-        public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position, float scale = 1.0f)
+        public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position, float scale, string text, SpriteFont f)
         {
             this.texture = texture;
             this.hoverTexture = hoverTexture;
@@ -53,6 +56,10 @@ namespace mst_boredom_remover
             // draw bounds around the button
             this.bounds = new Rectangle((int)position.X - texture.Width/2, (int)position.Y-texture.Height/2, texture.Width, texture.Height);
             this.scale = scale;
+            this.text = text;
+            this.font = f;
+
+            CalculateCenter();
         }
 
         public override void ToggleDebugMode()
@@ -62,7 +69,7 @@ namespace mst_boredom_remover
 
         public override void ChangeFont(SpriteFont f)
         {
-
+            
         }
 
         private void DebugUpdate(GameTime gt)
@@ -72,6 +79,18 @@ namespace mst_boredom_remover
         private void DebugDraw(SpriteBatch sb)
         {
 
+        }
+
+        private void CalculateCenter()
+        {
+            // if string is not empty
+            if (text != "")
+            {
+                // centers the string inside the texture
+                // top left corner of background + half the texture pixel size - half the pixel size of the string
+                textPosition = new Vector2((bounds.X + (bounds.Width) / 2) - font.MeasureString(text).X / 2,
+                    (bounds.Y + (bounds.Height) / 2) - font.MeasureString(text).Y / 2);
+            }
         }
 
         // update button state/fire events as necessary
@@ -154,12 +173,22 @@ namespace mst_boredom_remover
                         break;
                     // draw the pressed state of the button
                     case ButtonStatus.Pressed:
-                        spriteBatch.Draw(hoverTexture, position, null, Color.White, 0, new Vector2(texture.Width/2, texture.Height/2), scale + .2f, SpriteEffects.None, 0);
+                        spriteBatch.Draw(pressedTexture, position, null, Color.White, 0, new Vector2(texture.Width/2, texture.Height/2), scale + .2f, SpriteEffects.None, 0);
                         break;
                     // impossible case
                     default:
                         break;
                 }
+                if (state == ButtonStatus.Pressed)
+                {
+                    spriteBatch.DrawString(font, text, textPosition, Color.Red, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0);
+                }
+                else
+                {
+                    spriteBatch.DrawString(font, text, textPosition, Color.White, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0);
+                }
+                
+                //spriteBatch.DrawString(font, text, textPosition, Color.White);
             }
         }
 
@@ -173,6 +202,11 @@ namespace mst_boredom_remover
             this.texture = texture;
             this.hoverTexture = hoverTexture;
             this.pressedTexture = pressedTexture;
+        }
+        public void changeText(string newText)
+        {
+            text = newText;
+            CalculateCenter();
         }
         public void ToggleVisibility()
         {

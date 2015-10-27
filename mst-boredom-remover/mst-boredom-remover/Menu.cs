@@ -22,6 +22,11 @@ namespace mst_boredom_remover
             this.controls = controls;
             this.color = color;
             this.thisId = thisId;
+
+            foreach (UiObject u in controls)
+            {
+                u.parentReference = this;
+            }
         }
 
         public void Activate()
@@ -100,7 +105,7 @@ namespace mst_boredom_remover
         {
             if (active)
             {
-                sb.Draw(texture, position, color);
+                
                 foreach (UiObject x in controls)
                 {
                     x.Draw(sb);
@@ -110,6 +115,7 @@ namespace mst_boredom_remover
                 {
                     DebugDraw(sb);
                 }
+                //sb.Draw(texture, position, color);
             }
         }
     }
