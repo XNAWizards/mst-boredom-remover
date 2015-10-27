@@ -351,7 +351,7 @@ namespace mst_boredom_remover
                 }
                 if (clickedUnit == unit) // Produce units
                 {
-                    engine.OrderProduce(unit, engine.unitTypes[0]);
+                    engine.OrderProduce(unit, engine.unitTypes[1]);
                     break;
                 }
                 else if (clickedUnit != null) //Clicked a different unit TODO:make it so you don't attack your buddies
@@ -378,22 +378,6 @@ namespace mst_boredom_remover
                     engine.OrderMove(unit, enumerator.Current);
                     enumerator.MoveNext();
                 }
-                /*
-                if (engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y] == unit) // Produce units
-                {
-                    engine.OrderProduce(unit, engine.unitTypes[0]);
-                    break;
-                }
-                else // Move units
-                {
-                    while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
-                    {
-                        enumerator.MoveNext();
-                    }
-                    engine.OrderMove(unit, enumerator.Current);
-                    enumerator.MoveNext();
-                }
-                 */
             }
 
         }

@@ -24,7 +24,8 @@ namespace mst_boredom_remover.engine
             Walker,
             Swimmer,
             Flier,
-            Digger
+            Digger,
+            None
         };
         public MovementType movementType;
         public double movementSpeed;
