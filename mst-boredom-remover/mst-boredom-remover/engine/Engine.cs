@@ -111,6 +111,10 @@ namespace mst_boredom_remover.engine
             unitGrid[b.position.x, b.position.y] = a;
             a.previousPosition = a.position;
             b.previousPosition = b.position;
+            a.animationStartTick = currentTick;
+            b.animationStartTick = currentTick;
+            a.status = Unit.Status.Moving;
+            b.status = Unit.Status.Moving;
             var temp = a.position;
             a.position = b.position;
             b.position = temp;
