@@ -174,8 +174,10 @@ namespace mst_boredom_remover
             tiles.Add(forestTexture);
 
 
-            Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
-            Texture2D swordUnitAttackTexture = Content.Load<Texture2D>("Units\\Kbaseatk");
+            Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\small_knight_idle");
+            Texture2D swordUnitAttackTexture = Content.Load<Texture2D>("Units\\small_knight_attack1");
+            Texture2D swordUnitAttackTexture2 = Content.Load<Texture2D>("Units\\small_knight_attack2");
+            Texture2D swordUnitWalkTexture = Content.Load<Texture2D>("Units\\small_knight_walk1");
             Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\Arcbase");
             Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\Wbase");
             Texture2D baseTown = Content.Load<Texture2D>("basictownbase");
@@ -183,9 +185,9 @@ namespace mst_boredom_remover
 
             engine.unitTypes.Add(new UnitType(name: "Swordsman",
                 idleTextures: new[] { swordUnitTexture },
-                moveTextures: new[] { swordUnitTexture },
-                attackTextures: new[] { swordUnitAttackTexture },
-                attackStrength: 15, defense: 2, gatherRate: 2, goldCost: 50));
+                moveTextures: new[] { swordUnitWalkTexture, swordUnitTexture },
+                attackTextures: new[] { swordUnitAttackTexture, swordUnitAttackTexture2, swordUnitTexture },
+                attackStrength: 15, defense: 2, gatherRate: 2, goldCost: 50, movementSpeed:10));
             engine.unitTypes.Add(new UnitType(name: "Archer",
                 idleTextures: new[] { archerUnitTexture },
                 moveTextures: new[] { archerUnitTexture },

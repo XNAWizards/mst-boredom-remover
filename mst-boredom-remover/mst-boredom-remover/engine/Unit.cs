@@ -120,10 +120,11 @@ namespace mst_boredom_remover.engine
                     if (nextPosition != null)
                     {
                         engine.MoveUnit(this, nextPosition);
+                        animationStartTick = engine.currentTick;
                     }
                     status = Status.Moving;
                     // TODO: Calculate cooldown based on speed and tile and modifiers
-                    engine.ScheduleUpdate(10, this);
+                    engine.ScheduleUpdate((int)type.movementSpeed, this);
                     break;
                 case Order.OrderType.Attack:
                     if (currentOrder.targetUnit.status == Status.Dead)
@@ -143,6 +144,7 @@ namespace mst_boredom_remover.engine
                         if (nextPosition != null)
                         {
                             engine.MoveUnit(this, nextPosition);
+                            animationStartTick = engine.currentTick;
                         }
 
                         // TODO: Calculate cooldown based on speed and tile and modifiers
@@ -151,7 +153,9 @@ namespace mst_boredom_remover.engine
                     }
                     // TODO: Attack
                     engine.Attack(this, currentOrder.targetUnit);
+                    animationStartTick = engine.currentTick;
                     // TODO: Calculate cooldown based on attack cooldown and modifiers
+                    status = Status.Attacking;
                     engine.ScheduleUpdate(10, this);
                     break;
                 case Order.OrderType.Produce:

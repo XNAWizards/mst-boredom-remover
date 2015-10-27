@@ -553,6 +553,19 @@ namespace mst_boredom_remover
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
                 Vector2 drawPosition = (unit.position.ToVector2() - tileIndex) * (tilePxSize + pxMod);
+                if (unit.status == Unit.Status.Moving)
+                {
+                    var previousPosition = unit.previousPosition.ToVector2();
+                    var currentPosition = unit.position.ToVector2();
+                    var drawX = previousPosition.X +
+                                       (currentPosition.X - previousPosition.X)*
+                                       ((engine.currentTick - unit.animationStartTick)/unit.type.movementSpeed);
+                    var drawY = previousPosition.Y +
+                                       (currentPosition.Y - previousPosition.Y) *
+                                       ((engine.currentTick - unit.animationStartTick) / unit.type.movementSpeed);
+                    var draw = new Vector2((float)drawX, (float)drawY);
+                    drawPosition = (draw - tileIndex) * (tilePxSize + pxMod);
+                }
                 Color c = Color.White;
 
                 if (unit.selected)
@@ -560,7 +573,7 @@ namespace mst_boredom_remover
                     c = Color.Red;
                 }
                 // finally draw the unit
-                sb.Draw(currentTextures[(engine.currentTick- unit.animationStartTick) % currentTextures.Length],
+                sb.Draw(currentTextures[((engine.currentTick - unit.animationStartTick) / 10) % currentTextures.Length],
                     new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (tilePxSize + pxMod), (tilePxSize + pxMod)), c);
             }
 

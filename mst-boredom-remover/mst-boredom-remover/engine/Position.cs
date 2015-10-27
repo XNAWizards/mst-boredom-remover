@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Microsoft.Xna.Framework;
 
 namespace mst_boredom_remover.engine
