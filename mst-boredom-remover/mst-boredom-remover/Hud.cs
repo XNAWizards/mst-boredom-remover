@@ -181,6 +181,10 @@ namespace mst_boredom_remover
                     }
                     else // Move units or gather
                     {
+                        if (!unit.CanMove())
+                        {
+                            continue;
+                        }
                         var resource = engine.map.tiles[enumerator.Current.x, enumerator.Current.y].tileType.resourceType;
                         if (resource != TileType.ResourceType.None)
                         {

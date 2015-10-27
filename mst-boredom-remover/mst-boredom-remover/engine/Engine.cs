@@ -101,6 +101,7 @@ namespace mst_boredom_remover.engine
             {
                 unitGrid[unit.position.x, unit.position.y] = null;
                 unitGrid[targetPosition.x, targetPosition.y] = unit;
+                unit.previousPosition = unit.position;
                 unit.position = targetPosition;
             }
         }
@@ -109,6 +110,8 @@ namespace mst_boredom_remover.engine
         {
             unitGrid[a.position.x, a.position.y] = b;
             unitGrid[b.position.x, b.position.y] = a;
+            a.previousPosition = a.position;
+            b.previousPosition = b.position;
             var temp = a.position;
             a.position = b.position;
             b.position = temp;
