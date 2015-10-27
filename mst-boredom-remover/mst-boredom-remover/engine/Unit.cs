@@ -168,7 +168,7 @@ namespace mst_boredom_remover.engine
                     if (position.Distance(currentOrder.targetUnit.position) > type.attackRange)
                     {
                         // TODO: Move into range
-
+                        status = Status.Moving;
                         nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
 
                         if (nextPosition != null)
