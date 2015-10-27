@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
 //using Microsoft.Xna.Framework.Audio;
 //using Microsoft.Xna.Framework.Content;
@@ -81,7 +83,7 @@ namespace mst_boredom_remover
 
             tileIndex = Vector2.Zero;
 
-            this.charmap = Generator.Generate(width, height);
+            this.charmap = Generator.generate(width, height);
 
             engine.map.UpdateTiles(charmap);
 
@@ -164,7 +166,7 @@ namespace mst_boredom_remover
             {
                 if (tileIndex.Y + deltaY >= 0)
                 {
-                    // res_y/px_size = number of tiles that fit on screen
+                    // resY/px_size = number of tiles that fit on screen
                     // height - #tiles on screen = maximum tileIndex.Y to allow
                     if (tileIndex.Y + deltaY < height - (resY / (tilePxSize + pxMod)))
                     {
@@ -238,6 +240,14 @@ namespace mst_boredom_remover
             }
             if (fail == false)
             {
+                try
+                {
+                    c = charmap[(int)(mouseTile.X), (int)(mouseTile.Y)];
+                }
+                catch (System.Exception)
+                {
+                    c = '!';
+                }
                 c = charmap[(int)(mouseIndex.X + tileIndex.X), (int)(mouseIndex.Y + tileIndex.Y)];
             }
 
@@ -412,7 +422,7 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.G) && gDisable == false)
             {
                 // generate a new map, reconstruct cache
-                charmap = Generator.Generate(width, height);
+                charmap = Generator.generate(width, height);
                 engine.map.UpdateTiles(charmap);
                 gDisable = true;
                 buildMapCache = true;
@@ -454,8 +464,6 @@ namespace mst_boredom_remover
             }
 
             lastScrollValue = m.ScrollWheelValue;
-
-
             
             if (debugMode)
             {
@@ -492,13 +500,16 @@ namespace mst_boredom_remover
                 pxMod = savePxMod;
             }
 
+            int xPos = 0;
+            int yPos = 0;
+
             for (int x = 0; x < 3; x++)
             {
                 for (int y = 0; y < 2; y++)
                 {
                     // base position
-                    int xPos = x * mapCaches[x, y].Width;
-                    int yPos = y * mapCaches[x, y].Height;
+                    xPos = x * mapCaches[x, y].Width;
+                    yPos = y * mapCaches[x, y].Height;
 
                     // up/down/left/right translation
                     xPos += (int)-tileIndex.X * (tilePxSize + pxMod);
@@ -542,14 +553,12 @@ namespace mst_boredom_remover
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
                 Vector2 drawPosition = (unit.position.ToVector2() - tileIndex) * (tilePxSize + pxMod);
-
                 Color c = Color.White;
 
                 if (unit.selected)
                 {
                     c = Color.Red;
                 }
-
                 // finally draw the unit
                 sb.Draw(currentTextures[(engine.currentTick- unit.animationStartTick) % currentTextures.Length],
                     new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (tilePxSize + pxMod), (tilePxSize + pxMod)), c);
