@@ -336,7 +336,7 @@ namespace mst_boredom_remover
             sb.Begin();
         }
 
-        public void unitGroupMove(List<Unit> selected_units)
+        public void unitGroupMove(List<Unit> selected_units, bool clearOrders)
         {
             Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
 
@@ -345,6 +345,10 @@ namespace mst_boredom_remover
             enumerator.MoveNext();
             foreach (Unit unit in selected_units)
             {
+                if ( clearOrders )
+                {
+                    unit.orders.Clear();
+                }
                 if (clickedUnit == unit) // Produce units
                 {
                     engine.OrderProduce(unit, engine.unitTypes[0]);
