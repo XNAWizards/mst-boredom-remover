@@ -113,6 +113,44 @@ namespace mst_boredom_remover
             ngbackButton.OnPress += ngbackButton_OnPress;
             ngbackButton.Clicked += ngbackButton_Clicked;
 
+            Vector2 size = new Vector2(80, 32);
+
+            Button igBuildTown = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(240, 660), 1.0f, "Build Town", bigFont, size);
+            igBuildTown.OnPress += ngbackButton_OnPress;
+            igBuildTown.Clicked += ngbackButton_Clicked;
+
+            Button igBuildMine = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(240, 700), 1.0f, "Build Mine", bigFont, size);
+            igBuildMine.OnPress += ngbackButton_OnPress;
+            igBuildMine.Clicked += ngbackButton_Clicked;
+
+            Button igProduceKnight = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(320, 660), 1.0f, "Produce Knight", bigFont, size);
+            igProduceKnight.OnPress += ngbackButton_OnPress;
+            igProduceKnight.Clicked += ngbackButton_Clicked;
+
+            Button igProduceArcher = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(320, 700), 1.0f, "Produce Archer", bigFont, size);
+            igProduceArcher.OnPress += ngbackButton_OnPress;
+            igProduceArcher.Clicked += ngbackButton_Clicked;
+
+            Button igProducePeasant = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(400, 660), 1.0f, "Produce Peasant", bigFont, size);
+            igProducePeasant.OnPress += ngbackButton_OnPress;
+            igProducePeasant.Clicked += ngbackButton_Clicked;
+
+            Button igAttack = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(80, 700), 1.0f, "Attack", bigFont, size);
+            igAttack.OnPress += ngbackButton_OnPress;
+            igAttack.Clicked += ngbackButton_Clicked;
+
+            Button igMove = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(80, 660), 1.0f, "Move", bigFont, size);
+            igMove.OnPress += ngbackButton_OnPress;
+            igMove.Clicked += ngbackButton_Clicked;
+
+            Button igGather = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(160, 660), 1.0f, "Gather", bigFont, size);
+            igGather.OnPress += ngbackButton_OnPress;
+            igGather.Clicked += ngbackButton_Clicked;
+
+            Button igStop = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(160, 700), 1.0f, "Stop", bigFont, size);
+            igStop.OnPress += ngbackButton_OnPress;
+            igStop.Clicked += ngbackButton_Clicked;
+
             #endregion
             #region TextDisplays
             // testTextDisplay
@@ -130,6 +168,7 @@ namespace mst_boredom_remover
             
             #region Menus
             Texture2D mainBackground = Content.Load<Texture2D>("MainBackground");
+            Texture2D hudBackground = Content.Load<Texture2D>("Hud");
 
             List<UiObject> mainControls = new List<UiObject>();
             mainControls.Add(newButton);
@@ -137,23 +176,9 @@ namespace mst_boredom_remover
             mainControls.Add(mmExitButton);
             mainControls.Add(testTextDisplay);
 
-            Menu mainMenu = new Menu(mainBackground, new Vector2(0, 0), mainControls, Color.White, 0);
+            Menu mainMenu = new Menu(hudBackground, new Vector2(0, 0), mainControls, Color.White, 0);
 
-            Texture2D gameBackground = Content.Load<Texture2D>("gameBackground");
-
-            List<UiObject> gameControls = new List<UiObject>();
-            gameControls.Add(backButton);
-
-            Menu gameMenu = new Menu(gameBackground, new Vector2(0, 0), gameControls, Color.White, 1);
-
-            // --- //
             Texture2D blankBackground = Content.Load<Texture2D>("BlankBackground");
-
-            List<UiObject> newGameControls = new List<UiObject>();
-            newGameControls.Add(testTextInput);
-            newGameControls.Add(goButton);
-            newGameControls.Add(ngbackButton);
-
             Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Hills");
             Texture2D mountainsTexture = Content.Load<Texture2D>("Terrain\\Mountains");
             Texture2D desertTexture = Content.Load<Texture2D>("Terrain\\DesertFlat");
@@ -172,6 +197,35 @@ namespace mst_boredom_remover
             tiles.Add(dreadTexture);
             tiles.Add(tundraTexture);
             tiles.Add(forestTexture);
+
+            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
+            List<UiObject> gameControls = new List<UiObject>();
+
+            Texture2D gameBackground = Content.Load<Texture2D>("gameBackground");
+
+            gameControls.Add(m);
+            gameControls.Add(backButton);
+            gameControls.Add(igBuildTown);
+            gameControls.Add(igBuildMine);
+            gameControls.Add(igProduceKnight);
+            gameControls.Add(igProduceArcher);
+            gameControls.Add(igProducePeasant);
+            gameControls.Add(igAttack);
+            gameControls.Add(igMove);
+            gameControls.Add(igGather);
+            gameControls.Add(igStop);
+
+            Menu gameMenu = new Menu(hudBackground, new Vector2(0, 0), gameControls, Color.White, 1);
+
+            // --- //
+            
+
+            List<UiObject> newGameControls = new List<UiObject>();
+            newGameControls.Add(testTextInput);
+            newGameControls.Add(goButton);
+            newGameControls.Add(ngbackButton);
+
+            
 
 
             Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
@@ -209,11 +263,9 @@ namespace mst_boredom_remover
                 movementSpeed: 0, movementType: UnitType.MovementType.None,
                 attackStrength: 0, defense: 10, gatherRate: 20, goldCost: 100));
 
-            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
+            
 
-            gameControls.Add(m);
-
-            Menu newGameMenu = new Menu(blankBackground, Vector2.Zero, newGameControls, Color.White, 2);
+            Menu newGameMenu = new Menu(hudBackground, Vector2.Zero, newGameControls, Color.White, 2);
             #endregion
 
             // hud
@@ -373,6 +425,87 @@ namespace mst_boredom_remover
             ChangeScreen(MenuScreen.Main); // change to main menu screen
         }
         public void ngbackButton_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igBuildTown_Clicked(object sender, EventArgs e)
+        {
+            ChangeScreen(MenuScreen.Main); // change to main menu screen
+        }
+        public void igBuildTown_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igBuildMine_Clicked(object sender, EventArgs e)
+        {
+            ChangeScreen(MenuScreen.Main); // change to main menu screen
+        }
+        public void igBuildMine_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igProduceKnight_Clicked(object sender, EventArgs e)
+        {
+            ChangeScreen(MenuScreen.Main); // change to main menu screen
+        }
+        public void igProduceKnight_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igProduceArcher_Clicked(object sender, EventArgs e)
+        {
+            ChangeScreen(MenuScreen.Main); // change to main menu screen
+        }
+        public void igProduceArcher_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igProducePeasant_Clicked(object sender, EventArgs e)
+        {
+            ChangeScreen(MenuScreen.Main); // change to main menu screen
+        }
+        public void igProducePeasant_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igAttack_Clicked(object sender, EventArgs e)
+        {
+            ChangeScreen(MenuScreen.Main); // change to main menu screen
+        }
+        public void igAttack_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igMove_Clicked(object sender, EventArgs e)
+        {
+            ChangeScreen(MenuScreen.Main); // change to main menu screen
+        }
+        public void igMove_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igGather_Clicked(object sender, EventArgs e)
+        {
+            ChangeScreen(MenuScreen.Main); // change to main menu screen
+        }
+        public void igGather_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igStop_Clicked(object sender, EventArgs e)
+        {
+            ChangeScreen(MenuScreen.Main); // change to main menu screen
+        }
+        public void igStop_OnPress(object sender, EventArgs e)
         {
 
         }
