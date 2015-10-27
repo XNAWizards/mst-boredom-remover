@@ -124,6 +124,11 @@ namespace mst_boredom_remover
                 }
             }*/
         }
+        
+        public int getPxSizeMod()
+        {
+            return tilePxSize + pxMod;
+        }
 
         public override void ChangeContext(int id)
         {
@@ -192,10 +197,10 @@ namespace mst_boredom_remover
             {
                 for (int x = 0; x < tileWidth; x++)
                 {
-                    if (engine.unitGrid[masterX + x, masterY + y] != null)
+                    if (engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y] != null)
                     {
-                        engine.unitGrid[masterX + x, masterY + y].selected = true;
-                        selectedUnits.Add(engine.unitGrid[masterX+ x, masterY + y]);
+                        engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y].selected = true;
+                        selectedUnits.Add(engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y]);
                     }
                 }
             }
@@ -336,7 +341,25 @@ namespace mst_boredom_remover
             sb.Begin();
         }
 
-        public void unitGroupMove(List<Unit> selected_units)
+
+        public Vector2 GetDrawPosition(Unit u)
+        {
+            Vector2 drawPosition = new Vector2();
+
+            // calculate screen space position
+            drawPosition.X = (tilePxSize + pxMod) * u.position.x; // real screen coords
+            drawPosition.Y = (tilePxSize + pxMod) * u.position.y;
+
+            drawPosition.X -= (float)(tileIndex.X * (tilePxSize + pxMod));
+            drawPosition.Y -= (float)(tileIndex.Y * (tilePxSize + pxMod));
+
+            // add offset for HP bar position
+            drawPosition.Y += tilePxSize + pxMod;
+
+            return drawPosition;
+        }
+
+        public void unitGroupMove(List<Unit> selected_units, bool clearOrders)
         {
             Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
 
@@ -345,9 +368,13 @@ namespace mst_boredom_remover
             enumerator.MoveNext();
             foreach (Unit unit in selected_units)
             {
+                if ( clearOrders )
+                {
+                    unit.orders.Clear();
+                }
                 if (clickedUnit == unit) // Produce units
                 {
-                    engine.OrderProduce(unit, engine.unitTypes[0]);
+                    engine.OrderProduce(unit, engine.unitTypes[1]);
                     break;
                 }
                 else if (clickedUnit != null) //Clicked a different unit TODO:make it so you don't attack your buddies
@@ -374,22 +401,6 @@ namespace mst_boredom_remover
                     engine.OrderMove(unit, enumerator.Current);
                     enumerator.MoveNext();
                 }
-                /*
-                if (engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y] == unit) // Produce units
-                {
-                    engine.OrderProduce(unit, engine.unitTypes[0]);
-                    break;
-                }
-                else // Move units
-                {
-                    while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
-                    {
-                        enumerator.MoveNext();
-                    }
-                    engine.OrderMove(unit, enumerator.Current);
-                    enumerator.MoveNext();
-                }
-                 */
             }
 
         }

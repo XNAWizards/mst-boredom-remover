@@ -182,13 +182,17 @@ namespace mst_boredom_remover.engine
                         engine.ScheduleUpdate(5, this);
                         break;
                     }
-                    // Subtract resources
-                    owner.gold -= currentOrder.unitTypeBuild.goldCost;
-                    owner.iron -= currentOrder.unitTypeBuild.ironCost;
-                    owner.manaCystals -= currentOrder.unitTypeBuild.manaCrystalsCost;
-                    // Create the unit
-                    // TODO: Apply orders to the new unit, such as a rally point
-                    engine.AddUnit(new Unit(engine, currentOrder.unitTypeBuild, producePosition, owner));
+                    if (owner.gold >= currentOrder.unitTypeBuild.goldCost && owner.iron >= currentOrder.unitTypeBuild.ironCost && owner.manaCystals >= currentOrder.unitTypeBuild.manaCrystalsCost)
+                    {
+                        // Subtract resources
+                        owner.gold -= currentOrder.unitTypeBuild.goldCost;
+                        owner.iron -= currentOrder.unitTypeBuild.ironCost;
+                        owner.manaCystals -= currentOrder.unitTypeBuild.manaCrystalsCost;
+                        // Create the unit
+                        // TODO: Apply orders to the new unit, such as a rally point
+                        engine.AddUnit(new Unit(engine, currentOrder.unitTypeBuild, producePosition, owner));
+                    }
+                    engine.ScheduleUpdate(5, this);
                     NextOrder();
                     break;
                 case Order.OrderType.Gather:
