@@ -129,6 +129,14 @@ namespace mst_boredom_remover
         {
             return tilePxSize + pxMod;
         }
+        public int getTileIndexX()
+        {
+            return (int)tileIndex.X;
+        }
+        public int getTileIndexY()
+        {
+            return (int)tileIndex.Y;
+        }
 
         public override void ChangeContext(int id)
         {
@@ -369,7 +377,7 @@ namespace mst_boredom_remover
             enumerator.MoveNext();
             foreach (Unit unit in selected_units)
             {
-                if ( clearOrders )
+                if (clearOrders)
                 {
                     unit.orders.Clear();
                 }
