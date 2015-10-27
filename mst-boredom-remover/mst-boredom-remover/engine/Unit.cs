@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 
 namespace mst_boredom_remover.engine
 {
@@ -125,6 +126,24 @@ namespace mst_boredom_remover.engine
         public void NextOrder()
         {
             orders.RemoveAt(0);
+        }
+
+        public Vector2 GetAnimatedPosition()
+        {
+            if (status == Status.Moving)
+            {
+                var previousVector = previousPosition.ToVector2();
+                var currentVector = position.ToVector2();
+                // omg, this is so stupid, why couldn't they just allow multiplication by a scalar?
+                var unitX = previousVector.X +
+                            (currentVector.X - previousVector.X)*
+                            ((engine.currentTick - animationStartTick)/type.movementSpeed);
+                var unitY = previousVector.Y +
+                            (currentVector.Y - previousVector.Y)*
+                            ((engine.currentTick - animationStartTick)/type.movementSpeed);
+                return new Vector2((float) unitX, (float) unitY);
+            }
+            return position.ToVector2();
         }
 
         public void Update()

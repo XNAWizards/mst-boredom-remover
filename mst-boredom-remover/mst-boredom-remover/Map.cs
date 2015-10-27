@@ -366,8 +366,9 @@ namespace mst_boredom_remover
             Vector2 drawPosition = new Vector2();
 
             // calculate screen space position
-            drawPosition.X = (tilePxSize + pxMod) * u.position.x; // real screen coords
-            drawPosition.Y = (tilePxSize + pxMod) * u.position.y;
+            var unitVector = u.GetAnimatedPosition();
+            drawPosition.X = (tilePxSize + pxMod) * unitVector.X; // real screen coords
+            drawPosition.Y = (tilePxSize + pxMod) * unitVector.Y;
 
             drawPosition.X -= (float)(tileIndex.X * (tilePxSize + pxMod));
             drawPosition.Y -= (float)(tileIndex.Y * (tilePxSize + pxMod));
@@ -561,20 +562,7 @@ namespace mst_boredom_remover
 
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
-                Vector2 drawPosition = (unit.position.ToVector2() - tileIndex) * (tilePxSize + pxMod);
-                if (unit.status == Unit.Status.Moving)
-                {
-                    var previousPosition = unit.previousPosition.ToVector2();
-                    var currentPosition = unit.position.ToVector2();
-                    var drawX = previousPosition.X +
-                                       (currentPosition.X - previousPosition.X)*
-                                       ((engine.currentTick - unit.animationStartTick)/unit.type.movementSpeed);
-                    var drawY = previousPosition.Y +
-                                       (currentPosition.Y - previousPosition.Y) *
-                                       ((engine.currentTick - unit.animationStartTick) / unit.type.movementSpeed);
-                    var draw = new Vector2((float)drawX, (float)drawY);
-                    drawPosition = (draw - tileIndex) * (tilePxSize + pxMod);
-                }
+                Vector2 drawPosition = (unit.GetAnimatedPosition() - tileIndex) * (tilePxSize + pxMod);
                 Color c = Color.White;
                 
                 if (unit.owner == engine.players[1])

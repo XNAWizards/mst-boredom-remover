@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace mst_boredom_remover.engine
 {
@@ -163,7 +164,6 @@ namespace mst_boredom_remover.engine
                 units.Remove(target);
                 target.status = Unit.Status.Dead;
             }
-
         }
     }
 }
