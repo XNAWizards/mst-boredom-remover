@@ -173,8 +173,9 @@ namespace mst_boredom_remover
             tiles.Add(tundraTexture);
             tiles.Add(forestTexture);
 
-            Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\knightbase");
-            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\magebase"); // temp
+
+            Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
+            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
             Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
             Texture2D baseTown = Content.Load<Texture2D>("basictownbase");
             Texture2D baseGoldMine = Content.Load<Texture2D>("goldminebase");
@@ -300,12 +301,15 @@ namespace mst_boredom_remover
                 x.Draw(spriteBatch);
             }
 
-            /*spriteBatch.DrawString(debugFont, "Current tick: " + engine.currentTick, new Vector2(1, 1), Color.Black);
+            spriteBatch.DrawString(debugFont, "Current tick: " + engine.currentTick, new Vector2(1, 1), Color.Black);
             if (engine.currentTick > 1)
             {
                 spriteBatch.DrawString(debugFont, "x: " + engine.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
                 spriteBatch.DrawString(debugFont, "y: " + engine.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
-            }*/
+                spriteBatch.DrawString(debugFont, "player gold: " + engine.players[0].gold, new Vector2(1, 1 + 32 * 3), Color.Black);
+                spriteBatch.DrawString(debugFont, "player iron: " + engine.players[0].iron, new Vector2(1, 1 + 32 * 4), Color.Black);
+                spriteBatch.DrawString(debugFont, "player mc  : " + engine.players[0].manaCystals, new Vector2(1, 1 + 32 * 5), Color.Black);
+            }
 
             spriteBatch.End();
             base.Draw(gameTime);

@@ -88,9 +88,30 @@ namespace mst_boredom_remover.engine
 
         public void MoveUnit(Unit unit, Position targetPosition)
         {
-            unitGrid[unit.position.x, unit.position.y] = null;
-            unitGrid[targetPosition.x, targetPosition.y] = unit;
-            unit.position = targetPosition;
+            if (unitGrid[targetPosition.x, targetPosition.y] != null)
+            {
+                Unit targetUnit = unitGrid[targetPosition.x, targetPosition.y];
+                if (targetUnit.orders.Count == 0)
+                {
+                    SwapUnits(unit, unitGrid[targetPosition.x, targetPosition.y]);
+                }
+            }
+            else
+            {
+                unitGrid[unit.position.x, unit.position.y] = null;
+                unitGrid[targetPosition.x, targetPosition.y] = unit;
+                unit.position = targetPosition;
+            }
+        }
+
+        public void SwapUnits(Unit a, Unit b)
+        {
+            unitGrid[a.position.x, a.position.y] = b;
+            unitGrid[b.position.x, b.position.y] = a;
+            var temp = a.position;
+            a.position = b.position;
+            b.position = temp;
+            OrderMove(b, a.position);
         }
 
         public void OrderMove(Unit unit, Position targetPosition)
@@ -109,6 +130,12 @@ namespace mst_boredom_remover.engine
         {
             attacker.orders.Add(Order.CreateAttackOrder(target));
             ScheduleUpdate(1, attacker);
+        }
+
+        public void OrderGather(Unit gatherer, Position target)
+        {
+            gatherer.orders.Add(Order.CreateGatherOrder(target));
+            ScheduleUpdate(1, gatherer);
         }
 
         private double Max(double a, double b) { if (a > b) return a; return b; }

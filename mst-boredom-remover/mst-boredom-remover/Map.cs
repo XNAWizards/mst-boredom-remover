@@ -83,6 +83,8 @@ namespace mst_boredom_remover
 
             this.charmap = Generator.Generate(width, height);
 
+            engine.map.UpdateTiles(charmap);
+
             tileNames = new List<string>();
 
             tileNames.Add("null");
@@ -358,13 +360,44 @@ namespace mst_boredom_remover
 
         public void unitGroupMove(List<Unit> selected_units)
         {
-            Position mouse_game_tile_position = new Position((int)mouseTile.X, (int)mouseTile.Y);
+            Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
 
-            var enumerator = engine.map.BreadthFirst(mouse_game_tile_position).GetEnumerator();
+            Unit clickedUnit = engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y];
+            var enumerator = engine.map.BreadthFirst(mouseGameTilePosition).GetEnumerator();
             enumerator.MoveNext();
             foreach (Unit unit in selected_units)
             {
-                if (engine.unitGrid[mouse_game_tile_position.x, mouse_game_tile_position.y] == unit) // Produce units
+                if (clickedUnit == unit) // Produce units
+                {
+                    engine.OrderProduce(unit, engine.unitTypes[0]);
+                    break;
+                }
+                else if (clickedUnit != null) //Clicked a different unit TODO:make it so you don't attack your buddies
+                {
+                    if (selectedUnits.Contains(clickedUnit)) //this check makes it so that you can produce without have the other selected units attack
+                    {
+                        continue;
+                    }
+                    engine.OrderAttack(unit, clickedUnit);
+                }
+                else // Move units or gather
+                {
+                    var resource = engine.map.tiles[enumerator.Current.x, enumerator.Current.y].tileType.resourceType;
+                    if (resource != TileType.ResourceType.None)
+                    {
+                        engine.OrderGather(unit, enumerator.Current);
+                        continue;
+                    }
+
+                    while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
+                    {
+                        enumerator.MoveNext();
+                    }
+                    engine.OrderMove(unit, enumerator.Current);
+                    enumerator.MoveNext();
+                }
+                /*
+                if (engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y] == unit) // Produce units
                 {
                     engine.OrderProduce(unit, engine.unitTypes[1]);
                     break;
@@ -378,7 +411,9 @@ namespace mst_boredom_remover
                     engine.OrderMove(unit, enumerator.Current);
                     enumerator.MoveNext();
                 }
+                 */
             }
+
         }
 
         public override void Update(GameTime gt)
@@ -389,6 +424,7 @@ namespace mst_boredom_remover
             {
                 // generate a new map, reconstruct cache
                 charmap = Generator.Generate(width, height);
+                engine.map.UpdateTiles(charmap);
                 gDisable = true;
                 buildMapCache = true;
                 savePxMod = pxMod;
@@ -429,6 +465,8 @@ namespace mst_boredom_remover
             }
 
             lastScrollValue = m.ScrollWheelValue;
+
+
             
             if (debugMode)
             {

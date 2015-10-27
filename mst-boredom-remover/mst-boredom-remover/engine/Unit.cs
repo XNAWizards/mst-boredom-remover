@@ -63,7 +63,16 @@ namespace mst_boredom_remover.engine
 
         public bool CanMove(Position targetPosition)
         {
-            return (engine.map.Inside(targetPosition) && engine.unitGrid[targetPosition.x, targetPosition.y] == null);
+            if (engine.map.Inside(targetPosition))
+            {
+                var targetUnit = engine.unitGrid[targetPosition.x, targetPosition.y];
+                if (targetUnit != null)
+                {
+                    return targetUnit.orders.Count == 0;
+                }
+                return true;
+            }
+            return false;
         }
 
         public int AttackRange()
@@ -181,6 +190,42 @@ namespace mst_boredom_remover.engine
                     // TODO: Apply orders to the new unit, such as a rally point
                     engine.AddUnit(new Unit(engine, currentOrder.unitTypeBuild, producePosition, owner));
                     NextOrder();
+                    break;
+                case Order.OrderType.Gather:
+                    if ( this.position != currentOrder.targetPosition )
+                    {
+                        // TODO: Move onto resource
+
+                        nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
+
+                        if (nextPosition != null)
+                        {
+                            engine.MoveUnit(this, nextPosition);
+                        }
+
+                        // TODO: Calculate cooldown based on speed and tile and modifiers
+                        engine.ScheduleUpdate(10, this);
+                        break;
+                    }
+                    // TODO: / ASSUPTION We have infinate resources, is that okay?
+                    var tileResoure = engine.map.tiles[currentOrder.targetPosition.x, currentOrder.targetPosition.y].tileType.resourceType;
+                    if ( tileResoure == TileType.ResourceType.Gold)
+                    {
+                        this.owner.gold += this.type.gatherRate;
+                    }
+                    else if ( tileResoure == TileType.ResourceType.Iron )
+                    {
+                        this.owner.iron += this.type.gatherRate;
+                    }
+                    else if ( tileResoure == TileType.ResourceType.ManaCrystals )
+                    {
+                        this.owner.iron += this.type.gatherRate;
+                    }
+                    engine.ScheduleUpdate(10, this);
+                    if ( orders.Count > 1 )
+                    {
+                        NextOrder();
+                    }
                     break;
             }
         }
