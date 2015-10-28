@@ -11,6 +11,7 @@ namespace mst_boredom_remover
         protected bool debugMode = false;
         protected SpriteFont font;
         public string debugText = "";
+        public Menu parentReference; // reference to the menu that contains this object
 
         public virtual void ChangeFont(SpriteFont f)
         {
@@ -22,6 +23,10 @@ namespace mst_boredom_remover
             //debugMode = !debugMode;
         }
         public virtual void ChangeContext(int id)
+        {
+
+        }
+        public virtual void IssueOrder(string order)
         {
 
         }

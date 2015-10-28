@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
 //using Microsoft.Xna.Framework.Audio;
 //using Microsoft.Xna.Framework.Content;
@@ -81,7 +83,7 @@ namespace mst_boredom_remover
 
             tileIndex = Vector2.Zero;
 
-            this.charmap = Generator.Generate(width, height);
+            this.charmap = Generator.generate(width, height);
 
             engine.map.UpdateTiles(charmap);
 
@@ -124,6 +126,19 @@ namespace mst_boredom_remover
                 }
             }*/
         }
+        
+        public int getPxSizeMod()
+        {
+            return tilePxSize + pxMod;
+        }
+        public int getTileIndexX()
+        {
+            return (int)tileIndex.X;
+        }
+        public int getTileIndexY()
+        {
+            return (int)tileIndex.Y;
+        }
 
         public override void ChangeContext(int id)
         {
@@ -159,7 +174,7 @@ namespace mst_boredom_remover
             {
                 if (tileIndex.Y + deltaY >= 0)
                 {
-                    // res_y/px_size = number of tiles that fit on screen
+                    // resY/px_size = number of tiles that fit on screen
                     // height - #tiles on screen = maximum tileIndex.Y to allow
                     if (tileIndex.Y + deltaY < height - (resY / (tilePxSize + pxMod)))
                     {
@@ -178,16 +193,17 @@ namespace mst_boredom_remover
             int tileHeight;
 
             // determine which tile the selection box is starting at
-            startTileX = bounds.X / (int)((tilePxSize + pxMod) + tileIndex.X);
-            startTileY = bounds.Y / (int)((tilePxSize + pxMod) + tileIndex.Y);
-            tileWidth = Math.Max(bounds.Width / (int)((tilePxSize + pxMod) + tileIndex.X), 1);
-            tileHeight = Math.Max(bounds.Height / (int)((tilePxSize + pxMod) + tileIndex.Y), 1);
+            // x tile = mouse x / pixels per tile + tile offset
+            startTileX = bounds.X / (int)((tilePxSize + pxMod));
+            startTileY = bounds.Y / (int)((tilePxSize + pxMod));
+            tileWidth = Math.Max(bounds.Width / (int)((tilePxSize + pxMod)), 1);
+            tileHeight = Math.Max(bounds.Height / (int)((tilePxSize + pxMod)), 1);
 
             selectedUnits.Clear();
 
-            int masterX = startTileX;
-            int masterY = startTileY;
-            // search only the grid. hopefully small n^24
+            int masterX = startTileX + (int)tileIndex.X;
+            int masterY = startTileY + (int)tileIndex.Y;
+            // search only the grid. hopefully small n^2
             for (int y = 0; y < tileHeight; y++)
             {
                 for (int x = 0; x < tileWidth; x++)
@@ -195,7 +211,7 @@ namespace mst_boredom_remover
                     if (engine.unitGrid[masterX + x, masterY + y] != null)
                     {
                         engine.unitGrid[masterX + x, masterY + y].selected = true;
-                        selectedUnits.Add(engine.unitGrid[masterX+ x, masterY + y]);
+                        selectedUnits.Add(engine.unitGrid[masterX + x, masterY + y]);
                     }
                 }
             }
@@ -233,6 +249,14 @@ namespace mst_boredom_remover
             }
             if (fail == false)
             {
+                try
+                {
+                    c = charmap[(int)(mouseTile.X), (int)(mouseTile.Y)];
+                }
+                catch (System.Exception)
+                {
+                    c = '!';
+                }
                 c = charmap[(int)(mouseIndex.X + tileIndex.X), (int)(mouseIndex.Y + tileIndex.Y)];
             }
 
@@ -336,7 +360,25 @@ namespace mst_boredom_remover
             sb.Begin();
         }
 
-        public void unitGroupMove(List<Unit> selected_units)
+
+        public Vector2 GetDrawPosition(Unit u)
+        {
+            Vector2 drawPosition = new Vector2();
+
+            // calculate screen space position
+            drawPosition.X = (tilePxSize + pxMod) * u.position.x; // real screen coords
+            drawPosition.Y = (tilePxSize + pxMod) * u.position.y;
+
+            drawPosition.X -= (float)(tileIndex.X * (tilePxSize + pxMod));
+            drawPosition.Y -= (float)(tileIndex.Y * (tilePxSize + pxMod));
+
+            // add offset for HP bar position
+            drawPosition.Y += tilePxSize + pxMod;
+
+            return drawPosition;
+        }
+
+        public void unitGroupMove(List<Unit> selected_units, bool clearOrders)
         {
             Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
 
@@ -345,9 +387,13 @@ namespace mst_boredom_remover
             enumerator.MoveNext();
             foreach (Unit unit in selected_units)
             {
+                if (clearOrders)
+                {
+                    unit.orders.Clear();
+                }
                 if (clickedUnit == unit) // Produce units
                 {
-                    engine.OrderProduce(unit, engine.unitTypes[0]);
+                    engine.OrderProduce(unit, engine.unitTypes[1]);
                     break;
                 }
                 else if (clickedUnit != null) //Clicked a different unit TODO:make it so you don't attack your buddies
@@ -374,22 +420,6 @@ namespace mst_boredom_remover
                     engine.OrderMove(unit, enumerator.Current);
                     enumerator.MoveNext();
                 }
-                /*
-                if (engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y] == unit) // Produce units
-                {
-                    engine.OrderProduce(unit, engine.unitTypes[0]);
-                    break;
-                }
-                else // Move units
-                {
-                    while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
-                    {
-                        enumerator.MoveNext();
-                    }
-                    engine.OrderMove(unit, enumerator.Current);
-                    enumerator.MoveNext();
-                }
-                 */
             }
 
         }
@@ -401,7 +431,7 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.G) && gDisable == false)
             {
                 // generate a new map, reconstruct cache
-                charmap = Generator.Generate(width, height);
+                charmap = Generator.generate(width, height);
                 engine.map.UpdateTiles(charmap);
                 gDisable = true;
                 buildMapCache = true;
@@ -443,8 +473,6 @@ namespace mst_boredom_remover
             }
 
             lastScrollValue = m.ScrollWheelValue;
-
-
             
             if (debugMode)
             {
@@ -481,13 +509,16 @@ namespace mst_boredom_remover
                 pxMod = savePxMod;
             }
 
+            int xPos = 0;
+            int yPos = 0;
+
             for (int x = 0; x < 3; x++)
             {
                 for (int y = 0; y < 2; y++)
                 {
                     // base position
-                    int xPos = x * mapCaches[x, y].Width;
-                    int yPos = y * mapCaches[x, y].Height;
+                    xPos = x * mapCaches[x, y].Width;
+                    yPos = y * mapCaches[x, y].Height;
 
                     // up/down/left/right translation
                     xPos += (int)-tileIndex.X * (tilePxSize + pxMod);
@@ -531,14 +562,12 @@ namespace mst_boredom_remover
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
                 Vector2 drawPosition = (unit.position.ToVector2() - tileIndex) * (tilePxSize + pxMod);
-
                 Color c = Color.White;
 
                 if (unit.selected)
                 {
                     c = Color.Red;
                 }
-
                 // finally draw the unit
                 sb.Draw(currentTextures[(engine.currentTick- unit.animationStartTick) % currentTextures.Length],
                     new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (tilePxSize + pxMod), (tilePxSize + pxMod)), c);

@@ -74,51 +74,82 @@ namespace mst_boredom_remover
 
 
             debugFont = Content.Load<SpriteFont>("debug_font");
+            SpriteFont bigFont = Content.Load<SpriteFont>("Arial Big");
+
+            Texture2D buttonTexture = Content.Load<Texture2D>("ButtonNormal");
+            Texture2D buttonHover = Content.Load<Texture2D>("ButtonHover");
+            Texture2D buttonActive = Content.Load<Texture2D>("ButtonActive");
+
+            Vector2 size = new Vector2(80, 32);
 
             // UIObjects
             #region Buttons
             // New Game Button
-            Texture2D newButtonTexture = Content.Load<Texture2D>("Buttons\\BtnNew");
-            Texture2D newButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnNewHover");
-            Button newButton = new Button(newButtonTexture, newButtonTextureHover, newButtonTextureHover, new Vector2(150,117));
+            Button newButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150,117), 1.0f, "New", bigFont);
             newButton.OnPress += newButton_OnPress;
             newButton.Clicked += newButton_Clicked;
 
             // Load Game Button
-            Texture2D loadButtonTexture = Content.Load<Texture2D>("Buttons\\BtnLoad");
-            Texture2D loadButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnLoadHover");
-            Button loadButton = new Button(loadButtonTexture, loadButtonTextureHover, loadButtonTextureHover, new Vector2(150, 217));
+            Button loadButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150, 217), 1.0f, "Load", bigFont);
             loadButton.OnPress += loadButton_OnPress;
             loadButton.Clicked += loadButton_Clicked;
             // Settings/Options Button
 
             // main menu Exit Button
-            Texture2D mmExitButtonTexture = Content.Load<Texture2D>("Buttons\\BtnExit");
-            Texture2D mmExitButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnExitHover");
-            Button mmExitButton = new Button(mmExitButtonTexture, mmExitButtonTextureHover, mmExitButtonTextureHover, new Vector2(150, 317));
+            Button mmExitButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150, 317), 1.0f, "Exit", bigFont);
             mmExitButton.OnPress += mmExitButton_OnPress;
             mmExitButton.Clicked += mmExitButton_Clicked;
 
             // Back Button for ingame screen
-            Texture2D backButtonTexture = Content.Load<Texture2D>("Buttons\\BtnBack");
-            Texture2D backButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnBackHover");
-            Button backButton = new Button(backButtonTexture, backButtonTextureHover, backButtonTextureHover, new Vector2(1250, 27), .5f);
+            Button backButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(1250, 27), .5f, "Back", bigFont, size);
             backButton.OnPress += backButton_OnPress;
             backButton.Clicked += backButton_Clicked;
 
             // Go Button for New Game screen
-            Texture2D goButtonTexture = Content.Load<Texture2D>("Buttons\\BtnGo");
-            Texture2D goButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnGoHover");
-            Button goButton = new Button(goButtonTexture, goButtonTextureHover, goButtonTextureHover, new Vector2(600, 500));
+            Button goButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(600, 500), 1.0f, "Go", bigFont);
             goButton.OnPress += goButton_OnPress;
             goButton.Clicked += goButton_Clicked;
 
             // back button for new game
-            Texture2D ngbackButtonTexture = Content.Load<Texture2D>("Buttons\\BtnBack");
-            Texture2D ngbackButtonTextureHover = Content.Load<Texture2D>("Buttons\\BtnBackHover");
-            Button ngbackButton = new Button(backButtonTexture, backButtonTextureHover, backButtonTextureHover, new Vector2(20, 675), .5f);
+            Button ngbackButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(20, 675), .5f, "Back", bigFont);
             ngbackButton.OnPress += ngbackButton_OnPress;
             ngbackButton.Clicked += ngbackButton_Clicked;
+
+            Button igBuildTown = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(240, 660), 1.0f, "Build Town", bigFont, size);
+            igBuildTown.OnPress += igBuildTown_OnPress;
+            igBuildTown.Clicked += igBuildTown_Clicked;
+
+            Button igBuildMine = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(240, 700), 1.0f, "Build Mine", bigFont, size);
+            igBuildMine.OnPress += igBuildMine_OnPress;
+            igBuildMine.Clicked += igBuildMine_Clicked;
+
+            Button igProduceKnight = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(320, 660), 1.0f, "Produce Knight", bigFont, size);
+            igProduceKnight.OnPress += igProduceKnight_OnPress;
+            igProduceKnight.Clicked += igProduceKnight_Clicked;
+
+            Button igProduceArcher = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(320, 700), 1.0f, "Produce Archer", bigFont, size);
+            igProduceArcher.OnPress += igProduceArcher_OnPress;
+            igProduceArcher.Clicked += igProduceArcher_Clicked;
+
+            Button igProducePeasant = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(400, 660), 1.0f, "Produce Peasant", bigFont, size);
+            igProducePeasant.OnPress += igProducePeasant_OnPress;
+            igProducePeasant.Clicked += igProducePeasant_Clicked;
+
+            Button igAttack = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(80, 700), 1.0f, "Attack", bigFont, size);
+            igAttack.OnPress += igAttack_OnPress;
+            igAttack.Clicked += igAttack_Clicked;
+
+            Button igMove = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(80, 660), 1.0f, "Move", bigFont, size);
+            igMove.OnPress += igMove_OnPress;
+            igMove.Clicked += igMove_Clicked;
+
+            Button igGather = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(160, 660), 1.0f, "Gather", bigFont, size);
+            igGather.OnPress += igGather_OnPress;
+            igGather.Clicked += igGather_Clicked;
+
+            Button igStop = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(160, 700), 1.0f, "Stop", bigFont, size);
+            igStop.OnPress += igStop_OnPress;
+            igStop.Clicked += igStop_Clicked;
 
             #endregion
             #region TextDisplays
@@ -137,6 +168,7 @@ namespace mst_boredom_remover
             
             #region Menus
             Texture2D mainBackground = Content.Load<Texture2D>("MainBackground");
+            Texture2D hudBackground = Content.Load<Texture2D>("Hud");
 
             List<UiObject> mainControls = new List<UiObject>();
             mainControls.Add(newButton);
@@ -144,23 +176,9 @@ namespace mst_boredom_remover
             mainControls.Add(mmExitButton);
             mainControls.Add(testTextDisplay);
 
-            Menu mainMenu = new Menu(mainBackground, new Vector2(0, 0), mainControls, Color.White, 0);
+            Menu mainMenu = new Menu(hudBackground, new Vector2(0, 0), mainControls, Color.White, 0);
 
-            Texture2D gameBackground = Content.Load<Texture2D>("gameBackground");
-
-            List<UiObject> gameControls = new List<UiObject>();
-            gameControls.Add(backButton);
-
-            Menu gameMenu = new Menu(gameBackground, new Vector2(0, 0), gameControls, Color.White, 1);
-
-            // --- //
             Texture2D blankBackground = Content.Load<Texture2D>("BlankBackground");
-
-            List<UiObject> newGameControls = new List<UiObject>();
-            newGameControls.Add(testTextInput);
-            newGameControls.Add(goButton);
-            newGameControls.Add(ngbackButton);
-
             Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Hills");
             Texture2D mountainsTexture = Content.Load<Texture2D>("Terrain\\Mountains");
             Texture2D desertTexture = Content.Load<Texture2D>("Terrain\\DesertFlat");
@@ -180,27 +198,84 @@ namespace mst_boredom_remover
             tiles.Add(tundraTexture);
             tiles.Add(forestTexture);
 
+            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
+            List<UiObject> gameControls = new List<UiObject>();
+
+            Texture2D gameBackground = Content.Load<Texture2D>("gameBackground");
+
+            // hud
+            Texture2D boxSelect = Content.Load<Texture2D>("BoxSelect");
+            Texture2D HPbar = Content.Load<Texture2D>("HPbar");
+            Hud hud = new Hud(ref engine, ref m, boxSelect, HPbar, engine);
+
+            gameControls.Add(m);
+            gameControls.Add(backButton);
+            gameControls.Add(igBuildTown);
+            gameControls.Add(igBuildMine);
+            gameControls.Add(igProduceKnight);
+            gameControls.Add(igProduceArcher);
+            gameControls.Add(igProducePeasant);
+            gameControls.Add(igAttack);
+            gameControls.Add(igMove);
+            gameControls.Add(igGather);
+            gameControls.Add(igStop);
+            gameControls.Add(hud);
+
+            Menu gameMenu = new Menu(hudBackground, new Vector2(0, 0), gameControls, Color.White, 1);
+
+            // --- //
+
+            List<UiObject> newGameControls = new List<UiObject>();
+            newGameControls.Add(testTextInput);
+            newGameControls.Add(goButton);
+            newGameControls.Add(ngbackButton);
+
             Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
-            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\knightbase"); // temp
-            Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\magebase");
+            Texture2D swordUnitAttackTexture = Content.Load<Texture2D>("Units\\Kbaseatk");
+            Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\Arcbase");
+            Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\Wbase");
+            Texture2D baseTown = Content.Load<Texture2D>("basictownbase");
+            Texture2D baseGoldMine = Content.Load<Texture2D>("goldminebase");
 
             engine.unitTypes.Add(new UnitType(name: "Swordsman",
                 idleTextures: new[] { swordUnitTexture },
                 moveTextures: new[] { swordUnitTexture },
-                attackTextures: new[] { swordUnitTexture }));
+                attackTextures: new[] { swordUnitAttackTexture },
+                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Move },
+                attackStrength: 15, defense: 2, gatherRate: 2, goldCost: 100));
+            engine.unitTypes.Add(new UnitType(name: "Archer",
+                idleTextures: new[] { archerUnitTexture },
+                moveTextures: new[] { archerUnitTexture },
+                attackTextures: new[] { archerUnitTexture },
+                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Move },
+                attackStrength: 10, attackRange: 5, defense: 0, gatherRate: 2, goldCost: 100));
+            engine.unitTypes.Add(new UnitType(name: "Peasent",
+                idleTextures: new[] { mageUnitTexture },
+                moveTextures: new[] { mageUnitTexture },
+                attackTextures: new[] { mageUnitTexture },
+                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Move, UnitType.Action.Build, UnitType.Action.Produce },
+                attackStrength: 2, defense: 0, gatherRate: 10, goldCost: 50));
+            engine.unitTypes.Add(new UnitType(name: "Town",
+                idleTextures: new[] { baseTown },
+                moveTextures: new[] { baseTown },
+                attackTextures: new[] { baseTown },
+                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Produce },
+                movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 1000,
+                attackStrength: 0, defense: 10, gatherRate: 15, goldCost: 1000));
+            engine.unitTypes.Add(new UnitType(name: "GoldMine",
+                idleTextures: new[] { baseGoldMine },
+                moveTextures: new[] { baseGoldMine },
+                attackTextures: new[] { baseGoldMine },
+                actions: new List<UnitType.Action> { UnitType.Action.Gather },
+                movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 500,
+                attackStrength: 0, defense: 10, gatherRate: 50, goldCost: 500));
 
-            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
+            
 
-            gameControls.Add(m);
-
-            Menu newGameMenu = new Menu(blankBackground, Vector2.Zero, newGameControls, Color.White, 2);
+            Menu newGameMenu = new Menu(hudBackground, Vector2.Zero, newGameControls, Color.White, 2);
             #endregion
 
-            // hud
-            Texture2D boxSelect = Content.Load<Texture2D>("BoxSelect");
-            Hud hud = new Hud(ref engine, ref m, boxSelect);
-
-            gameControls.Add(hud);
+            
 
             // list of all UI objects to be drawn/updated
             userInterface = new List<UiObject>();
@@ -266,7 +341,7 @@ namespace mst_boredom_remover
             {
                 for (int i = 0; i < 15; ++i)
                 {
-                    engine.AddUnit(new Unit(engine, engine.unitTypes[0], new Position(0, i), engine.players[0]));
+                    engine.AddUnit(new Unit(engine, engine.unitTypes[2], new Position(0, i), engine.players[0]));
                 }
             }
             engine.Tick();
@@ -355,7 +430,92 @@ namespace mst_boredom_remover
         {
 
         }
-        
+
+        public void igBuildTown_Clicked(object sender, EventArgs e)
+        {
+            IssueOrder("Build Town");
+        }
+        public void igBuildTown_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igBuildMine_Clicked(object sender, EventArgs e)
+        {
+            IssueOrder("Build Mine");
+        }
+        public void igBuildMine_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igProduceKnight_Clicked(object sender, EventArgs e)
+        {
+            IssueOrder("Produce Knight");
+        }
+        public void igProduceKnight_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igProduceArcher_Clicked(object sender, EventArgs e)
+        {
+            IssueOrder("Produce Archer");
+        }
+        public void igProduceArcher_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igProducePeasant_Clicked(object sender, EventArgs e)
+        {
+            IssueOrder("Produce Peasant");
+        }
+        public void igProducePeasant_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igAttack_Clicked(object sender, EventArgs e)
+        {
+            IssueOrder("Attack");
+        }
+        public void igAttack_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igMove_Clicked(object sender, EventArgs e)
+        {
+            IssueOrder("Move");
+        }
+        public void igMove_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igGather_Clicked(object sender, EventArgs e)
+        {
+            IssueOrder("Gather");
+        }
+        public void igGather_OnPress(object sender, EventArgs e)
+        {
+
+        }
+
+        public void igStop_Clicked(object sender, EventArgs e)
+        {
+            IssueOrder("Stop");
+        }
+        public void igStop_OnPress(object sender, EventArgs e)
+        {
+
+        }
+        private void IssueOrder(string order)
+        {
+            // send order to ingame screen
+            (userInterface[(int)MenuScreen.InGame]).IssueOrder(order);
+        }
         private void ChangeScreen(MenuScreen menu)
         {
             int id;

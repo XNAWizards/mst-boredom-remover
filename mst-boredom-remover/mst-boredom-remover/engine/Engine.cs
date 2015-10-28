@@ -32,7 +32,7 @@ namespace mst_boredom_remover.engine
             unitGrid = new Unit[map.width, map.height];
         }
 
-        public void AddUnit(Unit unit)
+        public Unit AddUnit(Unit unit)
         {
             units.Add(unit);
             if (unit.position.x >= 0 && unit.position.x < map.width && unit.position.y >= 0 &&
@@ -40,6 +40,7 @@ namespace mst_boredom_remover.engine
             {
                 unitGrid[unit.position.x, unit.position.y] = unit;
             }
+            return unit;
         }
 
         public void Tick()
@@ -120,9 +121,9 @@ namespace mst_boredom_remover.engine
             ScheduleUpdate(1, unit);
         }
 
-        public void OrderProduce(Unit factory, UnitType unitType)
+        public void OrderProduce(Unit factory, UnitType unitType, Position targetPosition = null)
         {
-            factory.orders.Add(Order.CreateProduceOrder(unitType));
+            factory.orders.Add(Order.CreateProduceOrder(unitType, targetPosition));
             ScheduleUpdate(1, factory);
         }
 
