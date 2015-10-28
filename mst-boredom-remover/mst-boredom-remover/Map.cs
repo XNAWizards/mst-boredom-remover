@@ -131,6 +131,14 @@ namespace mst_boredom_remover
         {
             return tilePxSize + pxMod;
         }
+        public int getTileIndexX()
+        {
+            return (int)tileIndex.X;
+        }
+        public int getTileIndexY()
+        {
+            return (int)tileIndex.Y;
+        }
 
         public override void ChangeContext(int id)
         {
@@ -185,24 +193,25 @@ namespace mst_boredom_remover
             int tileHeight;
 
             // determine which tile the selection box is starting at
-            startTileX = bounds.X / (int)((tilePxSize + pxMod) + tileIndex.X);
-            startTileY = bounds.Y / (int)((tilePxSize + pxMod) + tileIndex.Y);
-            tileWidth = Math.Max(bounds.Width / (int)((tilePxSize + pxMod) + tileIndex.X), 1);
-            tileHeight = Math.Max(bounds.Height / (int)((tilePxSize + pxMod) + tileIndex.Y), 1);
+            // x tile = mouse x / pixels per tile + tile offset
+            startTileX = bounds.X / (int)((tilePxSize + pxMod));
+            startTileY = bounds.Y / (int)((tilePxSize + pxMod));
+            tileWidth = Math.Max(bounds.Width / (int)((tilePxSize + pxMod)), 1);
+            tileHeight = Math.Max(bounds.Height / (int)((tilePxSize + pxMod)), 1);
 
             selectedUnits.Clear();
 
-            int masterX = startTileX;
-            int masterY = startTileY;
-            // search only the grid. hopefully small n^24
+            int masterX = startTileX + (int)tileIndex.X;
+            int masterY = startTileY + (int)tileIndex.Y;
+            // search only the grid. hopefully small n^2
             for (int y = 0; y < tileHeight; y++)
             {
                 for (int x = 0; x < tileWidth; x++)
                 {
-                    if (engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y] != null)
+                    if (engine.unitGrid[masterX + x, masterY + y] != null)
                     {
-                        engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y].selected = true;
-                        selectedUnits.Add(engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y]);
+                        engine.unitGrid[masterX + x, masterY + y].selected = true;
+                        selectedUnits.Add(engine.unitGrid[masterX + x, masterY + y]);
                     }
                 }
             }
@@ -378,7 +387,7 @@ namespace mst_boredom_remover
             enumerator.MoveNext();
             foreach (Unit unit in selected_units)
             {
-                if ( clearOrders )
+                if (clearOrders)
                 {
                     unit.orders.Clear();
                 }
