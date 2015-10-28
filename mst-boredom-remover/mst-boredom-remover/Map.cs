@@ -302,7 +302,7 @@ namespace mst_boredom_remover
 
         private void ZoomIn()
         {
-            if (pxMod < 18)
+            if (pxMod < 32)
             {
                 pxMod += 2;
                 // calculate zoom factor for drawing.
