@@ -27,7 +27,7 @@ namespace mst_boredom_remover.engine
             futureUpdates = new Dictionary<int, List<Unit>>();
             map = new EngineMap(mapWidth, mapHeight);
             unitTypes = new List<UnitType>();
-            players = new List<Player>() {new Player("Frodo")};
+            players = new List<Player>() {new Player("Frodo"), new Player("Sauron")};
             units = new List<Unit>();
             unitGrid = new Unit[map.width, map.height];
         }
