@@ -31,12 +31,12 @@
             };
         }
 
-        public static Order CreateProduceOrder(UnitType unitType)
+        public static Order CreateProduceOrder(UnitType unitType, Position targetPosition)
         {
             return new Order()
             {
                 orderType = OrderType.Produce,
-                targetPosition = null,
+                targetPosition = targetPosition,
                 targetUnit = null,
                 unitTypeBuild = unitType
             };

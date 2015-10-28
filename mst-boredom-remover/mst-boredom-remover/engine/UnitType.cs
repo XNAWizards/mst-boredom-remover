@@ -35,6 +35,8 @@ namespace mst_boredom_remover.engine
             Move,
             Attack,
             Produce,
+            Gather,
+            Build,
             Cast
         };
         public List<Action> actions;

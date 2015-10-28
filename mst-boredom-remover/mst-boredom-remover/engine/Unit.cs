@@ -63,7 +63,7 @@ namespace mst_boredom_remover.engine
 
         public bool CanMove(Position targetPosition)
         {
-            if (engine.map.Inside(targetPosition))
+            if (type.actions.Contains(UnitType.Action.Move) && engine.map.Inside(targetPosition))
             {
                 var targetUnit = engine.unitGrid[targetPosition.x, targetPosition.y];
                 if (targetUnit != null)
@@ -73,6 +73,36 @@ namespace mst_boredom_remover.engine
                 return true;
             }
             return false;
+        }
+
+        public bool CanMove()
+        {
+            return type.actions.Contains(UnitType.Action.Move);
+        }
+
+        public bool CanAttack()
+        {
+            return type.actions.Contains(UnitType.Action.Attack);
+        }
+
+        public bool CanProduce()
+        {
+            return type.actions.Contains(UnitType.Action.Produce);
+        }
+
+        public bool CanGather()
+        {
+            return type.actions.Contains(UnitType.Action.Gather);
+        }
+
+        public bool CanBuild()
+        {
+            return type.actions.Contains(UnitType.Action.Build);
+        }
+
+        public bool CanCast()
+        {
+            return type.actions.Contains(UnitType.Action.Cast);
         }
 
         public int AttackRange()
@@ -155,6 +185,19 @@ namespace mst_boredom_remover.engine
                     engine.ScheduleUpdate(10, this);
                     break;
                 case Order.OrderType.Produce:
+                    if ( currentOrder.targetPosition != null && currentOrder.targetPosition.Distance(this.position) > 1 && this.CanMove() )
+                    {
+                        nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
+
+                        if (nextPosition != null)
+                        {
+                            engine.MoveUnit(this, nextPosition);
+                        }
+
+                        // TODO: Calculate cooldown based on speed and tile and modifiers
+                        engine.ScheduleUpdate(10, this);
+                        break;
+                    }
                     if (owner.gold < currentOrder.unitTypeBuild.goldCost ||
                         owner.iron < currentOrder.unitTypeBuild.ironCost ||
                         owner.manaCystals < currentOrder.unitTypeBuild.manaCrystalsCost)
@@ -168,13 +211,20 @@ namespace mst_boredom_remover.engine
                     // Find place to put unit
                     Position targetLocation = position;
                     Position producePosition = null;
-                    foreach (var testPosition in engine.map.BreadthFirst(targetLocation, distance: 1))
+                    if (currentOrder.targetPosition == null)
                     {
-                        if (engine.unitGrid[testPosition.x, testPosition.y] == null)
+                        foreach (var testPosition in engine.map.BreadthFirst(targetLocation, distance: 1))
                         {
-                            producePosition = testPosition;
-                            break;
+                            if (engine.unitGrid[testPosition.x, testPosition.y] == null)
+                            {
+                                producePosition = testPosition;
+                                break;
+                            }
                         }
+                    }
+                    else
+                    {
+                        producePosition = currentOrder.targetPosition;
                     }
                     if (producePosition == null)
                     {
@@ -182,15 +232,21 @@ namespace mst_boredom_remover.engine
                         engine.ScheduleUpdate(5, this);
                         break;
                     }
-                    if (owner.gold >= currentOrder.unitTypeBuild.goldCost && owner.iron >= currentOrder.unitTypeBuild.ironCost && owner.manaCystals >= currentOrder.unitTypeBuild.manaCrystalsCost)
+
+                    // Subtract resources
+                    owner.gold -= currentOrder.unitTypeBuild.goldCost;
+                    owner.iron -= currentOrder.unitTypeBuild.ironCost;
+                    owner.manaCystals -= currentOrder.unitTypeBuild.manaCrystalsCost;
+                    // Create the unit
+                    // TODO: Apply orders to the new unit, such as a rally point
+                    Unit u = engine.AddUnit(new Unit(engine, currentOrder.unitTypeBuild, producePosition, owner));
+                    if (currentOrder.targetPosition != null && currentOrder.targetPosition.Distance(u.position) > 1 && u.CanMove())
                     {
-                        // Subtract resources
-                        owner.gold -= currentOrder.unitTypeBuild.goldCost;
-                        owner.iron -= currentOrder.unitTypeBuild.ironCost;
-                        owner.manaCystals -= currentOrder.unitTypeBuild.manaCrystalsCost;
-                        // Create the unit
-                        // TODO: Apply orders to the new unit, such as a rally point
-                        engine.AddUnit(new Unit(engine, currentOrder.unitTypeBuild, producePosition, owner));
+                        engine.OrderMove(u, currentOrder.targetPosition);
+                    }
+                    else if ( u.type.name.Equals("GoldMine") )
+                    {
+                        engine.OrderGather(u, currentOrder.targetPosition);
                     }
                     engine.ScheduleUpdate(5, this);
                     NextOrder();

@@ -241,29 +241,34 @@ namespace mst_boredom_remover
                 idleTextures: new[] { swordUnitTexture },
                 moveTextures: new[] { swordUnitTexture },
                 attackTextures: new[] { swordUnitAttackTexture },
-                attackStrength: 15, defense: 2, gatherRate: 2, goldCost: 50));
+                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Move },
+                attackStrength: 15, defense: 2, gatherRate: 2, goldCost: 100));
             engine.unitTypes.Add(new UnitType(name: "Archer",
                 idleTextures: new[] { archerUnitTexture },
                 moveTextures: new[] { archerUnitTexture },
                 attackTextures: new[] { archerUnitTexture },
-                attackStrength: 10, attackRange: 5, defense: 0, gatherRate: 2, goldCost: 50));
+                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Move },
+                attackStrength: 10, attackRange: 5, defense: 0, gatherRate: 2, goldCost: 100));
             engine.unitTypes.Add(new UnitType(name: "Peasent",
                 idleTextures: new[] { mageUnitTexture },
                 moveTextures: new[] { mageUnitTexture },
                 attackTextures: new[] { mageUnitTexture },
+                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Move, UnitType.Action.Build, UnitType.Action.Produce },
                 attackStrength: 2, defense: 0, gatherRate: 10, goldCost: 50));
             engine.unitTypes.Add(new UnitType(name: "Town",
                 idleTextures: new[] { baseTown },
                 moveTextures: new[] { baseTown },
                 attackTextures: new[] { baseTown },
-                movementSpeed: 0, movementType: UnitType.MovementType.None,
-                attackStrength: 0, defense: 10, gatherRate: 20, goldCost: 100));
-            engine.unitTypes.Add(new UnitType(name: "Gold",
+                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Produce },
+                movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 1000,
+                attackStrength: 0, defense: 10, gatherRate: 15, goldCost: 1000));
+            engine.unitTypes.Add(new UnitType(name: "GoldMine",
                 idleTextures: new[] { baseGoldMine },
                 moveTextures: new[] { baseGoldMine },
                 attackTextures: new[] { baseGoldMine },
-                movementSpeed: 0, movementType: UnitType.MovementType.None,
-                attackStrength: 0, defense: 10, gatherRate: 20, goldCost: 100));
+                actions: new List<UnitType.Action> { UnitType.Action.Gather },
+                movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 500,
+                attackStrength: 0, defense: 10, gatherRate: 50, goldCost: 500));
 
             
 
@@ -336,7 +341,7 @@ namespace mst_boredom_remover
             {
                 for (int i = 0; i < 15; ++i)
                 {
-                    engine.AddUnit(new Unit(engine, engine.unitTypes[0], new Position(0, i), engine.players[0]));
+                    engine.AddUnit(new Unit(engine, engine.unitTypes[2], new Position(0, i), engine.players[0]));
                 }
             }
             engine.Tick();
