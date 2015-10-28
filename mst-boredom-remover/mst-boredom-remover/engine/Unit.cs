@@ -68,7 +68,7 @@ namespace mst_boredom_remover.engine
                 var targetUnit = engine.unitGrid[targetPosition.x, targetPosition.y];
                 if (targetUnit != null)
                 {
-                    return targetUnit.orders.Count == 0;
+                    return targetUnit.owner == owner && targetUnit.CanMove() && targetUnit.orders.Count == 0;
                 }
                 return true;
             }

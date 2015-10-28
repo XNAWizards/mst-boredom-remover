@@ -563,7 +563,11 @@ namespace mst_boredom_remover
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
                 Vector2 drawPosition = (unit.position.ToVector2() - tileIndex) * (tilePxSize + pxMod);
                 Color c = Color.White;
-
+                
+                if (unit.owner == engine.players[1])
+                {
+                    c = Color.MediumBlue;
+                }
                 if (unit.selected)
                 {
                     c = Color.Red;
