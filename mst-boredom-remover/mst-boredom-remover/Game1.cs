@@ -42,6 +42,9 @@ namespace mst_boredom_remover
             Content.RootDirectory = "Content";
             
             engine = new Engine(width, height);
+            // Create initial players
+            engine.AddPlayer("Frodo", 0);
+            engine.AddPlayer("Sauron", 1);
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -341,9 +344,9 @@ namespace mst_boredom_remover
             {
                 for (int i = 0; i < 15; ++i)
                 {
-                    engine.AddUnit(new Unit(engine, engine.unitTypes[2], new Position(0, i), engine.players[0]));
+                    engine.AddUnit(engine.unitTypes[2], new Position(0, i), engine.players[0]);
 
-                    engine.AddUnit(new Unit(engine, engine.unitTypes[2], new Position(100, i + 50), engine.players[1]));
+                    engine.AddUnit(engine.unitTypes[2], new Position(100, i + 50), engine.players[1]);
                 }
             }
             engine.Tick();

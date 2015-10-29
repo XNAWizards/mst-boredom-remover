@@ -17,6 +17,7 @@ namespace mst_boredom_remover.engine
         public AttackType attackType;
         public double attackStrength;
         public double attackRange;
+        public double attackSpeed;
         public double defense;
 
         public enum MovementType
@@ -59,7 +60,8 @@ namespace mst_boredom_remover.engine
         public Texture2D[] moveTextures;
 
         public UnitType(string name="", double maxHealth=100.0, AttackType attackType=AttackType.Melee,
-            double attackStrength=1.0, double attackRange=1.0, double defense=0.0, MovementType movementType=MovementType.Walker,
+            double attackStrength=1.0, double attackRange=1.0, double attackSpeed = 1.0, double defense=0.0,
+            MovementType movementType=MovementType.Walker,
             double movementSpeed=1.0, List<Action> actions=null, List<Spell> spells=null, double gatherRate = 10.0,
             double goldCost=10.0, double ironCost=0.0, double manaCrystalsCost=0.0,
             Texture2D[] idleTextures=null, Texture2D[] attackTextures=null, Texture2D[] moveTextures=null)
@@ -69,6 +71,7 @@ namespace mst_boredom_remover.engine
             this.attackType = attackType;
             this.attackStrength = attackStrength;
             this.attackRange = attackRange;
+            this.attackSpeed = attackSpeed;
             this.defense = defense;
             this.movementType = movementType;
             this.movementSpeed = movementSpeed;
