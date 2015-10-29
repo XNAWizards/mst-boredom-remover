@@ -163,12 +163,12 @@ namespace mst_boredom_remover.engine
                         Update();
                         break;
                     }
-                    currentOrder.targetPosition = currentOrder.targetUnit.position;
+                    var targetPosition = currentOrder.targetUnit.position;
                     if (position.Distance(currentOrder.targetUnit.position) > type.attackRange)
                     {
                         // TODO: Move into range
 
-                        nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
+                        nextPosition = Pathfinder.FindNextStep(engine, this, position, targetPosition);
 
                         if (nextPosition != null)
                         {
