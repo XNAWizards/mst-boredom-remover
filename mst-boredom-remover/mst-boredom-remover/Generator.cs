@@ -16,7 +16,8 @@ namespace mst_boredom_remover
         public static char[,] generate(int width, int height)
         {
             // chance out of 1000
-            int tundraAmount = 2;
+            int resourceSparce = 500;
+			int tundraAmount = 2;
             int forestAmount = 2;
             int mountainAmount = 2;
             int plainAmount = 2;
@@ -369,6 +370,17 @@ namespace mst_boredom_remover
                         if (r.Next(0, MAX_CHANCE) <= MANA_CHANCE)
                             field[j, i] = '*';//magic crystal resource
                     }
+					else if(r.Next(0,resourceSparce)<=1){
+						if(field[j,i] != '~'){
+							int resourceType = r.Next(0, 3);
+                            if (resourceType == 0)
+                                field[j, i] = 'L';
+                            if (resourceType == 1)
+                                field[j, i] = 'G';
+                            if (resourceType == 2)
+                                field[j, i] = '*';
+						}
+					}
 
                 }
             }
