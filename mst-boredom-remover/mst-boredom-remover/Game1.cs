@@ -222,7 +222,7 @@ namespace mst_boredom_remover
             // hud
             Texture2D boxSelect = Content.Load<Texture2D>("BoxSelect");
             Texture2D HPbar = Content.Load<Texture2D>("HPbar");
-            Hud hud = new Hud(ref engine, ref m, boxSelect, HPbar, engine);
+            Hud hud = new Hud(ref engine, ref m, boxSelect, HPbar);
 
             gameControls.Add(m);
             gameControls.Add(backButton);

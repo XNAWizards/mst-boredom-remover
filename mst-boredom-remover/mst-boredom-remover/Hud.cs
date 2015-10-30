@@ -1,27 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using mst_boredom_remover.engine;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
     class Hud : UiObject
     {
+        readonly Engine engine;
+
         Texture2D boxSelect;
         List<Unit> selectedUnits;
         KeyboardState k;
         MouseState m;
         MouseState m2;
         String lastButtonPressed;
-        Engine engine;
-        List<Unit> engineUnits;     // reference to the game units list
         Vector2 startRect;
         Vector2 endRect;
         Map map;
@@ -31,18 +26,17 @@ namespace mst_boredom_remover
         Texture2D HPbar;
 
         // handles context displays, selected units, resource counters, 
-        public Hud(ref Engine game, ref Map map, Texture2D boxSelect, Texture2D HPbar, Engine engine)
+        public Hud(ref Engine engine, ref Map map, Texture2D boxSelect, Texture2D HPbar)
         {
-            selectedUnits = new List<Unit>();
-            engineUnits = game.units;
-
-            startRect = new Vector2();
-            endRect = new Vector2();
-
+            this.engine = engine;
             this.map = map;
             this.boxSelect = boxSelect;
             this.HPbar = HPbar;
-            this.engine = engine;
+
+            selectedUnits = new List<Unit>();
+            startRect = new Vector2();
+            endRect = new Vector2();
+            
             // initialize
             m = Mouse.GetState();
             m2 = Mouse.GetState();
@@ -53,7 +47,7 @@ namespace mst_boredom_remover
         {
             foreach (Unit u in selectedUnits)
             {
-                u.orders.Clear(); // ?
+                u.orders.Clear();
             }
         }
 
@@ -150,8 +144,8 @@ namespace mst_boredom_remover
 
             Vector2 mouseTile = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 
-            mouseTile.X = m.X / (map.getPxSizeMod()) + map.getTileIndexX();
-            mouseTile.Y = m.Y / (map.getPxSizeMod()) + map.getTileIndexY();
+            mouseTile.X = m.X / (map.GetPxSizeMod()) + map.GetTileIndexX();
+            mouseTile.Y = m.Y / (map.GetPxSizeMod()) + map.GetTileIndexY();
 
             Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
 
@@ -312,7 +306,7 @@ namespace mst_boredom_remover
                 bounds.Y = 0;
             }
 
-            return map.select(bounds);
+            return map.Select(bounds);
         }
 
         public override void ChangeFont(SpriteFont f)
@@ -442,14 +436,14 @@ namespace mst_boredom_remover
         public override void Draw(SpriteBatch sb)
         {
             // draw unit HP bars
-            foreach (Unit u in engineUnits)
+            foreach (Unit u in engine.units)
             {
                 // calc hp percent
                 double percent = u.health / u.type.maxHealth;
 
                 Vector2 drawPosition = map.GetDrawPosition(u);
 
-                sb.Draw(HPbar, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (int)(map.getPxSizeMod() * percent), 3), Color.White);
+                sb.Draw(HPbar, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (int)(map.GetPxSizeMod() * percent), 3), Color.White);
             }
             if (rectangleSelect)
             {
