@@ -143,7 +143,7 @@ namespace mst_boredom_remover
             }
         }
 
-        public void unitGroupCommand()
+        public void UnitGroupCommand()
         {
             MouseState mouse = Mouse.GetState();
             KeyboardState keys = Keyboard.GetState();
@@ -155,7 +155,7 @@ namespace mst_boredom_remover
 
             Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
 
-            Unit clickedUnit = engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y];
+            Unit clickedUnit = engine.GetUnitAt(mouseGameTilePosition);
             var enumerator = engine.map.BreadthFirst(mouseGameTilePosition).GetEnumerator();
             enumerator.MoveNext();
             foreach (Unit unit in selectedUnits)
@@ -188,7 +188,7 @@ namespace mst_boredom_remover
                             continue;
                         }
 
-                        while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
+                        while (engine.GetUnitAt(enumerator.Current) != null)
                         {
                             enumerator.MoveNext();
                         }
@@ -364,7 +364,7 @@ namespace mst_boredom_remover
             }
             else if (m.RightButton == ButtonState.Released && m2.RightButton == ButtonState.Pressed)
             {
-                unitGroupCommand();
+                UnitGroupCommand();
             }
             else
             {

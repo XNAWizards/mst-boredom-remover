@@ -382,7 +382,7 @@ namespace mst_boredom_remover
         {
             Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
 
-            Unit clickedUnit = engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y];
+            Unit clickedUnit = engine.GetUnitAt(mouseGameTilePosition);
             var enumerator = engine.map.BreadthFirst(mouseGameTilePosition).GetEnumerator();
             enumerator.MoveNext();
             foreach (Unit unit in selected_units)
@@ -413,7 +413,7 @@ namespace mst_boredom_remover
                         continue;
                     }
 
-                    while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
+                    while (engine.GetUnitAt(enumerator.Current) != null)
                     {
                         enumerator.MoveNext();
                     }

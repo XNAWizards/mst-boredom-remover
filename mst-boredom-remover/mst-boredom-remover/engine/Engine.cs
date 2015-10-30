@@ -63,7 +63,7 @@ namespace mst_boredom_remover.engine
 
             var newUnit = new Unit(GetNextId(), this, unitType, position, owner);
             units.Add(newUnit);
-            unitGrid[newUnit.position.x, newUnit.position.y] = newUnit;
+            SetUnitAt(newUnit.position, newUnit);
             return newUnit;
         }
 
@@ -165,7 +165,7 @@ namespace mst_boredom_remover.engine
             if (target.health<=0) //target dead
             {
                 RemoveUpdate(target);
-                unitGrid[target.position.x,target.position.y] = null;
+                SetUnitAt(target.position, null);
                 units.Remove(target);
                 target.status = Unit.Status.Dead;
             }
