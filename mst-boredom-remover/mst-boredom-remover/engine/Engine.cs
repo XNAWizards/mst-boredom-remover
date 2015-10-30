@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace mst_boredom_remover.engine
 {
@@ -23,18 +24,21 @@ namespace mst_boredom_remover.engine
         public List<Unit> units;
         public Unit[,] unitGrid;
         
-        public int idCounter;
+        private int idCounter;
 
         public Engine(int mapWidth, int mapHeight)
         {
             currentTick = 0;
             futureUpdates = new Dictionary<int, List<Unit>>();
-            map = new EngineMap(mapWidth, mapHeight);
+            map = new EngineMap(this, mapWidth, mapHeight);
             unitTypes = new List<UnitType>();
+            tileTypes = new List<TileType>();
             players = new List<Player>();
             units = new List<Unit>();
             unitGrid = new Unit[map.width, map.height];
             idCounter = 0;
+
+            map.Initialize();
         }
 
         public Unit GetUnitAt(Position position)
@@ -65,6 +69,20 @@ namespace mst_boredom_remover.engine
             units.Add(newUnit);
             SetUnitAt(newUnit.position, newUnit);
             return newUnit;
+        }
+
+        public Tile AddTile(TileType tileType, Position position)
+        {
+            if (!map.Inside(position)) return null;
+            
+            var newTile = new Tile(GetNextId(), position, tileType);
+            map.SetTileAt(position, newTile);
+            return newTile;
+        }
+
+        public TileType GetTileTypeByName(string name)
+        {
+            return tileTypes.FirstOrDefault(tileType => tileType.name == name);
         }
 
         public void Tick()

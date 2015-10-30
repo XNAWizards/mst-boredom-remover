@@ -190,6 +190,19 @@ namespace mst_boredom_remover
             Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra");
             Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest");
 
+            // Create initial biomes
+            engine.tileTypes.Add(new TileType("Ocean", texture: oceanTexture, biome: TileType.Biome.Ocean));
+            engine.tileTypes.Add(new TileType("Plain", texture: plainsTexture, biome: TileType.Biome.Plain));
+            engine.tileTypes.Add(new TileType("Mountain", texture: mountainsTexture, biome: TileType.Biome.Mountain));
+            engine.tileTypes.Add(new TileType("Forest", texture: forestTexture, biome: TileType.Biome.Forest));
+            engine.tileTypes.Add(new TileType("Dreadlands", texture: dreadTexture, biome: TileType.Biome.Dreadlands));
+            engine.tileTypes.Add(new TileType("Desert", texture: desertTexture, biome: TileType.Biome.Desert));
+            engine.tileTypes.Add(new TileType("Tundra", texture: tundraTexture, biome: TileType.Biome.Tundra));
+
+            engine.tileTypes.Add(new TileType("Gold", texture: blankBackground, biome: TileType.Biome.Gold, resourceType: TileType.ResourceType.Gold));
+            engine.tileTypes.Add(new TileType("Iron", texture: blankBackground, biome: TileType.Biome.Iron, resourceType: TileType.ResourceType.Iron));
+            engine.tileTypes.Add(new TileType("ManaCrystals", texture: blankBackground, biome: TileType.Biome.ManaCrystals, resourceType: TileType.ResourceType.ManaCrystals));
+
             List<Texture2D> tiles = new List<Texture2D>();
 
             tiles.Add(blankBackground);

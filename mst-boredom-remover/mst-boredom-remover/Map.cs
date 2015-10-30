@@ -85,7 +85,7 @@ namespace mst_boredom_remover
 
             this.charmap = Generator.generate(width, height);
 
-            engine.map.UpdateTiles(charmap);
+            engine.map.UpdateTilesFromCharmap(charmap);
 
             tileNames = new List<string>();
 
@@ -432,7 +432,7 @@ namespace mst_boredom_remover
             {
                 // generate a new map, reconstruct cache
                 charmap = Generator.generate(width, height);
-                engine.map.UpdateTiles(charmap);
+                engine.map.UpdateTilesFromCharmap(charmap);
                 gDisable = true;
                 buildMapCache = true;
                 savePxMod = pxMod;
