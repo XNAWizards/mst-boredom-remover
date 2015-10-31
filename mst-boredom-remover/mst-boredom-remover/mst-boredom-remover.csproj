@@ -107,18 +107,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game.cs" />
+    <Compile Include="engine\Engine.cs" />
+    <Compile Include="engine\EngineMap.cs" />
+    <Compile Include="Generator.cs" />
+    <Compile Include="Hud.cs" />
     <Compile Include="Map.cs" />
-    <Compile Include="Order.cs" />
-    <Compile Include="Pathfinder.cs" />
-    <Compile Include="Player.cs" />
-    <Compile Include="Position.cs" />
-    <Compile Include="PriorityQueuesProgram.cs" />
+    <Compile Include="engine\Order.cs" />
+    <Compile Include="engine\Pathfinder.cs" />
+    <Compile Include="engine\Player.cs" />
+    <Compile Include="engine\Position.cs" />
+    <Compile Include="engine\PriorityQueuesProgram.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="Tile.cs" />
-    <Compile Include="TileType.cs" />
-    <Compile Include="Unit.cs" />
-    <Compile Include="UnitType.cs" />
+    <Compile Include="engine\Tile.cs" />
+    <Compile Include="engine\TileType.cs" />
+    <Compile Include="engine\Unit.cs" />
+    <Compile Include="engine\UnitType.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
-    class TextInput : UIObject
+    class TextInput : UiObject
     {
         private Texture2D texture;
         private Texture2D activeTexture;
         private Vector2 position;
-        private SpriteFont font;
+        private SpriteFont _font;
 
         private string currentText = "";
         private bool active = true;
@@ -35,40 +28,34 @@ namespace mst_boredom_remover
             this.texture = texture;
             this.activeTexture = activeTexture;
             this.position = position;
-            this.font = font;
+            this._font = font;
 
             bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
         }
 
         
 
-        public override void toggleDebugMode()
+        public override void ToggleDebugMode()
         {
             //base.toggleDebugMode();
         }
 
-        public override void mapMove(int deltaX, int deltaY)
-        {
-
-            //base.mapMove(deltaX, deltaY);
-        }
-
-        public override void changeContext(int id)
+        public override void ChangeContext(int id)
         {
 
             //base.changeContext(id);
         }
 
-        public override void changeFont(SpriteFont f)
+        public override void ChangeFont(SpriteFont f)
         {
-            base.changeFont(f);
+            base.ChangeFont(f);
         }
 
-        private void debugUpdate(GameTime gt)
+        private void DebugUpdate(GameTime gt)
         {
 
         }
-        private void debugDraw(SpriteBatch sb)
+        private void DebugDraw(SpriteBatch sb)
         {
 
         }
@@ -118,7 +105,7 @@ namespace mst_boredom_remover
                             {
                                 c = Convert.ToChar(k);
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
                                 // k is not a key convertable to a char
                             }
@@ -137,7 +124,7 @@ namespace mst_boredom_remover
                 else
                 {
                     // verify string length
-                    if (font.MeasureString((currentText + "W")).X < texture.Width - 10)
+                    if (_font.MeasureString((currentText + "W")).X < texture.Width - 10)
                     {
                         // verify string contents
                         if (c != ' ' && (c > 65 && c <= 90) || (c > 96 && c <= 122))
@@ -163,7 +150,7 @@ namespace mst_boredom_remover
             {
                 sb.Draw(activeTexture, position, Color.White);
             }
-            sb.DrawString(font, currentText, position + new Vector2(10, 12), Color.Black);
+            sb.DrawString(_font, currentText, position + new Vector2(10, 12), Color.Black);
             //base.Draw(sb);
         }
     }

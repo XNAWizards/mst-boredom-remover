@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
-    public class TextDisplay : UIObject
+    public class TextDisplay : UiObject
     {
         private Texture2D texture;      // background texture
         private Vector2 position;       // top left corner of the background
-        private SpriteFont font;        // font of the text
-        private Rectangle bounds;       // rectangle bounds containing the background
         private Color color;            // color of the text
 
         private string text = "";       // the text
@@ -26,17 +15,16 @@ namespace mst_boredom_remover
         private int test = 1;
 
         public TextDisplay(Texture2D texture, Vector2 position, SpriteFont font, Color color)
-            : base()
         {
             this.texture = texture;
             this.position = position;
             this.font = font;
             this.color = color;
-            calculateCenter();
+            CalculateCenter();
         }
 
         // Calculates where to draw the text
-        private void calculateCenter()
+        private void CalculateCenter()
         {
             // if string is not empty
             if (text != "")
@@ -50,38 +38,32 @@ namespace mst_boredom_remover
 
         // Changes the text to be displayed
         // Recenters the text
-        public void changeText(string newText)
+        public void ChangeText(string newText)
         {
             text = newText;
-            calculateCenter();
+            CalculateCenter();
         }
 
-        public override void changeFont(SpriteFont f)
+        public override void ChangeFont(SpriteFont f)
         {
             //font = f;
         }
 
-        public override void changeContext(int id)
+        public override void ChangeContext(int id)
         {
 
         }
 
-        public override void toggleDebugMode()
+        public override void ToggleDebugMode()
         {
             //base.toggleDebugMode();
         }
 
-        public override void mapMove(int deltaX, int deltaY)
-        {
-
-            //base.mapMove(deltaX, deltaY);
-        }
-
-        private void debugUpdate(GameTime gt)
+        private void DebugUpdate(GameTime gt)
         {
 
         }
-        private void debugDraw(SpriteBatch sb)
+        private void DebugDraw(SpriteBatch sb)
         {
 
         }
@@ -90,7 +72,7 @@ namespace mst_boredom_remover
         public override void Update(GameTime gt)
         {
             test++;
-            changeText(test.ToString());
+            ChangeText(test.ToString());
             //base.Update(gt);
         }
 
