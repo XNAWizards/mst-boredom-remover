@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace mst_boredom_remover.engine
 {
     class EngineMap
     {
-        public int width;
-        public int height;
+        public readonly Engine engine;
+        public readonly int width;
+        public readonly int height;
 
         public Tile[,] tiles;
 
@@ -18,7 +20,7 @@ namespace mst_boredom_remover.engine
             West
         }
 
-        public static Position[] directionDeltas = new Position[]
+        public static readonly Position[] directionDeltas =
         {
             new Position(1, 0),
             new Position(0, 1),
@@ -26,82 +28,78 @@ namespace mst_boredom_remover.engine
             new Position(0, -1)
         };
 
-        public EngineMap(int width, int height)
+        public static readonly Dictionary<char, string> charToBiomeString = new Dictionary<char, string>
         {
+            {'~', "Ocean"},
+            {'+', "Plain"},
+            {'M', "Mountain"},
+            {'F', "Forest" },
+            {'%', "Dreadlands" },
+            {'D', "Desert" },
+            {'T', "Tundra" },
+            {'G', "Gold" },
+            {'L', "Iron" },
+            {'*', "ManaCrystals" }
+        };
+
+        public EngineMap(Engine engine, int width, int height)
+        {
+            this.engine = engine;
             this.width = width;
             this.height = height;
-            this.tiles = new Tile[width, height];
+        }
+
+        public void Initialize()
+        {
+            // Initialize tiles
+            tiles = new Tile[width, height];
             Position targetPosition = new Position(0, 0);
             for (targetPosition.y = 0; targetPosition.y < height; ++targetPosition.y)
             {
                 for (targetPosition.x = 0; targetPosition.x < width; ++targetPosition.x)
                 {
-                    Tile targetTile = new Tile();
-                    tiles[targetPosition.x, targetPosition.y] = targetTile;
-                    targetTile.position = new Position(targetPosition.x, targetPosition.y);
+                    engine.AddTile(null, targetPosition.Clone()); // This looks error prone
                 }
             }
+            // Initialize neighbors
             for (targetPosition.y = 0; targetPosition.y < height; ++targetPosition.y)
             {
                 for (targetPosition.x = 0; targetPosition.x < width; ++targetPosition.x)
                 {
-                    Tile targetTile = tiles[targetPosition.x, targetPosition.y];
+                    Tile targetTile = GetTileAt(targetPosition);
                     targetTile.neighbors = new List<Tile>(from delta in directionDeltas
-                                             where Inside(targetPosition + delta)
-                                             select tiles[targetPosition.x + delta.x, targetPosition.y + delta.y]);
+                                                          where Inside(targetPosition + delta)
+                                                          select tiles[targetPosition.x + delta.x, targetPosition.y + delta.y]);
                 }
             }
         }
 
-        public void UpdateTiles(char [,] charmap)
+        public Tile GetTileAt(Position position)
+        {
+            return Inside(position) ? tiles[position.x, position.y] : null;
+        }
+
+        public void SetTileAt(Position position, Tile tile)
+        {
+            if (Inside(position))
+            {
+                tiles[position.x, position.y] = tile;
+            }
+        }
+
+        public void UpdateTilesFromCharmap(char [,] charmap)
         {
             Position targetPosition = new Position(0, 0);
             for (targetPosition.y = 0; targetPosition.y < height; ++targetPosition.y)
             {
                 for (targetPosition.x = 0; targetPosition.x < width; ++targetPosition.x)
                 {
-                    tiles[targetPosition.x, targetPosition.y].tileType = new TileType();
-                    switch (charmap[targetPosition.x, targetPosition.y])
+                    string biomeName = "Ocean";
+                    if (charToBiomeString.ContainsKey(charmap[targetPosition.x, targetPosition.y]))
                     {
-                        case '~':
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Ocean;
-                            break;
-                        case '+':
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Plain;
-                            
-                            break;
-                        case 'M':
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Mountain;
-                            break;
-                        case 'F':
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Forest;
-                            break;
-                        case '%':
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Dreadlands;
-                            break;
-                        case 'D':
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Desert;
-                            break;
-                        case 'T':
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Tundra;
-                            break;
-                        case 'G':
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Gold;
-                            tiles[targetPosition.x, targetPosition.y].tileType.resourceType = TileType.ResourceType.Gold;
-                            break;
-                        case 'L':
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Iron;
-                            tiles[targetPosition.x, targetPosition.y].tileType.resourceType = TileType.ResourceType.Iron;
-                            break;
-                        case '*':
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.ManaCrystals;
-                            tiles[targetPosition.x, targetPosition.y].tileType.resourceType = TileType.ResourceType.ManaCrystals;
-                            break;
-                        default:
-                            tiles[targetPosition.x, targetPosition.y].tileType.biome = TileType.Biome.Ocean;
-                            break;
+                        biomeName = charToBiomeString[charmap[targetPosition.x, targetPosition.y]];
                     }
-
+                    GetTileAt(targetPosition).tileType = engine.GetTileTypeByName(biomeName);
                 }
             }
         }
@@ -121,12 +119,12 @@ namespace mst_boredom_remover.engine
         {
             List<Tile> perimeter = new List<Tile>() { tiles[position.x, position.y] };
             HashSet<Tile> seen = new HashSet<Tile>(perimeter);
-            perimeter[0].temp = 0;
+            perimeter[0].pathDistance = 0;
             while (size != 0 && perimeter.Count > 0)
             {
                 Tile top = perimeter[0];
                 perimeter.RemoveAt(0);
-                if (distance >= 0 && top.temp > distance)
+                if (distance >= 0 && top.pathDistance > distance)
                 {
                     yield break;
                 }
@@ -138,7 +136,7 @@ namespace mst_boredom_remover.engine
                     {
                         perimeter.Add(neighbor);
                         seen.Add(neighbor);
-                        neighbor.temp = top.temp + 1;
+                        neighbor.pathDistance = top.pathDistance + 1;
                     }
                 }
                 size -= 1;

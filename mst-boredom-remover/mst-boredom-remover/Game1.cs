@@ -42,6 +42,9 @@ namespace mst_boredom_remover
             Content.RootDirectory = "Content";
             
             engine = new Engine(width, height);
+            // Create initial players
+            engine.AddPlayer("Frodo", 0);
+            engine.AddPlayer("Sauron", 1);
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -187,6 +190,19 @@ namespace mst_boredom_remover
             Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra");
             Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest");
 
+            // Create initial biomes
+            engine.tileTypes.Add(new TileType("Ocean", texture: oceanTexture, biome: TileType.Biome.Ocean));
+            engine.tileTypes.Add(new TileType("Plain", texture: plainsTexture, biome: TileType.Biome.Plain));
+            engine.tileTypes.Add(new TileType("Mountain", texture: mountainsTexture, biome: TileType.Biome.Mountain));
+            engine.tileTypes.Add(new TileType("Forest", texture: forestTexture, biome: TileType.Biome.Forest));
+            engine.tileTypes.Add(new TileType("Dreadlands", texture: dreadTexture, biome: TileType.Biome.Dreadlands));
+            engine.tileTypes.Add(new TileType("Desert", texture: desertTexture, biome: TileType.Biome.Desert));
+            engine.tileTypes.Add(new TileType("Tundra", texture: tundraTexture, biome: TileType.Biome.Tundra));
+
+            engine.tileTypes.Add(new TileType("Gold", texture: blankBackground, biome: TileType.Biome.Gold, resourceType: TileType.ResourceType.Gold));
+            engine.tileTypes.Add(new TileType("Iron", texture: blankBackground, biome: TileType.Biome.Iron, resourceType: TileType.ResourceType.Iron));
+            engine.tileTypes.Add(new TileType("ManaCrystals", texture: blankBackground, biome: TileType.Biome.ManaCrystals, resourceType: TileType.ResourceType.ManaCrystals));
+
             List<Texture2D> tiles = new List<Texture2D>();
 
             tiles.Add(blankBackground);
@@ -206,7 +222,7 @@ namespace mst_boredom_remover
             // hud
             Texture2D boxSelect = Content.Load<Texture2D>("BoxSelect");
             Texture2D HPbar = Content.Load<Texture2D>("HPbar");
-            Hud hud = new Hud(ref engine, ref m, boxSelect, HPbar, engine);
+            Hud hud = new Hud(ref engine, ref m, boxSelect, HPbar);
 
             gameControls.Add(m);
             gameControls.Add(backButton);
@@ -341,9 +357,9 @@ namespace mst_boredom_remover
             {
                 for (int i = 0; i < 15; ++i)
                 {
-                    engine.AddUnit(new Unit(engine, engine.unitTypes[2], new Position(0, i), engine.players[0]));
+                    engine.AddUnit(engine.unitTypes[2], new Position(0, i), engine.players[0]);
 
-                    engine.AddUnit(new Unit(engine, engine.unitTypes[2], new Position(100, i + 50), engine.players[1]));
+                    engine.AddUnit(engine.unitTypes[2], new Position(100, i + 50), engine.players[1]);
                 }
             }
             engine.Tick();
