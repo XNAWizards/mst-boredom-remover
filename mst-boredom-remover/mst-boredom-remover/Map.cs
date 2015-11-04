@@ -137,7 +137,7 @@ namespace mst_boredom_remover
         }
 
         // returns a list of units in the bounds provided.
-        public List<Unit> Select(Rectangle bounds)
+        public List<Unit> Select(Rectangle bounds, Player owner)
         {
             List<Unit> selectedUnits = new List<Unit>();
 
@@ -153,7 +153,7 @@ namespace mst_boredom_remover
                 for (tilePosition.x = startTile.x; tilePosition.x < endTile.x; ++tilePosition.x)
                 {
                     Unit unit = engine.GetUnitAt(tilePosition);
-                    if (unit != null)
+                    if (unit != null && unit.owner.Equals(owner))
                     {
                         unit.selected = true;
                         selectedUnits.Add(unit);
@@ -419,6 +419,9 @@ namespace mst_boredom_remover
                         break;
                     case Unit.Status.Attacking:
                         currentTextures = unit.type.attackTextures;
+                        break;
+                    default:
+                        currentTextures = unit.type.idleTextures;
                         break;
                 }
 
