@@ -186,6 +186,7 @@ namespace mst_boredom_remover
                         if (resource != TileType.ResourceType.None)
                         {
                             engine.OrderGather(unit, enumerator.Current);
+                            enumerator.MoveNext();
                             continue;
                         }
 
