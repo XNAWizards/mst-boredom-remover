@@ -173,7 +173,6 @@ namespace mst_boredom_remover
             tiles.Add(tundraTexture);
             tiles.Add(forestTexture);
 
-
             Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
             Texture2D swordUnitAttackTexture = Content.Load<Texture2D>("Units\\Kbaseatk");
             Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\Arcbase");

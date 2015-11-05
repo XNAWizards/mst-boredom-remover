@@ -332,7 +332,68 @@ namespace mst_boredom_remover
             {
                 for (int y = startY; y < startY + 214 && y < height; y++)
                 {
-                    sb.Draw(tileTextures[CharToInt(charmap[x, y])], new Rectangle((x - (numX * 214)) * (tilePxSize + pxMod), (y - (numY * 214)) * (tilePxSize + pxMod), (tilePxSize + pxMod), (tilePxSize + pxMod)), Color.White);
+                    Rectangle bounds = new Rectangle((x - (numX * 214)) * (tilePxSize + pxMod), (y - (numY * 214)) * (tilePxSize + pxMod), (tilePxSize + pxMod), (tilePxSize + pxMod));
+                    float rotation = 0;
+                    Vector2 origin = new Vector2(tileTextures[0].Width / 2, tileTextures[0].Width / 2);
+                    int tile = CharToInt(charmap[x,y]);
+
+                    if (tile >= 8)
+                    {
+                        // rotate
+                        if (tile >= 8 && tile <= 11)
+                        {
+                            // coast straight
+                            switch (tile)
+                            {
+                                case 8:
+                                    rotation = (float)(Math.PI * 180) / 180;
+                                    break;
+                                case 9:
+                                    rotation = (float)(Math.PI * 180) / 270;
+                                    break;
+                                case 10:
+
+                                    break;
+                                case 11:
+                                    rotation = (float)(Math.PI * 180) / 90;
+                                    break;
+                            }
+                        }
+                        if (tile >= 12 && tile <= 13)
+                        {
+                            // river straight
+                            switch (tile)
+                            {
+                                case 12:
+
+                                    break;
+                                case 13:
+                                    rotation = (float)(Math.PI * 180) / 90;
+                                    break;
+                            }
+                        }
+                        if (tile >= 14 && tile <= 17)
+                        {
+                            // river bend
+                            switch (tile)
+                            {
+                                case 14:
+                                    rotation = (float)(Math.PI * 180) / 270;
+                                    break;
+                                case 15:
+
+                                    break;
+                                case 16:
+                                    rotation = (float)(Math.PI * 180) / 90;
+                                    break;
+                                case 17:
+                                    rotation = (float)(Math.PI * 180) / 180;
+                                    break;
+                            }
+                        }
+                    }
+
+                    sb.Draw(tileTextures[tile], bounds, null, Color.White, rotation, origin, SpriteEffects.None, 0);
                 }
              }
                 
@@ -580,6 +641,26 @@ namespace mst_boredom_remover
                     return 6;
                 case 'F':
                     return 7;
+                case '@':       // coast land on north
+                    return 8;
+                case '/':       // coast land on east
+                    return 9;
+                case '&':       // coast land on south
+                    return 10;
+                case '#':       // coast land on west
+                    return 11;
+                case '^':       // river rnning nort and south
+                    return 12;
+                case ',':       // river running east ot west
+                    return 13;
+                case '<':       // river mouths at east and south
+                    return 14;
+                case '>':       // river mouths at west and south
+                    return 15;
+                case ']':       // river mouths at west and north
+                    return 16;
+                case '[':       // river mouths at east and north
+                    return 17;
                 default:
                     // 0 is not a tile, more efficient than try-catch index out of bounds
                     return 0;
