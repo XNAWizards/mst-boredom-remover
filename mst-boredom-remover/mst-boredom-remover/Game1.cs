@@ -182,13 +182,17 @@ namespace mst_boredom_remover
             Menu mainMenu = new Menu(hudBackground, new Vector2(0, 0), mainControls, Color.White, 0);
 
             Texture2D blankBackground = Content.Load<Texture2D>("BlankBackground");
-            Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Hills");
-            Texture2D mountainsTexture = Content.Load<Texture2D>("Terrain\\Mountains");
-            Texture2D desertTexture = Content.Load<Texture2D>("Terrain\\DesertFlat");
-            Texture2D oceanTexture = Content.Load<Texture2D>("Terrain\\Ocean1");
-            Texture2D dreadTexture = Content.Load<Texture2D>("Terrain\\Spoopy");
-            Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra");
-            Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest");
+            Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Plains1");
+            Texture2D mountainsTexture = Content.Load<Texture2D>("Terrain\\Mountain1");
+            Texture2D desertTexture = Content.Load<Texture2D>("Terrain\\Desert1");
+            Texture2D oceanTexture = Content.Load<Texture2D>("Terrain\\Ocean");
+            Texture2D dreadTexture = Content.Load<Texture2D>("Terrain\\Spoopy1");
+            Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra1");
+            Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest1"); //6
+            Texture2D coastTexture = Content.Load<Texture2D>("Terrain\\CoastStraight"); // 8-11
+            Texture2D riverStraightTexture = Content.Load<Texture2D>("Terrain\\RiverStraight"); //12-13
+            Texture2D riverBendTexture = Content.Load<Texture2D>("Terrain\\RiverBend"); //14-17
+
 
             // Create initial biomes
             engine.tileTypes.Add(new TileType("Ocean", texture: oceanTexture, biome: TileType.Biome.Ocean));
@@ -212,7 +216,17 @@ namespace mst_boredom_remover
             tiles.Add(oceanTexture);
             tiles.Add(dreadTexture);
             tiles.Add(tundraTexture);
-            tiles.Add(forestTexture);
+            tiles.Add(forestTexture); // 7
+            tiles.Add(coastTexture);
+            tiles.Add(coastTexture);
+            tiles.Add(coastTexture);
+            tiles.Add(coastTexture); // 11
+            tiles.Add(riverStraightTexture);
+            tiles.Add(riverStraightTexture); // 13
+            tiles.Add(riverBendTexture);
+            tiles.Add(riverBendTexture);
+            tiles.Add(riverBendTexture);
+            tiles.Add(riverBendTexture); // 17
 
             Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
             List<UiObject> gameControls = new List<UiObject>();
@@ -286,12 +300,8 @@ namespace mst_boredom_remover
                 movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 500,
                 attackStrength: 0, defense: 10, gatherRate: 50, goldCost: 500));
 
-            
-
             Menu newGameMenu = new Menu(hudBackground, Vector2.Zero, newGameControls, Color.White, 2);
             #endregion
-
-            
 
             // list of all UI objects to be drawn/updated
             userInterface = new List<UiObject>();
