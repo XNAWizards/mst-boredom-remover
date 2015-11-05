@@ -68,7 +68,7 @@ namespace mst_boredom_remover.engine
 
         public bool CanMove(Position targetPosition)
         {
-            if (type.actions.Contains(UnitType.Action.Move) && engine.map.Inside(targetPosition))
+            if (CanMove() && engine.map.Inside(targetPosition))
             {
                 var targetUnit = engine.GetUnitAt(targetPosition);
                 if (targetUnit != null)
