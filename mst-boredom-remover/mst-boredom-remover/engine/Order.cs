@@ -15,53 +15,37 @@
             Build,
             Produce
         };
-        public OrderType orderType;
-        public Position targetPosition; // Can be Null
-        public Unit targetUnit; // Can be Null
-        public UnitType unitTypeBuild; // Nullable
+        public readonly OrderType orderType;
+        public readonly Position targetPosition; // Can be Null
+        public readonly Unit targetUnit; // Can be Null
+        public readonly UnitType unitTypeBuild; // Nullable
+
+        public Order(OrderType orderType, Position targetPosition=null, Unit targetUnit=null, UnitType unitTypeBuild=null)
+        {
+            this.orderType = orderType;
+            this.targetPosition = targetPosition;
+            this.targetUnit = targetUnit;
+            this.unitTypeBuild = unitTypeBuild;
+        }
 
         public static Order CreateMoveOrder(Position position)
         {
-            return new Order()
-            {
-                orderType = OrderType.Move,
-                targetPosition = position,
-                targetUnit = null,
-                unitTypeBuild = null
-            };
+            return new Order(OrderType.Move, targetPosition: position);
         }
 
-        public static Order CreateProduceOrder(UnitType unitType)
+        public static Order CreateProduceOrder(UnitType unitType, Position targetPosition)
         {
-            return new Order()
-            {
-                orderType = OrderType.Produce,
-                targetPosition = null,
-                targetUnit = null,
-                unitTypeBuild = unitType
-            };
+            return new Order(OrderType.Produce, targetPosition: targetPosition, unitTypeBuild: unitType);
         }
 
         public static Order CreateAttackOrder(Unit target)
         {
-            return new Order()
-            {
-                orderType = OrderType.Attack,
-                targetUnit = target,
-                targetPosition = target.position,
-                unitTypeBuild = null
-            };
+            return new Order(OrderType.Attack, targetUnit: target, targetPosition: target.position);
         }
 
         public static Order CreateGatherOrder(Position target)
         {
-            return new Order()
-            {
-                orderType = OrderType.Gather,
-                targetUnit = null,
-                targetPosition = target,
-                unitTypeBuild = null
-            };
+            return new Order(OrderType.Gather, targetPosition: target);
         }
     }
 }

@@ -84,6 +84,17 @@ namespace mst_boredom_remover
             sb.DrawString(font, debugText, Vector2.Zero, Color.White);
         }
 
+        public override void IssueOrder(string order)
+        {
+            foreach (UiObject u in controls)
+            {
+                if (u.GetType() == typeof(Hud))
+                {
+                    u.IssueOrder(order);
+                }
+            }
+        }
+
         public override void Update(GameTime gt)
         {
             if (active)

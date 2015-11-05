@@ -5,8 +5,8 @@ namespace mst_boredom_remover.engine
 {
     class TileType
     {
-        public string name;
-        public double movementCost;
+        public readonly string name;
+        public readonly double movementCost;
 
         public enum Biome
         {
@@ -21,8 +21,8 @@ namespace mst_boredom_remover.engine
             Iron,
             ManaCrystals
         };
-        public Biome biome;
-        public List<UnitType.MovementType> allowedMovementTypes;
+        public readonly Biome biome;
+        public readonly List<UnitType.MovementType> allowedMovementTypes;
 
         public enum ResourceType
         {
@@ -31,8 +31,8 @@ namespace mst_boredom_remover.engine
             Iron,
             ManaCrystals
         };
-        public ResourceType resourceType;
-        public Texture2D texture;
+        public readonly ResourceType resourceType;
+        public readonly Texture2D texture;
 
         public TileType(string name="", Texture2D texture = null, double movementCost=1.0, Biome biome=Biome.Plain,
             List<UnitType.MovementType> allowedMovementTypes=null, ResourceType resourceType=ResourceType.None)
