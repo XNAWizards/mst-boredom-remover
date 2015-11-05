@@ -204,6 +204,10 @@ namespace mst_boredom_remover
 
         private void ForceBounds()
         {
+            // Align viewport to integers
+            tileIndex.X = (float) Math.Floor(tileIndex.X);
+            tileIndex.Y = (float) Math.Floor(tileIndex.Y);
+
             // min bounds
             if (tileIndex.X < 0)
             {
