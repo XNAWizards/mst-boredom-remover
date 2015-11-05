@@ -392,8 +392,14 @@ namespace mst_boredom_remover
                             }
                         }
                     }
-
-                    sb.Draw(tileTextures[tile], bounds, null, Color.White, rotation, origin, SpriteEffects.None, 0);
+                    if (rotation == 0)
+                    {
+                        sb.Draw(tileTextures[tile], bounds, Color.White);
+                    }
+                    else
+                    {
+                        sb.Draw(tileTextures[tile], bounds, null, Color.White, rotation, origin, SpriteEffects.None, 0);
+                    }
                 }
              }
                 

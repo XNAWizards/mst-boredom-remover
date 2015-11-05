@@ -160,7 +160,11 @@ namespace mst_boredom_remover
             Texture2D oceanTexture = Content.Load<Texture2D>("Terrain\\Ocean1");
             Texture2D dreadTexture = Content.Load<Texture2D>("Terrain\\Spoopy");
             Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra");
-            Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest");
+            Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest"); //6
+            Texture2D coastTexture = Content.Load<Texture2D>("Terrain\\Coast1"); // 8-11
+            Texture2D riverStraightTexture = Content.Load<Texture2D>("Terrain\\RiverStraight1"); //12-13
+            Texture2D riverBendTexture = Content.Load<Texture2D>("Terrain\\RiverBend1"); //14-17
+
 
             List<Texture2D> tiles = new List<Texture2D>();
 
@@ -171,7 +175,17 @@ namespace mst_boredom_remover
             tiles.Add(oceanTexture);
             tiles.Add(dreadTexture);
             tiles.Add(tundraTexture);
-            tiles.Add(forestTexture);
+            tiles.Add(forestTexture); // 7
+            tiles.Add(coastTexture);
+            tiles.Add(coastTexture);
+            tiles.Add(coastTexture);
+            tiles.Add(coastTexture); // 11
+            tiles.Add(riverStraightTexture);
+            tiles.Add(riverStraightTexture); // 13
+            tiles.Add(riverBendTexture);
+            tiles.Add(riverBendTexture);
+            tiles.Add(riverBendTexture);
+            tiles.Add(riverBendTexture); // 17
 
             Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
             Texture2D swordUnitAttackTexture = Content.Load<Texture2D>("Units\\Kbaseatk");
