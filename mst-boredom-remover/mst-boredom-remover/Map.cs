@@ -589,6 +589,60 @@ namespace mst_boredom_remover
                     return 6;
                 case 'F':
                     return 7;
+				case '@': //coast on the north
+                    return 8;
+				case 'Q': //coast on the east
+                    return 9;
+				case '&': // coast on the south
+                    return 10;
+				case '#': // coast on the west
+                    return 11;
+				case '^': //river running north and south
+                    return 12;
+				case ',': //river running west and east
+                    return 13;
+				case '<': // river mouth at east and south
+                    return 14;
+				case '>': //river mouth at west and south
+                    return 15;
+				case ']': //river mouth at west and north
+                    return 16;
+				case '[': //river mouth at north and east
+                    return 17;
+				case '$': //coast line land on northeast
+                    return 18;
+				case ')'://coast line land on southeast
+                    return 19;
+				case '('://coast line land on southwest
+                    return 20;
+				case '!'://coast line land on northwest
+                    return 21;
+				case '/'://triple river north east west
+                    return 22;
+				case '|'://triple river east south north
+                    return 23;
+				case '?'://triple river south east west
+                    return 24;
+				case '_'://triple river west north south
+                    return 25;
+				case 'C'://dot of land to the northeast
+					return 26;
+				case 'c'://dot of land to the northwest
+					return 27;
+				case 'N'://dot of land to the southeast
+					return 28;
+				case 'n'://dot of land to the southwest
+					return 29;
+				case 'B'://triple coast, bay mouth north
+					return 30;
+				case 'b'://triple coast, bay mouth east
+					return 31;
+				case 'V'://triple coast, bay mouth south
+					return 32;
+				case 'v'://triple coast, bay mouth west
+					return 33;
+				case 'X': // 4 way river
+					return 34;
                 default:
                     // 0 is not a tile, more efficient than try-catch index out of bounds
                     return 0;
