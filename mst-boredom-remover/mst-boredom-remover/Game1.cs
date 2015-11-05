@@ -275,7 +275,7 @@ namespace mst_boredom_remover
                 idleTextures: new[] { baseTown },
                 moveTextures: new[] { baseTown },
                 attackTextures: new[] { baseTown },
-                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Produce },
+                actions: new List<UnitType.Action> { UnitType.Action.Gather, UnitType.Action.Produce },
                 movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 1000,
                 attackStrength: 0, defense: 10, gatherRate: 15, goldCost: 1000));
             engine.unitTypes.Add(new UnitType(name: "GoldMine",
@@ -387,9 +387,12 @@ namespace mst_boredom_remover
             {
                 spriteBatch.DrawString(debugFont, "x: " + engine.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
                 spriteBatch.DrawString(debugFont, "y: " + engine.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
-                spriteBatch.DrawString(debugFont, "player gold: " + engine.players[0].gold, new Vector2(1, 1 + 32 * 3), Color.Black);
-                spriteBatch.DrawString(debugFont, "player iron: " + engine.players[0].iron, new Vector2(1, 1 + 32 * 4), Color.Black);
-                spriteBatch.DrawString(debugFont, "player mc  : " + engine.players[0].manaCystals, new Vector2(1, 1 + 32 * 5), Color.Black);
+                spriteBatch.DrawString(debugFont, "1 player gold: " + engine.players[0].gold, new Vector2(1, 1 + 32 * 3), Color.Black);
+                spriteBatch.DrawString(debugFont, "1 player iron: " + engine.players[0].iron, new Vector2(1, 1 + 32 * 4), Color.Black);
+                spriteBatch.DrawString(debugFont, "1 player mc  : " + engine.players[0].manaCystals, new Vector2(1, 1 + 32 * 5), Color.Black);
+                spriteBatch.DrawString(debugFont, "2 player gold: " + engine.players[1].gold, new Vector2(1, 1 + 32 * 6), Color.Black);
+                spriteBatch.DrawString(debugFont, "2 player iron: " + engine.players[1].iron, new Vector2(1, 1 + 32 * 7), Color.Black);
+                spriteBatch.DrawString(debugFont, "2 player mc  : " + engine.players[1].manaCystals, new Vector2(1, 1 + 32 * 8), Color.Black);
             }
 
             spriteBatch.End();
