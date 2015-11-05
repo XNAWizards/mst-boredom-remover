@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace mst_boredom_remover.engine
 {
@@ -20,26 +23,66 @@ namespace mst_boredom_remover.engine
         public List<Player> players;
         public List<Unit> units;
         public Unit[,] unitGrid;
+        
+        private int idCounter;
 
         public Engine(int mapWidth, int mapHeight)
         {
             currentTick = 0;
             futureUpdates = new Dictionary<int, List<Unit>>();
-            map = new EngineMap(mapWidth, mapHeight);
+            map = new EngineMap(this, mapWidth, mapHeight);
             unitTypes = new List<UnitType>();
-            players = new List<Player>() {new Player("Frodo")};
+            tileTypes = new List<TileType>();
+            players = new List<Player>();
             units = new List<Unit>();
             unitGrid = new Unit[map.width, map.height];
+            idCounter = 0;
+
+            map.Initialize();
         }
 
-        public void AddUnit(Unit unit)
+        public Unit GetUnitAt(Position position)
         {
-            units.Add(unit);
-            if (unit.position.x >= 0 && unit.position.x < map.width && unit.position.y >= 0 &&
-                unit.position.y < map.height)
+            return map.Inside(position) ? unitGrid[position.x, position.y] : null;
+        }
+
+        public void SetUnitAt(Position position, Unit unit)
+        {
+            if (map.Inside(position))
             {
-                unitGrid[unit.position.x, unit.position.y] = unit;
+                unitGrid[position.x, position.y] = unit;
             }
+        }
+
+        public Player AddPlayer(string name, int teamIndex=0)
+        {
+            Player newPlayer = new Player(GetNextId(), name, teamIndex);
+            players.Add(newPlayer);
+            return newPlayer;
+        }
+
+        public Unit AddUnit(UnitType unitType, Position position, Player owner)
+        {
+            if (!map.Inside(position)) return null;
+
+            var newUnit = new Unit(GetNextId(), this, unitType, position, owner);
+            units.Add(newUnit);
+            SetUnitAt(newUnit.position, newUnit);
+            return newUnit;
+        }
+
+        public Tile AddTile(TileType tileType, Position position)
+        {
+            if (!map.Inside(position)) return null;
+            
+            var newTile = new Tile(GetNextId(), position, tileType);
+            map.SetTileAt(position, newTile);
+            return newTile;
+        }
+
+        public TileType GetTileTypeByName(string name)
+        {
+            return tileTypes.FirstOrDefault(tileType => tileType.name == name);
         }
 
         public void Tick()
@@ -85,33 +128,24 @@ namespace mst_boredom_remover.engine
                 futureUpdates[unit.nextMove].Remove(unit);
             }
         }
-
+        
+        // This function should not have any Unit-specific logic
+        //  Therefore this should only be called when the Unit KNOWS that it can move to a location
         public void MoveUnit(Unit unit, Position targetPosition)
         {
-            if (unitGrid[targetPosition.x, targetPosition.y] != null)
+            var blockingUnit = GetUnitAt(targetPosition);
+            if (blockingUnit != null)
             {
-                Unit targetUnit = unitGrid[targetPosition.x, targetPosition.y];
-                if (targetUnit.orders.Count == 0)
-                {
-                    SwapUnits(unit, unitGrid[targetPosition.x, targetPosition.y]);
-                }
+                SwapUnits(unit, blockingUnit);
             }
             else
             {
-                unitGrid[unit.position.x, unit.position.y] = null;
-                unitGrid[targetPosition.x, targetPosition.y] = unit;
+                // Update cache
+                SetUnitAt(unit.position, null);
+                SetUnitAt(targetPosition, unit);
+                // Change units position
                 unit.position = targetPosition;
             }
-        }
-
-        public void SwapUnits(Unit a, Unit b)
-        {
-            unitGrid[a.position.x, a.position.y] = b;
-            unitGrid[b.position.x, b.position.y] = a;
-            var temp = a.position;
-            a.position = b.position;
-            b.position = temp;
-            OrderMove(b, a.position);
         }
 
         public void OrderMove(Unit unit, Position targetPosition)
@@ -120,9 +154,9 @@ namespace mst_boredom_remover.engine
             ScheduleUpdate(1, unit);
         }
 
-        public void OrderProduce(Unit factory, UnitType unitType)
+        public void OrderProduce(Unit factory, UnitType unitType, Position targetPosition = null)
         {
-            factory.orders.Add(Order.CreateProduceOrder(unitType));
+            factory.orders.Add(Order.CreateProduceOrder(unitType, targetPosition));
             ScheduleUpdate(1, factory);
         }
 
@@ -138,8 +172,6 @@ namespace mst_boredom_remover.engine
             ScheduleUpdate(1, gatherer);
         }
 
-        private double Max(double a, double b) { if (a > b) return a; return b; }
-
         public void Attack( Unit attacker, Unit target )
         {
             //check to make sure you are in range
@@ -147,15 +179,39 @@ namespace mst_boredom_remover.engine
             {
                 return;
             }
-            target.health -= Max(1, attacker.AttackStrength() - target.Defense());
+            target.health -= Math.Max(1, attacker.AttackStrength() - target.Defense());
             if (target.health<=0) //target dead
             {
                 RemoveUpdate(target);
-                unitGrid[target.position.x,target.position.y] = null;
+                SetUnitAt(target.position, null);
                 units.Remove(target);
                 target.status = Unit.Status.Dead;
             }
 
+        }
+
+        // Private methods
+
+        private int GetNextId()
+        {
+            return ++idCounter;
+        }
+
+        private void SwapUnits(Unit a, Unit b)
+        {
+            var targetPosition = b.position;
+            // Remove a
+            SetUnitAt(a.position, null);
+            // Tell b to move into a's spot
+            Debug.Assert(b.orders.Count == 0, "Swap: b still had orders left.");
+            b.orders.Add(Order.CreateMoveOrder(a.position));
+            b.Update(); // This will force the unit to wait the appropriate amount of time before moving back
+            Debug.Assert(b.position.Equals(a.position), "Swap: b did not move back to original position.");
+            // Add a to b's old position
+            a.position = targetPosition;
+            SetUnitAt(a.position, a);
+            // Give an order to b to go back to his original position
+            OrderMove(b, targetPosition);
         }
     }
 }

@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using Microsoft.Xna.Framework;
-//using Microsoft.Xna.Framework.Audio;
-//using Microsoft.Xna.Framework.Content;
-//using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-//using Microsoft.Xna.Framework.Media;
 using mst_boredom_remover.engine;
 
 namespace mst_boredom_remover
 {
     class Map : UiObject
     {
-        private Vector2 position;
-        private List<Texture2D> tileTextures;
-        private char[,] charmap;
-        GraphicsDevice graphicsDevice;
-        bool buildMapCache = true;
-
         // max x = 11520
         // max y = 6480
 
@@ -37,8 +28,17 @@ namespace mst_boredom_remover
          *  create 6 megatextures by copying data of tiles rendered at 18x18 pixels.
          * */
 
-        public int width;
-        public int height;
+        public readonly int width;
+        public readonly int height;
+
+        private readonly GraphicsDevice graphicsDevice;
+        private readonly List<Texture2D> tileTextures;
+        private readonly Engine engine;
+        private readonly int xCaches;
+        private readonly int yCaches;
+
+        private bool buildMapCache = true;
+        private char[,] charmap;
         private const int tilePxSize = 18;
         private int pxMod = 0;
         private int savePxMod = 0;
@@ -47,87 +47,69 @@ namespace mst_boredom_remover
         private const int resY = 720;
         private bool smallMode = false;
         private Vector2 tileIndex;
-        private bool gDisable = false;
-        private List<string> tileNames;
-        //private string debugText = "";
-        private Engine engine;
+        private bool disableMapRegeneration = false;
         private int lastScrollValue;
-        private List<Unit> selectedUnits;
-        
-        private ButtonState previousLeftMouseState = ButtonState.Released;
-        private ButtonState previousRightMouseState = ButtonState.Released;
 
-        RenderTarget2D[,] mapCaches;
+        private RenderTarget2D[,] mapCaches;
 
-        private Vector2 mouseTile = new Vector2();
+        private Vector2 mouseTile;
 
-        private enum UnitTypeTextures
+        public Map(Vector2 startingPosition, List<Texture2D> tileTextures, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice)
         {
-            Default,        // 0
-            Swordman,       // 1
-            Archer,         // 2
-            Mage            // 3
-        };
-
-        public Map(Vector2 position, List<Texture2D> tileTextures, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice)
-        {
+            tileIndex = startingPosition;
+            this.tileTextures = tileTextures;
             this.width = width;
             this.height = height;
-
-            this.position = position;
-            this.tileTextures = tileTextures;
-            //this.map = map;
-            //this.texture = texture;
-
-            tileIndex = Vector2.Zero;
-
-            this.charmap = Generator.Generate(width, height);
-
-            engine.map.UpdateTiles(charmap);
-
-            tileNames = new List<string>();
-
-            tileNames.Add("null");
-            tileNames.Add("Plains");
-            tileNames.Add("Mountain");
-            tileNames.Add("Desert");
-            tileNames.Add("Ocean");
-            tileNames.Add("Dreadland");
-            tileNames.Add("Tundra");
-            tileNames.Add("Forest");
-            
             this.engine = engine;
-
             this.graphicsDevice = graphicsDevice;
-            mapCaches = new RenderTarget2D[3, 2];
-            RenderTarget2D r1 = new RenderTarget2D(graphicsDevice, 214 * tilePxSize, 214 * tilePxSize);
-            RenderTarget2D r2 = new RenderTarget2D(graphicsDevice, 214 * tilePxSize, 214 * tilePxSize);
-            RenderTarget2D r3 = new RenderTarget2D(graphicsDevice, 214 * tilePxSize, 214 * tilePxSize);
-            RenderTarget2D r4 = new RenderTarget2D(graphicsDevice, 214 * tilePxSize, 214 * tilePxSize);
-            RenderTarget2D r5 = new RenderTarget2D(graphicsDevice, 214 * tilePxSize, 214 * tilePxSize);
-            RenderTarget2D r6 = new RenderTarget2D(graphicsDevice, 214 * tilePxSize, 214 * tilePxSize);
-            mapCaches[0, 0] = r1;
-            mapCaches[1, 0] = r2;
-            mapCaches[2, 0] = r3;
-            mapCaches[0, 1] = r4;
-            mapCaches[1, 1] = r5;
-            mapCaches[2, 1] = r6;
-
-            selectedUnits = new List<Unit>();
-            /*
-            for (int x = 0; x < 3; x++)
+            
+            // Generate map
+            charmap = Generator.generate(width, height);
+            engine.map.UpdateTilesFromCharmap(charmap);
+            
+            // Generate map cache
+            xCaches = (int) Math.Ceiling(width/214.0);
+            yCaches = (int) Math.Ceiling(height/214.0);
+            mapCaches = new RenderTarget2D[xCaches, yCaches];
+            for (int y = 0; y < yCaches; ++y)
             {
-                for (int y = 0; y < 2; y++)
+                for (int x = 0; x < xCaches; ++x)
                 {
-                    RenderTarget2D r = new RenderTarget2D(graphicsDevice, 214 * tilePxSize, 214 * tilePxSize);
-                    mapCaches[x, y] = r;
+                    mapCaches[x, y] = new RenderTarget2D(graphicsDevice, 214 * tilePxSize, 214 * tilePxSize);
                 }
-            }*/
+            }
         }
-        
-        public int getPxSizeMod()
+
+        public Vector2 ScreenToGame(Vector2 screenPosition)
+        {
+            return new Vector2(
+                screenPosition.X / (tilePxSize + pxMod) + tileIndex.X,
+                screenPosition.Y / (tilePxSize + pxMod) + tileIndex.Y);
+        }
+
+        public Vector2 GameToScreen(Vector2 tilePosition)
+        {
+            return new Vector2(
+                (tilePosition.X - tileIndex.X) * (tilePxSize + pxMod),
+                (tilePosition.Y - tileIndex.Y) * (tilePxSize + pxMod));
+        }
+
+        public bool InsideMap(Vector2 tilePosition)
+        {
+            return tilePosition.X >= 0 && tilePosition.Y >= 0 && tilePosition.X < width && tilePosition.Y < height;
+        }
+
+        public int GetPxSizeMod()
         {
             return tilePxSize + pxMod;
+        }
+        public int GetTileIndexX()
+        {
+            return (int)tileIndex.X;
+        }
+        public int GetTileIndexY()
+        {
+            return (int)tileIndex.Y;
         }
 
         public override void ChangeContext(int id)
@@ -148,63 +130,36 @@ namespace mst_boredom_remover
 
         public void MapMove(int deltaX, int deltaY)
         {
-            gDisable = false;
+            disableMapRegeneration = false;
             
-            if (deltaX != 0)
-            {
-                if (tileIndex.X + deltaX >= 0)
-                {
-                    if (tileIndex.X + deltaX < width - (resX / (tilePxSize + pxMod)))
-                    {
-                        tileIndex.X += deltaX;
-                    }
-                }
-            }
-            if (deltaY != 0)
-            {
-                if (tileIndex.Y + deltaY >= 0)
-                {
-                    // res_y/px_size = number of tiles that fit on screen
-                    // height - #tiles on screen = maximum tileIndex.Y to allow
-                    if (tileIndex.Y + deltaY < height - (resY / (tilePxSize + pxMod)))
-                    {
-                        tileIndex.Y += deltaY;
-                    }
-                }
-            }
+            tileIndex += new Vector2(deltaX, deltaY);
+            ForceBounds();
         }
 
         // returns a list of units in the bounds provided.
-        public List<Unit> select(Rectangle bounds)
+        public List<Unit> Select(Rectangle bounds, Player owner)
         {
-            int startTileX;
-            int startTileY;
-            int tileWidth;
-            int tileHeight;
+            List<Unit> selectedUnits = new List<Unit>();
 
-            // determine which tile the selection box is starting at
-            startTileX = bounds.X / (int)((tilePxSize + pxMod) + tileIndex.X);
-            startTileY = bounds.Y / (int)((tilePxSize + pxMod) + tileIndex.Y);
-            tileWidth = Math.Max(bounds.Width / (int)((tilePxSize + pxMod) + tileIndex.X), 1);
-            tileHeight = Math.Max(bounds.Height / (int)((tilePxSize + pxMod) + tileIndex.Y), 1);
+            var startPosition = ScreenToGame(new Vector2(bounds.Left, bounds.Top));
+            var endPosition = ScreenToGame(new Vector2(bounds.Right, bounds.Bottom));
+            Position startTile = new Position((int)Math.Floor(startPosition.X), (int)Math.Floor(startPosition.Y));
+            Position endTile = new Position((int)Math.Ceiling(endPosition.X), (int)Math.Ceiling(endPosition.Y));
 
-            selectedUnits.Clear();
-
-            int masterX = startTileX;
-            int masterY = startTileY;
-            // search only the grid. hopefully small n^24
-            for (int y = 0; y < tileHeight; y++)
+            // search only the grid. hopefully small n^2
+            Position tilePosition = new Position(0, 0);
+            for (tilePosition.y = startTile.y; tilePosition.y < endTile.y; ++tilePosition.y)
             {
-                for (int x = 0; x < tileWidth; x++)
+                for (tilePosition.x = startTile.x; tilePosition.x < endTile.x; ++tilePosition.x)
                 {
-                    if (engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y] != null)
+                    Unit unit = engine.GetUnitAt(tilePosition);
+                    if (unit != null && unit.owner.Equals(owner))
                     {
-                        engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y].selected = true;
-                        selectedUnits.Add(engine.unitGrid[(int)tileIndex.X + masterX + x, (int)tileIndex.Y + masterY + y]);
+                        unit.selected = true;
+                        selectedUnits.Add(unit);
                     }
                 }
             }
-
             return selectedUnits;
         }
         
@@ -216,38 +171,27 @@ namespace mst_boredom_remover
 
         private void DebugUpdate(GameTime gt)
         {
+            // find out what tile the mouse is pointing at
+            string tileName = "Unkown";
             MouseState m = Mouse.GetState();
-            char c = ' ';
-            bool fail = false;
-
-            // find out what tile is at tileIndex + MousePos / tilePxSize
-
-            Vector2 mouseIndex = new Vector2(m.X / tilePxSize, m.Y / tilePxSize);
-
-            if (mouseTile.X < 0 || mouseTile.X > width)
+            try
             {
-                fail = true;
+                tileName = engine.map.tiles[(int)mouseTile.X, (int)mouseTile.Y].tileType.name;
+                tileName += " " + CharToInt(charmap[(int)mouseTile.X, (int)mouseTile.Y]).ToString();
             }
-            if (mouseTile.Y < 0 || mouseTile.Y > height)
+            catch (IndexOutOfRangeException)
             {
-                fail = true;
-            }
-            if (mouseIndex.Y + tileIndex.Y < 0 || mouseIndex.Y + tileIndex.Y > height)
-            {
-                fail = true;
-            }
-            if (fail == false)
-            {
-                c = charmap[(int)(mouseIndex.X + tileIndex.X), (int)(mouseIndex.Y + tileIndex.Y)];
+                // Do nothing
             }
 
             debugText = "";
             debugText += "Mouse Position: (" + m.X + ", " + m.Y + ")\n";
             debugText += "Mouse Tile: (" + mouseTile.X + ", " + mouseTile.Y + ")\n";
             debugText += "TileIndex: (" + tileIndex.X + ", " + tileIndex.Y + ")\n";
-            debugText += tileNames[CharToInt(c)];
+            debugText += tileName;
             
         }
+
         private void DebugDraw(SpriteBatch sb)
         {
             // menu draws all of its controls' debug texts
@@ -261,6 +205,10 @@ namespace mst_boredom_remover
 
         private void ForceBounds()
         {
+            // Align viewport to integers
+            tileIndex.X = (float) Math.Floor(tileIndex.X);
+            tileIndex.Y = (float) Math.Floor(tileIndex.Y);
+
             // min bounds
             if (tileIndex.X < 0)
             {
@@ -283,39 +231,31 @@ namespace mst_boredom_remover
 
         private void ZoomIn()
         {
-            if (pxMod < 18)
+            if (pxMod < 32)
             {
+                MouseState m = Mouse.GetState();
+                var originalMousePosition = ScreenToGame(new Vector2(m.X, m.Y));
+
                 pxMod += 2;
-                // calculate zoom factor for drawing.
-
                 zoom = (float)(tilePxSize + pxMod) / (float)tilePxSize;
-                
-                // calculate number of tiles after zoom
-                int tilesX = resX / (tilePxSize + pxMod);
-                int tilesY = resY / (tilePxSize + pxMod);
-                // new tileIndex =  mouseTile - tiles after/2
-                tileIndex.X = mouseTile.X - tilesX / 2;
-                tileIndex.Y = mouseTile.Y - tilesY / 2;
 
+                var newMousePosition = ScreenToGame(new Vector2(m.X, m.Y));
+                tileIndex -= (newMousePosition - originalMousePosition);
                 ForceBounds();
             }
         }
         private void ZoomOut()
         {
-            // zoom out
             if (pxMod > -16)
             {
-                pxMod -= 2;
-                
-                zoom = (float)(tilePxSize + pxMod) / (float)tilePxSize;
-                
-                // calculate number of tiles after zoom
-                int tilesX = resX / (tilePxSize + pxMod);
-                int tilesY = resY / (tilePxSize + pxMod);
-                // new tileIndex =  mouseTile - tiles after/2
-                tileIndex.X = mouseTile.X - tilesX / 2;
-                tileIndex.Y = mouseTile.Y - tilesY / 2;
+                MouseState m = Mouse.GetState();
+                var originalMousePosition = ScreenToGame(new Vector2(m.X, m.Y));
 
+                pxMod -= 2;
+                zoom = (float)(tilePxSize + pxMod) / (float)tilePxSize;
+
+                var newMousePosition = ScreenToGame(new Vector2(m.X, m.Y));
+                tileIndex -= (newMousePosition - originalMousePosition);
                 ForceBounds();
             }
         }
@@ -334,7 +274,7 @@ namespace mst_boredom_remover
                 {
                     Rectangle bounds = new Rectangle((x - (numX * 214)) * (tilePxSize + pxMod), (y - (numY * 214)) * (tilePxSize + pxMod), (tilePxSize + pxMod), (tilePxSize + pxMod));
                     float rotation = 0;
-                    Vector2 origin = new Vector2(tileTextures[0].Width / 2, tileTextures[0].Width / 2);
+                    Vector2 origin = new Vector2((tilePxSize + pxMod) / 2, (tilePxSize + pxMod) / 2);
                     int tile = CharToInt(charmap[x,y]);
 
                     if (tile >= 8)
@@ -346,16 +286,16 @@ namespace mst_boredom_remover
                             switch (tile)
                             {
                                 case 8:
-                                    rotation = (float)(Math.PI * 180) / 180;
+                                    rotation = (float)((Math.PI * 180) / 180);
                                     break;
                                 case 9:
-                                    rotation = (float)(Math.PI * 180) / 270;
+                                    rotation = (float)((Math.PI * 180) / -90);
                                     break;
                                 case 10:
 
                                     break;
                                 case 11:
-                                    rotation = (float)(Math.PI * 180) / 90;
+                                    rotation = (float)((Math.PI * 180) / 90);
                                     break;
                             }
                         }
@@ -378,7 +318,7 @@ namespace mst_boredom_remover
                             switch (tile)
                             {
                                 case 14:
-                                    rotation = (float)(Math.PI * 180) / 270;
+                                    rotation = (float)(Math.PI * 180) / -90;
                                     break;
                                 case 15:
 
@@ -398,7 +338,12 @@ namespace mst_boredom_remover
                     }
                     else
                     {
-                        sb.Draw(tileTextures[tile], bounds, null, Color.White, rotation, origin, SpriteEffects.None, 0);
+                        // offset half of the tile texture width to move the tile back after rotation
+                        //bounds.X -= (int)origin.X;
+                        //bounds.Y -= (int)origin.Y;
+                        
+                        sb.Draw(tileTextures[tile], bounds, null, Color.White, rotation, Vector2.Zero, SpriteEffects.None, 0);
+
                     }
                 }
              }
@@ -426,62 +371,16 @@ namespace mst_boredom_remover
             return drawPosition;
         }
 
-        public void unitGroupMove(List<Unit> selected_units, bool clearOrders)
-        {
-            Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
-
-            Unit clickedUnit = engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y];
-            var enumerator = engine.map.BreadthFirst(mouseGameTilePosition).GetEnumerator();
-            enumerator.MoveNext();
-            foreach (Unit unit in selected_units)
-            {
-                if ( clearOrders )
-                {
-                    unit.orders.Clear();
-                }
-                if (clickedUnit == unit) // Produce units
-                {
-                    engine.OrderProduce(unit, engine.unitTypes[1]);
-                    break;
-                }
-                else if (clickedUnit != null) //Clicked a different unit TODO:make it so you don't attack your buddies
-                {
-                    if (selectedUnits.Contains(clickedUnit)) //this check makes it so that you can produce without have the other selected units attack
-                    {
-                        continue;
-                    }
-                    engine.OrderAttack(unit, clickedUnit);
-                }
-                else // Move units or gather
-                {
-                    var resource = engine.map.tiles[enumerator.Current.x, enumerator.Current.y].tileType.resourceType;
-                    if (resource != TileType.ResourceType.None)
-                    {
-                        engine.OrderGather(unit, enumerator.Current);
-                        continue;
-                    }
-
-                    while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
-                    {
-                        enumerator.MoveNext();
-                    }
-                    engine.OrderMove(unit, enumerator.Current);
-                    enumerator.MoveNext();
-                }
-            }
-
-        }
-
         public override void Update(GameTime gt)
         {
             KeyboardState keyboard = Keyboard.GetState();
 
-            if (keyboard.IsKeyDown(Keys.G) && gDisable == false)
+            if (keyboard.IsKeyDown(Keys.G) && disableMapRegeneration == false)
             {
                 // generate a new map, reconstruct cache
-                charmap = Generator.Generate(width, height);
-                engine.map.UpdateTiles(charmap);
-                gDisable = true;
+                charmap = Generator.generate(width, height);
+                engine.map.UpdateTilesFromCharmap(charmap);
+                disableMapRegeneration = true;
                 buildMapCache = true;
                 savePxMod = pxMod;
                 pxMod = 0;
@@ -521,17 +420,11 @@ namespace mst_boredom_remover
             }
 
             lastScrollValue = m.ScrollWheelValue;
-
-
             
             if (debugMode)
             {
                 DebugUpdate(gt);
             }
-            
-            // Update mouse states
-            previousLeftMouseState = m.LeftButton;
-            previousRightMouseState = m.RightButton;
         }
 
         public override void Draw(SpriteBatch sb)
@@ -547,9 +440,9 @@ namespace mst_boredom_remover
             // build the cache texture. takes a bit of time, avoid as much as possible
             if (buildMapCache)
             {
-                for (int x = 0; x < 3; x++)
+                for (int x = 0; x < xCaches; x++)
                 {
-                    for (int y = 0; y < 2; y++)
+                    for (int y = 0; y < yCaches; y++)
                     {
                         RebuildMapCache(sb, mapCaches[x, y], x, y);
                     }
@@ -559,9 +452,9 @@ namespace mst_boredom_remover
                 pxMod = savePxMod;
             }
 
-            for (int x = 0; x < 3; x++)
+            for (int x = 0; x < xCaches; x++)
             {
-                for (int y = 0; y < 2; y++)
+                for (int y = 0; y < yCaches; y++)
                 {
                     // base position
                     int xPos = x * mapCaches[x, y].Width;
@@ -604,19 +497,24 @@ namespace mst_boredom_remover
                     case Unit.Status.Attacking:
                         currentTextures = unit.type.attackTextures;
                         break;
+                    default:
+                        currentTextures = unit.type.idleTextures;
+                        break;
                 }
 
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
                 Vector2 drawPosition = (unit.position.ToVector2() - tileIndex) * (tilePxSize + pxMod);
-
                 Color c = Color.White;
-
+                
+                if (unit.owner == engine.players[1])
+                {
+                    c = Color.MediumBlue;
+                }
                 if (unit.selected)
                 {
                     c = Color.Red;
                 }
-
                 // finally draw the unit
                 sb.Draw(currentTextures[(engine.currentTick- unit.animationStartTick) % currentTextures.Length],
                     new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (tilePxSize + pxMod), (tilePxSize + pxMod)), c);

@@ -26,6 +26,10 @@ namespace mst_boredom_remover
         {
 
         }
+        public virtual void IssueOrder(string order)
+        {
+
+        }
 
         public UiObject(SpriteFont font = null)
         {

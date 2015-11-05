@@ -4,8 +4,8 @@ namespace mst_boredom_remover.engine
 {
     class Player
     {
-        public int id;
-        public string name;
+        public readonly int id;
+        public readonly string name;
         public int team;
         public double gold;
         public double manaCystals;
@@ -22,19 +22,19 @@ namespace mst_boredom_remover.engine
         };
         public List<PlayerModifier> modifiers;
 
-        public Player(string name, int team=0)
+        public Player(int id, string name, int team=0)
         {
-            // TODO: Set id
+            this.id = id;
 
             this.name = name;
             this.team = team;
 
-            this.gold = 0.0;
-            this.manaCystals = 0.0;
-            this.iron = 0.0;
-            this.isAlive = true;
-            this.modifiers = new List<PlayerModifier>();
-            this.unitCount = 0;
+            gold = 0.0;
+            manaCystals = 0.0;
+            iron = 0.0;
+            isAlive = true;
+            modifiers = new List<PlayerModifier>();
+            unitCount = 0;
         }
     }
 }
