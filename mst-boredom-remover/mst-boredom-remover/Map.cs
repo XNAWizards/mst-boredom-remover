@@ -30,6 +30,15 @@ namespace mst_boredom_remover
 
         public readonly int width;
         public readonly int height;
+		
+		public int typeO;
+        public int typeF;
+        public int typeDrd;
+        public int typeDst;
+        public int typeP;
+        public int typeT;
+        public int typeM;
+        public int resource;
 
         private readonly GraphicsDevice graphicsDevice;
         private readonly List<Texture2D> tileTextures;
@@ -54,7 +63,7 @@ namespace mst_boredom_remover
 
         private Vector2 mouseTile;
 
-        public Map(Vector2 startingPosition, List<Texture2D> tileTextures, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice)
+        public Map(Vector2 startingPosition, List<Texture2D> tileTextures, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice, int typeDrd, int typeDst, int typeP, int typeM, int typeT, int typeF, int typeO, int resource)
         {
             tileIndex = startingPosition;
             this.tileTextures = tileTextures;
@@ -62,9 +71,17 @@ namespace mst_boredom_remover
             this.height = height;
             this.engine = engine;
             this.graphicsDevice = graphicsDevice;
+			this.typeDrd = typeDrd;
+            this.typeDst = typeDst;
+            this.typeP = typeP;
+            this.typeM = typeM;
+            this.typeT = typeT;
+            this.typeF = typeF;
+            this.typeO = typeO;
+            this.resource = resource;
             
             // Generate map
-            charmap = Generator.generate(width, height);
+            charmap = Generator.generate(width, height, typeDrd, typeDst, typeP, typeM, typeT, typeF, typeO, resource);
             engine.map.UpdateTilesFromCharmap(charmap);
             
             // Generate map cache
@@ -301,7 +318,7 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.G) && disableMapRegeneration == false)
             {
                 // generate a new map, reconstruct cache
-                charmap = Generator.generate(width, height);
+                charmap = Generator.generate(width, height, typeDrd, typeDst, typeP, typeM, typeT, typeF, typeO, resource);
                 engine.map.UpdateTilesFromCharmap(charmap);
                 disableMapRegeneration = true;
                 buildMapCache = true;

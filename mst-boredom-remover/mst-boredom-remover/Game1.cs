@@ -167,6 +167,27 @@ namespace mst_boredom_remover
             
             TextInput testTextInput = new TextInput(textInBackground, textInBackgroundActive, new Vector2(100, 50), font);
             //testTextInput.newInput += new EventHandler(testTextInput_newInput);
+			
+			Texture2D Biomeback = Content.Load<Texture2D>("BiomeB");
+            Texture2D BiomeBackActive = Content.Load<Texture2D>("BiomeBA");
+            
+            TextInput numOcean = new TextInput(Biomeback, BiomeBackActive, new Vector2(700, 100), font);
+            TextInput numPlain = new TextInput(Biomeback, BiomeBackActive, new Vector2(850, 100), font);
+            TextInput numForest = new TextInput(Biomeback, BiomeBackActive, new Vector2(1000, 100), font);
+            TextInput numMountain = new TextInput(Biomeback, BiomeBackActive, new Vector2(700, 200), font);
+            TextInput numDesert = new TextInput(Biomeback, BiomeBackActive, new Vector2(850, 200), font);
+            TextInput numTundra = new TextInput(Biomeback, BiomeBackActive, new Vector2(1000, 200), font);
+            TextInput numDreadland = new TextInput(Biomeback, BiomeBackActive, new Vector2(775, 300), font);
+            TextInput numResource = new TextInput(Biomeback, BiomeBackActive, new Vector2(925, 300), font);
+            //testTextInput.newInput += new EventHandler(testTextInput_newInput);
+            numOcean.setText("2");
+            numPlain.setText("2");
+            numForest.setText("2");
+            numMountain.setText("2");
+            numDesert.setText("2");
+            numTundra.setText("2");
+            numDreadland.setText("2");
+            numResource.setText("500");
             #endregion
             
             #region Menus
@@ -214,7 +235,7 @@ namespace mst_boredom_remover
             tiles.Add(tundraTexture);
             tiles.Add(forestTexture);
 
-            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
+            Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice, numDreadland.getText(), numDesert.getText(), numPlain.getText(), numMountain.getText(), numTundra.getText(), numForest.getText(), numOcean.getText(), numResource.getText());
             List<UiObject> gameControls = new List<UiObject>();
 
             Texture2D gameBackground = Content.Load<Texture2D>("gameBackground");
@@ -245,6 +266,14 @@ namespace mst_boredom_remover
             newGameControls.Add(testTextInput);
             newGameControls.Add(goButton);
             newGameControls.Add(ngbackButton);
+			newGameControls.Add(numOcean);
+            newGameControls.Add(numForest);
+            newGameControls.Add(numPlain);
+            newGameControls.Add(numMountain);
+            newGameControls.Add(numDesert);
+            newGameControls.Add(numTundra);
+            newGameControls.Add(numDreadland);
+            newGameControls.Add(numResource);
 
             Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
             Texture2D swordUnitAttackTexture = Content.Load<Texture2D>("Units\\Kbaseatk");

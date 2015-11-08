@@ -13,17 +13,17 @@ namespace mst_boredom_remover
             public int x;
             public int y;
         };
-        public static char[,] generate(int width, int height)
+        public static char[,] generate(int width, int height, int typeDrd, int typeDst, int typeP, int typeM, int typeT, int typeF, int typeO, int resource)
         {
             // chance out of 1000
-            int resourceSparce = 500;
-			int tundraAmount = 2;
-            int forestAmount = 2;
-            int mountainAmount = 2;
-            int plainAmount = 2;
-            int dreadlandAmount = 2;
-            int desertAmount = 2;
-            int oceanAmount = 2;
+            int resourceSparce = resource;
+			int tundraAmount = typeT;
+            int forestAmount = typeF;
+            int mountainAmount = typeM;
+            int plainAmount = typeP;
+            int dreadlandAmount = typeDrd;
+            int desertAmount = typeDst;
+            int oceanAmount = typeO;
             int RX = width - 10;
             int RY = height - 10;
             const int MAX_CHANCE = 1000;
