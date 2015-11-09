@@ -264,6 +264,7 @@ namespace mst_boredom_remover
         {
             int startX = numX * 214;
             int startY = numY * 214;
+            int tileWidth = tilePxSize + pxMod;
             sb.End();
             graphicsDevice.SetRenderTarget(cache);
             sb.Begin();
@@ -272,79 +273,20 @@ namespace mst_boredom_remover
             {
                 for (int y = startY; y < startY + 214 && y < height; y++)
                 {
-                    Rectangle bounds = new Rectangle((x - (numX * 214)) * (tilePxSize + pxMod), (y - (numY * 214)) * (tilePxSize + pxMod), (tilePxSize + pxMod), (tilePxSize + pxMod));
-                    float rotation = 0;
-                    Vector2 origin = new Vector2((tilePxSize + pxMod) / 2, (tilePxSize + pxMod) / 2);
-                    int tile = CharToInt(charmap[x,y]);
+                    Rectangle bounds = new Rectangle((x - startX) * tileWidth, (y - startY) * tileWidth, tileWidth, tileWidth);
 
-                    if (tile >= 8)
-                    {
-                        // rotate
-                        if (tile >= 8 && tile <= 11)
-                        {
-                            // coast straight
-                            switch (tile)
-                            {
-                                case 8:
-                                    rotation = (float)((Math.PI * 180) / 180);
-                                    break;
-                                case 9:
-                                    rotation = (float)((Math.PI * 180) / -90);
-                                    break;
-                                case 10:
+                    // Translate the image to account for rotating around the top-left point
+                    TileType tileType = engine.map.tiles[x, y].tileType;
+                    float rotation = tileType.rotation;
+                    Vector2 initialVector = new Vector2((float)Math.Cos(Math.PI * 0.25d), (float)Math.Sin(Math.PI * 0.25d));
+                    Vector2 finalVector = new Vector2((float)Math.Cos(rotation + Math.PI * 0.25d), (float)Math.Sin(rotation + Math.PI * .25d));
+                    Vector2 deltaVector = initialVector - finalVector;
+                    //Vector2.UnitX.Transform(Vector2.Zero, Matrix.CreateRotationZ((float)(Math.PI*0.25d)));
+                    deltaVector /= (float)Math.Sqrt(2.0d);
+                    deltaVector *= tileWidth;
+                    bounds.Offset((int)Math.Round(deltaVector.X), (int)Math.Round(deltaVector.Y));
 
-                                    break;
-                                case 11:
-                                    rotation = (float)((Math.PI * 180) / 90);
-                                    break;
-                            }
-                        }
-                        if (tile >= 12 && tile <= 13)
-                        {
-                            // river straight
-                            switch (tile)
-                            {
-                                case 12:
-
-                                    break;
-                                case 13:
-                                    rotation = (float)(Math.PI * 180) / 90;
-                                    break;
-                            }
-                        }
-                        if (tile >= 14 && tile <= 17)
-                        {
-                            // river bend
-                            switch (tile)
-                            {
-                                case 14:
-                                    rotation = (float)(Math.PI * 180) / -90;
-                                    break;
-                                case 15:
-
-                                    break;
-                                case 16:
-                                    rotation = (float)(Math.PI * 180) / 90;
-                                    break;
-                                case 17:
-                                    rotation = (float)(Math.PI * 180) / 180;
-                                    break;
-                            }
-                        }
-                    }
-                    if (rotation == 0)
-                    {
-                        sb.Draw(tileTextures[tile], bounds, Color.White);
-                    }
-                    else
-                    {
-                        // offset half of the tile texture width to move the tile back after rotation
-                        //bounds.X -= (int)origin.X;
-                        //bounds.Y -= (int)origin.Y;
-                        
-                        sb.Draw(tileTextures[tile], bounds, null, Color.White, rotation, Vector2.Zero, SpriteEffects.None, 0);
-
-                    }
+                    sb.Draw(tileType.texture, bounds, null, Color.White, tileType.rotation, Vector2.Zero, SpriteEffects.None, 0);
                 }
              }
                 
