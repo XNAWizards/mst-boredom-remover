@@ -40,9 +40,11 @@ namespace mst_boredom_remover.engine
             unitGrid = new Unit[map.width, map.height];
             idCounter = 0;
 
-            ai = new AI(this);
-
             map.Initialize();
+            List<Position> goldTiles = new List<Position>();
+            List<Position> ironTiles = new List<Position>();
+            List<Position> manaTiles = new List<Position>();
+            ai = new AI(this, null, goldTiles, ironTiles, manaTiles);
         }
 
         public Unit GetUnitAt(Position position)
@@ -105,7 +107,7 @@ namespace mst_boredom_remover.engine
             }
             if ( currentTick%100 == 0 )
             {
-                
+                ai.makeMoves(1);
             }
             currentTick += 1;
         }

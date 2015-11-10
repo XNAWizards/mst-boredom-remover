@@ -89,6 +89,9 @@ namespace mst_boredom_remover.engine
 
         public void UpdateTilesFromCharmap(char [,] charmap)
         {
+            engine.ai.goldTiles = new List<Position>();
+            engine.ai.ironTiles = new List<Position>();
+            engine.ai.manaTiles = new List<Position>();
             Position targetPosition = new Position(0, 0);
             for (targetPosition.y = 0; targetPosition.y < height; ++targetPosition.y)
             {
@@ -99,7 +102,22 @@ namespace mst_boredom_remover.engine
                     {
                         biomeName = charToBiomeString[charmap[targetPosition.x, targetPosition.y]];
                     }
-                    GetTileAt(targetPosition).tileType = engine.GetTileTypeByName(biomeName);
+                    var  tileType = engine.GetTileTypeByName(biomeName);
+                    
+                    GetTileAt(targetPosition).tileType = tileType;
+                    
+                    if ( tileType.resourceType == TileType.ResourceType.Gold )
+                    {
+                        engine.ai.goldTiles.Add(new Position(targetPosition));
+                    } 
+                    else if (tileType.resourceType == TileType.ResourceType.Iron)
+                    {
+                        engine.ai.ironTiles.Add(new Position(targetPosition));
+                    } 
+                    else if (tileType.resourceType == TileType.ResourceType.ManaCrystals)
+                    {
+                        engine.ai.manaTiles.Add(new Position(targetPosition));
+                    }
                 }
             }
         }

@@ -15,6 +15,12 @@ namespace mst_boredom_remover.engine
             this.y = y;
         }
 
+        public Position( Position p )
+        {
+            this.x = p.x;
+            this.y = p.y;
+        }
+
         public int Distance(Position other)
         {
             return Math.Abs(other.y - y) + Math.Abs(other.x - x);
