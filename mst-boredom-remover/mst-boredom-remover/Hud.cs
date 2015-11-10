@@ -1,27 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using mst_boredom_remover.engine;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace mst_boredom_remover
 {
     class Hud : UiObject
     {
+        readonly Engine engine;
+        Player currentPlayer;
         Texture2D boxSelect;
         List<Unit> selectedUnits;
         KeyboardState k;
         MouseState m;
         MouseState m2;
         String lastButtonPressed;
-        Engine engine;
-        List<Unit> engineUnits;     // reference to the game units list
         Vector2 startRect;
         Vector2 endRect;
         Map map;
@@ -31,18 +26,18 @@ namespace mst_boredom_remover
         Texture2D HPbar;
 
         // handles context displays, selected units, resource counters, 
-        public Hud(ref Engine game, ref Map map, Texture2D boxSelect, Texture2D HPbar, Engine engine)
+        public Hud(ref Engine engine, ref Map map, Texture2D boxSelect, Texture2D HPbar)
         {
-            selectedUnits = new List<Unit>();
-            engineUnits = game.units;
-
-            startRect = new Vector2();
-            endRect = new Vector2();
-
+            this.engine = engine;
             this.map = map;
             this.boxSelect = boxSelect;
             this.HPbar = HPbar;
-            this.engine = engine;
+            this.currentPlayer = engine.players[0];
+
+            selectedUnits = new List<Unit>();
+            startRect = new Vector2();
+            endRect = new Vector2();
+            
             // initialize
             m = Mouse.GetState();
             m2 = Mouse.GetState();
@@ -53,7 +48,7 @@ namespace mst_boredom_remover
         {
             foreach (Unit u in selectedUnits)
             {
-                u.orders.Clear(); // ?
+                u.orders.Clear();
             }
         }
 
@@ -143,19 +138,19 @@ namespace mst_boredom_remover
             }
         }
 
-        public void unitGroupCommand()
+        public void UnitGroupCommand()
         {
             MouseState mouse = Mouse.GetState();
             KeyboardState keys = Keyboard.GetState();
 
             Vector2 mouseTile = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 
-            mouseTile.X = m.X / (map.getPxSizeMod()) + map.getTileIndexX();
-            mouseTile.Y = m.Y / (map.getPxSizeMod()) + map.getTileIndexY();
+            mouseTile.X = m.X / (map.GetPxSizeMod()) + map.GetTileIndexX();
+            mouseTile.Y = m.Y / (map.GetPxSizeMod()) + map.GetTileIndexY();
 
             Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
 
-            Unit clickedUnit = engine.unitGrid[mouseGameTilePosition.x, mouseGameTilePosition.y];
+            Unit clickedUnit = engine.GetUnitAt(mouseGameTilePosition);
             var enumerator = engine.map.BreadthFirst(mouseGameTilePosition).GetEnumerator();
             enumerator.MoveNext();
             foreach (Unit unit in selectedUnits)
@@ -168,7 +163,10 @@ namespace mst_boredom_remover
                     }
                     if (clickedUnit == unit) // Produce units
                     {
-                        engine.OrderProduce(unit, engine.unitTypes[1]);
+                        if (unit.CanProduce())
+                        {
+                            engine.OrderProduce(unit, engine.unitTypes[1]);
+                        }
                         break;
                     }
                     else if (clickedUnit != null) //Clicked a different unit TODO:make it so you don't attack your buddies
@@ -177,7 +175,10 @@ namespace mst_boredom_remover
                         {
                             continue;
                         }
-                        engine.OrderAttack(unit, clickedUnit);
+                        if (unit.CanAttack())
+                        {
+                            engine.OrderAttack(unit, clickedUnit);
+                        }
                     }
                     else // Move units or gather
                     {
@@ -185,10 +186,11 @@ namespace mst_boredom_remover
                         if (resource != TileType.ResourceType.None)
                         {
                             engine.OrderGather(unit, enumerator.Current);
+                            enumerator.MoveNext();
                             continue;
                         }
 
-                        while (engine.unitGrid[enumerator.Current.x, enumerator.Current.y] != null)
+                        while (engine.GetUnitAt(enumerator.Current) != null)
                         {
                             enumerator.MoveNext();
                         }
@@ -312,7 +314,7 @@ namespace mst_boredom_remover
                 bounds.Y = 0;
             }
 
-            return map.select(bounds);
+            return map.Select(bounds, currentPlayer);
         }
 
         public override void ChangeFont(SpriteFont f)
@@ -354,6 +356,14 @@ namespace mst_boredom_remover
             m = Mouse.GetState();
             k = Keyboard.GetState();
 
+            if (k.IsKeyDown(Keys.NumPad1))
+            {
+                currentPlayer = engine.players[0];
+            }
+            else if (k.IsKeyDown(Keys.NumPad2))
+            {
+                currentPlayer = engine.players[1];
+            }
             if (m.RightButton == ButtonState.Pressed && m2.RightButton == ButtonState.Released)
             {
 
@@ -364,7 +374,7 @@ namespace mst_boredom_remover
             }
             else if (m.RightButton == ButtonState.Released && m2.RightButton == ButtonState.Pressed)
             {
-                unitGroupCommand();
+                UnitGroupCommand();
             }
             else
             {
@@ -442,14 +452,14 @@ namespace mst_boredom_remover
         public override void Draw(SpriteBatch sb)
         {
             // draw unit HP bars
-            foreach (Unit u in engineUnits)
+            foreach (Unit u in engine.units)
             {
                 // calc hp percent
                 double percent = u.health / u.type.maxHealth;
 
                 Vector2 drawPosition = map.GetDrawPosition(u);
 
-                sb.Draw(HPbar, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (int)(map.getPxSizeMod() * percent), 3), Color.White);
+                sb.Draw(HPbar, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (int)(map.GetPxSizeMod() * percent), 3), Color.White);
             }
             if (rectangleSelect)
             {

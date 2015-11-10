@@ -42,6 +42,9 @@ namespace mst_boredom_remover
             Content.RootDirectory = "Content";
             
             engine = new Engine(width, height);
+            // Create initial players
+            engine.AddPlayer("Frodo", 0);
+            engine.AddPlayer("Sauron", 1);
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -179,13 +182,30 @@ namespace mst_boredom_remover
             Menu mainMenu = new Menu(hudBackground, new Vector2(0, 0), mainControls, Color.White, 0);
 
             Texture2D blankBackground = Content.Load<Texture2D>("BlankBackground");
-            Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Hills");
-            Texture2D mountainsTexture = Content.Load<Texture2D>("Terrain\\Mountains");
-            Texture2D desertTexture = Content.Load<Texture2D>("Terrain\\DesertFlat");
-            Texture2D oceanTexture = Content.Load<Texture2D>("Terrain\\Ocean1");
-            Texture2D dreadTexture = Content.Load<Texture2D>("Terrain\\Spoopy");
-            Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra");
-            Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest");
+            Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Plains1");
+            Texture2D mountainsTexture = Content.Load<Texture2D>("Terrain\\Mountain1");
+            Texture2D desertTexture = Content.Load<Texture2D>("Terrain\\Desert1");
+            Texture2D oceanTexture = Content.Load<Texture2D>("Terrain\\Ocean");
+            Texture2D dreadTexture = Content.Load<Texture2D>("Terrain\\Spoopy1");
+            Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra1");
+            Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest1"); //6
+            Texture2D coastTexture = Content.Load<Texture2D>("Terrain\\CoastStraight"); // 8-11
+            Texture2D riverStraightTexture = Content.Load<Texture2D>("Terrain\\RiverStraight"); //12-13
+            Texture2D riverBendTexture = Content.Load<Texture2D>("Terrain\\RiverBend"); //14-17
+
+
+            // Create initial biomes
+            engine.tileTypes.Add(new TileType("Ocean", texture: oceanTexture, biome: TileType.Biome.Ocean));
+            engine.tileTypes.Add(new TileType("Plain", texture: plainsTexture, biome: TileType.Biome.Plain));
+            engine.tileTypes.Add(new TileType("Mountain", texture: mountainsTexture, biome: TileType.Biome.Mountain));
+            engine.tileTypes.Add(new TileType("Forest", texture: forestTexture, biome: TileType.Biome.Forest));
+            engine.tileTypes.Add(new TileType("Dreadlands", texture: dreadTexture, biome: TileType.Biome.Dreadlands));
+            engine.tileTypes.Add(new TileType("Desert", texture: desertTexture, biome: TileType.Biome.Desert));
+            engine.tileTypes.Add(new TileType("Tundra", texture: tundraTexture, biome: TileType.Biome.Tundra));
+
+            engine.tileTypes.Add(new TileType("Gold", texture: blankBackground, biome: TileType.Biome.Gold, resourceType: TileType.ResourceType.Gold));
+            engine.tileTypes.Add(new TileType("Iron", texture: blankBackground, biome: TileType.Biome.Iron, resourceType: TileType.ResourceType.Iron));
+            engine.tileTypes.Add(new TileType("ManaCrystals", texture: blankBackground, biome: TileType.Biome.ManaCrystals, resourceType: TileType.ResourceType.ManaCrystals));
 
             List<Texture2D> tiles = new List<Texture2D>();
 
@@ -196,7 +216,17 @@ namespace mst_boredom_remover
             tiles.Add(oceanTexture);
             tiles.Add(dreadTexture);
             tiles.Add(tundraTexture);
-            tiles.Add(forestTexture);
+            tiles.Add(forestTexture); // 7
+            tiles.Add(coastTexture);
+            tiles.Add(coastTexture);
+            tiles.Add(coastTexture);
+            tiles.Add(coastTexture); // 11
+            tiles.Add(riverStraightTexture);
+            tiles.Add(riverStraightTexture); // 13
+            tiles.Add(riverBendTexture);
+            tiles.Add(riverBendTexture);
+            tiles.Add(riverBendTexture);
+            tiles.Add(riverBendTexture); // 17
 
             Map m = new Map(Vector2.Zero, tiles, width, height, ref engine, GraphicsDevice);
             List<UiObject> gameControls = new List<UiObject>();
@@ -206,7 +236,7 @@ namespace mst_boredom_remover
             // hud
             Texture2D boxSelect = Content.Load<Texture2D>("BoxSelect");
             Texture2D HPbar = Content.Load<Texture2D>("HPbar");
-            Hud hud = new Hud(ref engine, ref m, boxSelect, HPbar, engine);
+            Hud hud = new Hud(ref engine, ref m, boxSelect, HPbar);
 
             gameControls.Add(m);
             gameControls.Add(backButton);
@@ -259,7 +289,7 @@ namespace mst_boredom_remover
                 idleTextures: new[] { baseTown },
                 moveTextures: new[] { baseTown },
                 attackTextures: new[] { baseTown },
-                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Produce },
+                actions: new List<UnitType.Action> { UnitType.Action.Gather, UnitType.Action.Produce },
                 movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 1000,
                 attackStrength: 0, defense: 10, gatherRate: 15, goldCost: 1000));
             engine.unitTypes.Add(new UnitType(name: "GoldMine",
@@ -270,12 +300,8 @@ namespace mst_boredom_remover
                 movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 500,
                 attackStrength: 0, defense: 10, gatherRate: 50, goldCost: 500));
 
-            
-
             Menu newGameMenu = new Menu(hudBackground, Vector2.Zero, newGameControls, Color.White, 2);
             #endregion
-
-            
 
             // list of all UI objects to be drawn/updated
             userInterface = new List<UiObject>();
@@ -341,7 +367,9 @@ namespace mst_boredom_remover
             {
                 for (int i = 0; i < 15; ++i)
                 {
-                    engine.AddUnit(new Unit(engine, engine.unitTypes[2], new Position(0, i), engine.players[0]));
+                    engine.AddUnit(engine.unitTypes[2], new Position(0, i), engine.players[0]);
+
+                    engine.AddUnit(engine.unitTypes[2], new Position(100, i + 50), engine.players[1]);
                 }
             }
             engine.Tick();
@@ -369,9 +397,12 @@ namespace mst_boredom_remover
             {
                 spriteBatch.DrawString(debugFont, "x: " + engine.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
                 spriteBatch.DrawString(debugFont, "y: " + engine.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
-                spriteBatch.DrawString(debugFont, "player gold: " + engine.players[0].gold, new Vector2(1, 1 + 32 * 3), Color.Black);
-                spriteBatch.DrawString(debugFont, "player iron: " + engine.players[0].iron, new Vector2(1, 1 + 32 * 4), Color.Black);
-                spriteBatch.DrawString(debugFont, "player mc  : " + engine.players[0].manaCystals, new Vector2(1, 1 + 32 * 5), Color.Black);
+                spriteBatch.DrawString(debugFont, "1 player gold: " + engine.players[0].gold, new Vector2(1, 1 + 32 * 3), Color.Black);
+                spriteBatch.DrawString(debugFont, "1 player iron: " + engine.players[0].iron, new Vector2(1, 1 + 32 * 4), Color.Black);
+                spriteBatch.DrawString(debugFont, "1 player mc  : " + engine.players[0].manaCystals, new Vector2(1, 1 + 32 * 5), Color.Black);
+                spriteBatch.DrawString(debugFont, "2 player gold: " + engine.players[1].gold, new Vector2(1, 1 + 32 * 6), Color.Black);
+                spriteBatch.DrawString(debugFont, "2 player iron: " + engine.players[1].iron, new Vector2(1, 1 + 32 * 7), Color.Black);
+                spriteBatch.DrawString(debugFont, "2 player mc  : " + engine.players[1].manaCystals, new Vector2(1, 1 + 32 * 8), Color.Black);
             }
 
             spriteBatch.End();
