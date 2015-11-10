@@ -274,16 +274,13 @@ namespace mst_boredom_remover
                 for (int y = startY; y < startY + 214 && y < height; y++)
                 {
                     Rectangle bounds = new Rectangle((x - startX) * tileWidth, (y - startY) * tileWidth, tileWidth, tileWidth);
+                    
+                    TileType tileType = engine.map.tiles[x, y].tileType;
 
                     // Translate the image to account for rotating around the top-left point
-                    TileType tileType = engine.map.tiles[x, y].tileType;
-                    float rotation = tileType.rotation;
-                    Vector2 initialVector = new Vector2((float)Math.Cos(Math.PI * 0.25d), (float)Math.Sin(Math.PI * 0.25d));
-                    Vector2 finalVector = new Vector2((float)Math.Cos(rotation + Math.PI * 0.25d), (float)Math.Sin(rotation + Math.PI * .25d));
-                    Vector2 deltaVector = initialVector - finalVector;
-                    //Vector2.UnitX.Transform(Vector2.Zero, Matrix.CreateRotationZ((float)(Math.PI*0.25d)));
-                    deltaVector /= (float)Math.Sqrt(2.0d);
-                    deltaVector *= tileWidth;
+                    Vector2 origin = new Vector2(bounds.Width / 2.0f, bounds.Height / 2.0f);
+                    Vector2 image = Vector2.Transform(origin, Matrix.CreateRotationZ(tileType.rotation));
+                    Vector2 deltaVector = origin - image;
                     bounds.Offset((int)Math.Round(deltaVector.X), (int)Math.Round(deltaVector.Y));
 
                     sb.Draw(tileType.texture, bounds, null, Color.White, tileType.rotation, Vector2.Zero, SpriteEffects.None, 0);
