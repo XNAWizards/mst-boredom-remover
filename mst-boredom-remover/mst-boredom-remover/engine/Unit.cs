@@ -9,8 +9,8 @@ namespace mst_boredom_remover.engine
         public Engine engine; // This is probably a bad idea
         // But it sure makes things a whole lot easier...
 
-        public int id;
-        public UnitType type;
+        public readonly int id;
+        public readonly UnitType type;
         public double health;
         public Position position;
         public Position previousPosition;
@@ -24,6 +24,7 @@ namespace mst_boredom_remover.engine
             Moving,
             Hiding,
             Attacking,
+            Producing,
             Dead
         };
         public Status status;
@@ -43,10 +44,14 @@ namespace mst_boredom_remover.engine
         public List<UnitModifier> modifiers;
 
         public int animationStartTick; // This tells us on which tick an animation was started
+        private const int moveRetryCooldown = 10;
+        private const int buildRetryCooldown = 10;
+        private const int buildCooldown = 10;
+        private const int gatherCooldown = 10;
 
-        public Unit(Engine engine, UnitType unitType, Position position, Player owner)
+        public Unit(int id, Engine engine, UnitType unitType, Position position, Player owner)
         {
-            // TODO: Set id
+            this.id = id;
             this.engine = engine;
             this.type = unitType;
             this.position = position;
@@ -64,9 +69,9 @@ namespace mst_boredom_remover.engine
 
         public bool CanMove(Position targetPosition)
         {
-            if (type.actions.Contains(UnitType.Action.Move) && engine.map.Inside(targetPosition))
+            if (CanMove() && engine.map.Inside(targetPosition))
             {
-                var targetUnit = engine.unitGrid[targetPosition.x, targetPosition.y];
+                var targetUnit = engine.GetUnitAt(targetPosition);
                 if (targetUnit != null)
                 {
                     return targetUnit.owner == owner && targetUnit.CanMove() && targetUnit.orders.Count == 0;
@@ -123,11 +128,14 @@ namespace mst_boredom_remover.engine
             //TODO: make this account for modifiers
             return (int)type.defense;
         }
-        public void NextOrder()
-        {
-            orders.RemoveAt(0);
-        }
 
+        public int GetMoveCooldown(Position startPosition, Position endPosition)
+        {
+            // TODO: Account for tile effects, unit modifiers, etc.
+            int nominalSpeed = (int)(10.0 / type.movementSpeed);
+            return nominalSpeed > 0 ? nominalSpeed : 1;
+        }
+        
         public Vector2 GetAnimatedPosition()
         {
             if (status == Status.Moving)
@@ -145,11 +153,18 @@ namespace mst_boredom_remover.engine
             }
             return position.ToVector2();
         }
-
+        
+        public int GetAttackCooldown()
+        {
+            // TODO: Account for modifiers
+            return (int) (10.0/type.attackSpeed);
+        }
+        
         public void Update()
         {
             if (orders.Count == 0)
             {
+                status = Status.Idle;
                 return;
             }
             var currentOrder = orders.First();
@@ -157,159 +172,178 @@ namespace mst_boredom_remover.engine
             switch (currentOrder.orderType)
             {
                 case Order.OrderType.Move:
-                    if (position.Equals(currentOrder.targetPosition))
-                    {
-                        status = Status.Idle;
-                        NextOrder();
-                        Update();
-                        break;
-                    }
-                    Position nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
-
-                    if (nextPosition != null)
-                    {
-                        engine.MoveUnit(this, nextPosition);
-                        animationStartTick = engine.currentTick;
-                    }
-                    status = Status.Moving;
-                    // TODO: Calculate cooldown based on speed and tile and modifiers
-                    engine.ScheduleUpdate((int)type.movementSpeed, this);
+                    MoveOrder(currentOrder);
                     break;
                 case Order.OrderType.Attack:
-                    if (currentOrder.targetUnit.status == Status.Dead)
-                    {
-                        status = Status.Idle;
-                        NextOrder();
-                        Update();
-                        break;
-                    }
-                    currentOrder.targetPosition = currentOrder.targetUnit.position;
-                    if (position.Distance(currentOrder.targetUnit.position) > type.attackRange)
-                    {
-                        // TODO: Move into range
-                        status = Status.Moving;
-                        nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
-
-                        if (nextPosition != null)
-                        {
-                            engine.MoveUnit(this, nextPosition);
-                            animationStartTick = engine.currentTick;
-                        }
-
-                        // TODO: Calculate cooldown based on speed and tile and modifiers
-                        engine.ScheduleUpdate(10, this);
-                        break;
-                    }
-                    // TODO: Attack
-                    engine.Attack(this, currentOrder.targetUnit);
-                    animationStartTick = engine.currentTick;
-                    // TODO: Calculate cooldown based on attack cooldown and modifiers
-                    status = Status.Attacking;
-                    engine.ScheduleUpdate(10, this);
+                    AttackOrder(currentOrder);
                     break;
                 case Order.OrderType.Produce:
-                    if ( currentOrder.targetPosition != null && currentOrder.targetPosition.Distance(this.position) > 1 && this.CanMove() )
-                    {
-                        nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
-
-                        if (nextPosition != null)
-                        {
-                            engine.MoveUnit(this, nextPosition);
-                        }
-
-                        // TODO: Calculate cooldown based on speed and tile and modifiers
-                        engine.ScheduleUpdate(10, this);
-                        break;
-                    }
-                    if (owner.gold < currentOrder.unitTypeBuild.goldCost ||
-                        owner.iron < currentOrder.unitTypeBuild.ironCost ||
-                        owner.manaCystals < currentOrder.unitTypeBuild.manaCrystalsCost)
-                    {
-                        // TODO: Decide what happens here
-                        // Wait a certain amount of time and check again
-                        // or just skip to next order
-                        engine.ScheduleUpdate(5, this);
-                        break;
-                    }
-                    // Find place to put unit
-                    Position targetLocation = position;
-                    Position producePosition = null;
-                    if (currentOrder.targetPosition == null)
-                    {
-                        foreach (var testPosition in engine.map.BreadthFirst(targetLocation, distance: 1))
-                        {
-                            if (engine.unitGrid[testPosition.x, testPosition.y] == null)
-                            {
-                                producePosition = testPosition;
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        producePosition = currentOrder.targetPosition;
-                    }
-                    if (producePosition == null)
-                    {
-                        // Try again in the future
-                        engine.ScheduleUpdate(5, this);
-                        break;
-                    }
-
-                    // Subtract resources
-                    owner.gold -= currentOrder.unitTypeBuild.goldCost;
-                    owner.iron -= currentOrder.unitTypeBuild.ironCost;
-                    owner.manaCystals -= currentOrder.unitTypeBuild.manaCrystalsCost;
-                    // Create the unit
-                    // TODO: Apply orders to the new unit, such as a rally point
-                    Unit u = engine.AddUnit(new Unit(engine, currentOrder.unitTypeBuild, producePosition, owner));
-                    if (currentOrder.targetPosition != null && currentOrder.targetPosition.Distance(u.position) > 1 && u.CanMove())
-                    {
-                        engine.OrderMove(u, currentOrder.targetPosition);
-                    }
-                    else if ( u.type.name.Equals("GoldMine") )
-                    {
-                        engine.OrderGather(u, currentOrder.targetPosition);
-                    }
-                    engine.ScheduleUpdate(5, this);
-                    NextOrder();
+                    ProduceOrder(currentOrder);
                     break;
                 case Order.OrderType.Gather:
-                    if (!position.Equals(currentOrder.targetPosition))
+                    GatherOrder(currentOrder);
+                    break;
+            }
+        }
+
+        // Private
+        
+        private void NextOrder()
+        {
+            orders.RemoveAt(0);
+        }
+
+        private void TryToMove(Position targetPosition)
+        {
+            if (targetPosition != null)
+            {
+                engine.ScheduleUpdate(GetMoveCooldown(position, targetPosition), this);
+                engine.MoveUnit(this, targetPosition);
+                animationStartTick = engine.currentTick;
+            }
+            else
+            {
+                // Retry after moveRetryCooldown ticks
+                engine.ScheduleUpdate(moveRetryCooldown, this);
+            }
+        }
+
+        private void MoveOrder(Order order)
+        {
+            // Check for goal reached
+            if (position.Equals(order.targetPosition))
+            {
+                NextOrder();
+                Update();
+                return;
+            }
+            status = Status.Moving;
+            Position nextPosition = Pathfinder.FindNextStep(engine, this, position, order.targetPosition);
+            TryToMove(nextPosition);
+        }
+
+        private void AttackOrder(Order order)
+        {
+            // Check for goal reached
+            if (order.targetUnit.status == Status.Dead)
+            {
+                NextOrder();
+                Update();
+                return;
+            }
+
+            var targetPosition = order.targetUnit.position;
+            if (position.Distance(targetPosition) > type.attackRange)
+            {
+                // Move into range
+                status = Status.Moving;
+                var nextPosition = Pathfinder.FindNextStep(engine, this, position, targetPosition);
+                TryToMove(nextPosition);
+                return;
+            }
+
+            status = Status.Attacking;
+            engine.Attack(this, order.targetUnit);
+            engine.ScheduleUpdate(GetAttackCooldown(), this);
+        }
+
+        private void ProduceOrder(Order order)
+        {
+            // If the unit is told to build a structure far away, and he is not in range yet
+            if (CanMove() && order.targetPosition != null && order.targetPosition.Distance(position) > 1)
+            {
+                status = Status.Moving;
+                var nextPosition = Pathfinder.FindNextStep(engine, this, position, order.targetPosition);
+                TryToMove(nextPosition);
+                return;
+            }
+
+            status = Status.Producing;
+            // If the player does not has enough moneyz
+            if (owner.gold < order.unitTypeBuild.goldCost ||
+                owner.iron < order.unitTypeBuild.ironCost ||
+                owner.manaCystals < order.unitTypeBuild.manaCrystalsCost)
+            {
+                // Try again later
+                engine.ScheduleUpdate(buildRetryCooldown, this);
+                return;
+            }
+
+            // Find place to put unit
+            Position targetLocation = position;
+            Position producePosition = null;
+            if (order.targetPosition == null)
+            {
+                foreach (var testPosition in engine.map.BreadthFirst(targetLocation, distance: 1))
+                {
+                    if (engine.GetUnitAt(testPosition) == null)
                     {
-                        // TODO: Move onto resource
-
-                        nextPosition = Pathfinder.FindNextStep(engine, this, position, currentOrder.targetPosition);
-
-                        if (nextPosition != null)
-                        {
-                            engine.MoveUnit(this, nextPosition);
-                        }
-
-                        // TODO: Calculate cooldown based on speed and tile and modifiers
-                        engine.ScheduleUpdate(10, this);
+                        producePosition = testPosition;
                         break;
                     }
-                    // TODO: / ASSUPTION We have infinate resources, is that okay?
-                    var tileResoure = engine.map.tiles[currentOrder.targetPosition.x, currentOrder.targetPosition.y].tileType.resourceType;
-                    if ( tileResoure == TileType.ResourceType.Gold)
-                    {
-                        this.owner.gold += this.type.gatherRate;
-                    }
-                    else if ( tileResoure == TileType.ResourceType.Iron )
-                    {
-                        this.owner.iron += this.type.gatherRate;
-                    }
-                    else if ( tileResoure == TileType.ResourceType.ManaCrystals )
-                    {
-                        this.owner.iron += this.type.gatherRate;
-                    }
-                    engine.ScheduleUpdate(10, this);
-                    if ( orders.Count > 1 )
-                    {
-                        NextOrder();
-                    }
-                    break;
+                }
+            }
+            else
+            {
+                producePosition = order.targetPosition;
+            }
+            if (producePosition == null)
+            {
+                // Try again in the future
+                engine.ScheduleUpdate(buildRetryCooldown, this);
+                return;
+            }
+            
+            // Subtract resources
+            owner.gold -= order.unitTypeBuild.goldCost;
+            owner.iron -= order.unitTypeBuild.ironCost;
+            owner.manaCystals -= order.unitTypeBuild.manaCrystalsCost;
+
+            // Create the unit
+            Unit u = engine.AddUnit(order.unitTypeBuild, producePosition, owner);
+            if (order.targetPosition != null && u.CanMove())
+            {
+                // Tell the produced unit to go to the rally point
+                engine.OrderMove(u, order.targetPosition);
+            }
+            else if (u.type.name.Equals("GoldMine"))
+            {
+                engine.OrderGather(u, order.targetPosition);
+            }
+
+            NextOrder();
+            engine.ScheduleUpdate(buildCooldown, this);
+        }
+
+        private void GatherOrder(Order order)
+        {
+            if (!position.Equals(order.targetPosition))
+            {
+                // Move to resource
+                status = Status.Moving;
+                var nextPosition = Pathfinder.FindNextStep(engine, this, position, order.targetPosition);
+                TryToMove(nextPosition);
+                return;
+            }
+
+            // TODO: / ASSUPTION We have infinate resources, is that okay?
+            var tileResoure = engine.map.tiles[order.targetPosition.x, order.targetPosition.y].tileType.resourceType;
+            if (tileResoure == TileType.ResourceType.Gold)
+            {
+                owner.gold += type.gatherRate;
+            }
+            else if (tileResoure == TileType.ResourceType.Iron)
+            {
+                owner.iron += type.gatherRate;
+            }
+            else if (tileResoure == TileType.ResourceType.ManaCrystals)
+            {
+                owner.iron += type.gatherRate;
+            }
+            engine.ScheduleUpdate(gatherCooldown, this);
+            if (orders.Count > 1)
+            {
+                NextOrder();
             }
         }
     }

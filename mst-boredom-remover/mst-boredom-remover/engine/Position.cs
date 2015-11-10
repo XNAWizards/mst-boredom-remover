@@ -66,6 +66,11 @@ namespace mst_boredom_remover.engine
             return new Vector2(x, y);
         }
 
+        public Position Clone()
+        {
+            return new Position(x, y);
+        }
+
         public override int GetHashCode()
         {
             // From: http://stackoverflow.com/questions/2634690/good-hash-function-for-a-2d-index

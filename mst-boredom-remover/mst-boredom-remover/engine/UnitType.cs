@@ -5,8 +5,8 @@ namespace mst_boredom_remover.engine
 {
     class UnitType
     {
-        public string name;
-        public double maxHealth;
+        public readonly string name;
+        public readonly double maxHealth;
 
         public enum AttackType
         {
@@ -14,10 +14,11 @@ namespace mst_boredom_remover.engine
             Arrow,
             Fireball
         };
-        public AttackType attackType;
-        public double attackStrength;
-        public double attackRange;
-        public double defense;
+        public readonly AttackType attackType;
+        public readonly double attackStrength;
+        public readonly double attackRange;
+        public readonly double attackSpeed;
+        public readonly double defense;
 
         public enum MovementType
         {
@@ -27,8 +28,8 @@ namespace mst_boredom_remover.engine
             Digger,
             None
         };
-        public MovementType movementType;
-        public double movementSpeed;
+        public readonly MovementType movementType;
+        public readonly double movementSpeed;
 
         public enum Action
         {
@@ -39,27 +40,28 @@ namespace mst_boredom_remover.engine
             Build,
             Cast
         };
-        public List<Action> actions;
+        public readonly List<Action> actions;
 
         public enum Spell
         {
             Fireball,
             IvyWhip
         }
-        public List<Spell> spells;
+        public readonly List<Spell> spells;
 
-        public double gatherRate;
-        public double goldCost;
-        public double ironCost;
-        public double manaCrystalsCost;
+        public readonly double gatherRate;
+        public readonly double goldCost;
+        public readonly double ironCost;
+        public readonly double manaCrystalsCost;
 
         // Animation stuff
-        public Texture2D[] idleTextures;
-        public Texture2D[] attackTextures;
-        public Texture2D[] moveTextures;
+        public readonly Texture2D[] idleTextures;
+        public readonly Texture2D[] attackTextures;
+        public readonly Texture2D[] moveTextures;
 
         public UnitType(string name="", double maxHealth=100.0, AttackType attackType=AttackType.Melee,
-            double attackStrength=1.0, double attackRange=1.0, double defense=0.0, MovementType movementType=MovementType.Walker,
+            double attackStrength=1.0, double attackRange=1.0, double attackSpeed = 1.0, double defense=0.0,
+            MovementType movementType=MovementType.Walker,
             double movementSpeed=10.0, List<Action> actions=null, List<Spell> spells=null, double gatherRate = 10.0,
             double goldCost=10.0, double ironCost=0.0, double manaCrystalsCost=0.0,
             Texture2D[] idleTextures=null, Texture2D[] attackTextures=null, Texture2D[] moveTextures=null)
@@ -69,6 +71,7 @@ namespace mst_boredom_remover.engine
             this.attackType = attackType;
             this.attackStrength = attackStrength;
             this.attackRange = attackRange;
+            this.attackSpeed = attackSpeed;
             this.defense = defense;
             this.movementType = movementType;
             this.movementSpeed = movementSpeed;
