@@ -136,7 +136,13 @@ namespace mst_boredom_remover.engine
             var blockingUnit = GetUnitAt(targetPosition);
             if (blockingUnit != null)
             {
-                SwapUnits(unit, blockingUnit);
+                if (unit.owner == blockingUnit.owner)
+                    SwapUnits(unit, blockingUnit);
+                else // TODO: Move this into Unit's logic?
+                {
+                    unit.orders.Insert(0, Order.CreateAttackOrder(blockingUnit)); // Prepend attack order
+                    unit.Update();
+                }
             }
             else
             {
@@ -180,6 +186,13 @@ namespace mst_boredom_remover.engine
                 return;
             }
             target.health -= Math.Max(1, attacker.AttackStrength() - target.Defense());
+
+            // Return Fire!
+            if (target.CanAttack() && target.orders.Count == 0)
+            {
+                OrderAttack(target, attacker);
+            }
+
             if (target.health<=0) //target dead
             {
                 RemoveUpdate(target);

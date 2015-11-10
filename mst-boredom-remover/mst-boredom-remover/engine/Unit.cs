@@ -73,7 +73,11 @@ namespace mst_boredom_remover.engine
                 var targetUnit = engine.GetUnitAt(targetPosition);
                 if (targetUnit != null)
                 {
-                    return targetUnit.owner == owner && targetUnit.CanMove() && targetUnit.orders.Count == 0;
+                    if (targetUnit.owner == owner)
+                    {
+                        return targetUnit.CanMove() && targetUnit.orders.Count == 0;
+                    }
+                    return CanAttack(); // Only try to move through enemies if you can attack
                 }
                 return true;
             }
