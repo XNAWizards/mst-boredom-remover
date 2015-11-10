@@ -32,7 +32,6 @@ namespace mst_boredom_remover
         public readonly int height;
 
         private readonly GraphicsDevice graphicsDevice;
-        private readonly List<Texture2D> tileTextures;
         private readonly Engine engine;
         private readonly int xCaches;
         private readonly int yCaches;
@@ -54,10 +53,9 @@ namespace mst_boredom_remover
 
         private Vector2 mouseTile;
 
-        public Map(Vector2 startingPosition, List<Texture2D> tileTextures, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice)
+        public Map(Vector2 startingPosition, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice)
         {
             tileIndex = startingPosition;
-            this.tileTextures = tileTextures;
             this.width = width;
             this.height = height;
             this.engine = engine;
@@ -177,7 +175,7 @@ namespace mst_boredom_remover
             try
             {
                 tileName = engine.map.tiles[(int)mouseTile.X, (int)mouseTile.Y].tileType.name;
-                tileName += " " + CharToInt(charmap[(int)mouseTile.X, (int)mouseTile.Y]).ToString();
+                tileName += " " + charmap[(int)mouseTile.X, (int)mouseTile.Y];
             }
             catch (IndexOutOfRangeException)
             {
@@ -206,8 +204,8 @@ namespace mst_boredom_remover
         private void ForceBounds()
         {
             // Align viewport to integers
-            tileIndex.X = (float) Math.Floor(tileIndex.X);
-            tileIndex.Y = (float) Math.Floor(tileIndex.Y);
+            tileIndex.X = (float) Math.Round(tileIndex.X);
+            tileIndex.Y = (float) Math.Round(tileIndex.Y);
 
             // min bounds
             if (tileIndex.X < 0)
@@ -244,6 +242,7 @@ namespace mst_boredom_remover
                 ForceBounds();
             }
         }
+
         private void ZoomOut()
         {
             if (pxMod > -16)
@@ -464,50 +463,6 @@ namespace mst_boredom_remover
                 DebugDraw(sb);
             }
             //base.Draw(sb);
-        }
-
-        private int CharToInt(char c)
-        {
-            switch (c)
-            {
-                case '+':
-                    return 1;
-                case 'M':
-                    return 2;
-                case 'D':
-                    return 3;
-                case '~':
-                    return 4;
-                case '%':
-                    return 5;
-                case 'T':
-                    return 6;
-                case 'F':
-                    return 7;
-                case '@':       // coast land on north
-                    return 8;
-                case '/':       // coast land on east
-                    return 9;
-                case '&':       // coast land on south
-                    return 10;
-                case '#':       // coast land on west
-                    return 11;
-                case '^':       // river rnning nort and south
-                    return 12;
-                case ',':       // river running east ot west
-                    return 13;
-                case '<':       // river mouths at east and south
-                    return 14;
-                case '>':       // river mouths at west and south
-                    return 15;
-                case ']':       // river mouths at west and north
-                    return 16;
-                case '[':       // river mouths at east and north
-                    return 17;
-                default:
-                    // 0 is not a tile, more efficient than try-catch index out of bounds
-                    return 0;
-            }
         }
     }
 }
