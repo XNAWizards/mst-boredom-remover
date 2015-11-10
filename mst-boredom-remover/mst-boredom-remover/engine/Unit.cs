@@ -12,6 +12,13 @@ namespace mst_boredom_remover.engine
         public readonly UnitType type;
         public double health;
         public Position position;
+
+        public double maxHPMult = 1;
+        public double attackStrengthMult = 1;
+        public double attackRangeMult = 1;
+        public double attackSpeedMult = 1;
+        public double defenseMult = 1;
+
         public Position previousPosition;
         public int nextMove; //This is the tick that the unit gets its next move
         public bool selected;
@@ -113,19 +120,19 @@ namespace mst_boredom_remover.engine
         public int AttackRange()
         {
             //TODO: make this account for modifiers and decide how to go from double to int, floor always?
-            return (int) type.attackRange;
+            return (int) (type.attackRange * attackRangeMult);
         }
 
         public int AttackStrength()
         {
             //TODO: make this account for modifiers
-            return (int)type.attackStrength;
+            return (int)(type.attackStrength * attackStrengthMult);
         }
 
         public int Defense()
         {
             //TODO: make this account for modifiers
-            return (int)type.defense;
+            return (int)(type.defense * defenseMult);
         }
 
         public int GetMoveCooldown(Position startPosition, Position endPosition)

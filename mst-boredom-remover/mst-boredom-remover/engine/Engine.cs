@@ -41,6 +41,20 @@ namespace mst_boredom_remover.engine
             map.Initialize();
         }
 
+        public void applyUpgrade(Upgrade up, int playerIndex)
+        {
+            foreach (Unit u in units)
+            {
+                if (u.owner == players[playerIndex])
+                {
+                    u.attackStrengthMult += up.attackStrength;
+                    u.attackRangeMult += up.attackRange;
+                    u.defenseMult += up.defense;
+                    u.maxHPMult += up.HP;
+                }
+            }
+        }
+
         public Unit GetUnitAt(Position position)
         {
             return map.Inside(position) ? unitGrid[position.x, position.y] : null;

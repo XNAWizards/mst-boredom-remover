@@ -193,7 +193,6 @@ namespace mst_boredom_remover
             Texture2D riverStraightTexture = Content.Load<Texture2D>("Terrain\\RiverStraight"); //12-13
             Texture2D riverBendTexture = Content.Load<Texture2D>("Terrain\\RiverBend"); //14-17
 
-
             // Create initial biomes
             engine.tileTypes.Add(new TileType("Ocean", texture: oceanTexture, biome: TileType.Biome.Ocean));
             engine.tileTypes.Add(new TileType("Plain", texture: plainsTexture, biome: TileType.Biome.Plain));
@@ -421,7 +420,8 @@ namespace mst_boredom_remover
         }
         public void loadButton_Clicked(object sender, EventArgs e)
         {
-            //this.Exit();
+            Upgrade u = new Upgrade("AttackUp", 49, engine.unitTypes[0], 0);
+            engine.applyUpgrade(u, 0);
         }
         public void loadButton_OnPress(object sender, EventArgs e)
         {

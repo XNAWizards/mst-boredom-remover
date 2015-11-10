@@ -21,6 +21,7 @@ namespace mst_boredom_remover.engine
             Loved
         };
         public List<PlayerModifier> modifiers;
+        public List<Upgrade> unitUpgrades;
 
         public Player(int id, string name, int team=0)
         {
