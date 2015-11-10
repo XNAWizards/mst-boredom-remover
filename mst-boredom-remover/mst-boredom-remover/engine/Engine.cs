@@ -23,7 +23,9 @@ namespace mst_boredom_remover.engine
         public List<Player> players;
         public List<Unit> units;
         public Unit[,] unitGrid;
-        
+
+        public AI ai;
+
         private int idCounter;
 
         public Engine(int mapWidth, int mapHeight)
@@ -37,6 +39,8 @@ namespace mst_boredom_remover.engine
             units = new List<Unit>();
             unitGrid = new Unit[map.width, map.height];
             idCounter = 0;
+
+            ai = new AI(this);
 
             map.Initialize();
         }
@@ -99,7 +103,10 @@ namespace mst_boredom_remover.engine
                 // We are done with all the updates for this tick
                 futureUpdates.Remove(currentTick);
             }
-
+            if ( currentTick%100 == 0 )
+            {
+                
+            }
             currentTick += 1;
         }
 
