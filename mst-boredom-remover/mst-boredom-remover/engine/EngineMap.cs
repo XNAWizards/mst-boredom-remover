@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace mst_boredom_remover.engine
@@ -39,7 +38,17 @@ namespace mst_boredom_remover.engine
             {'T', "Tundra" },
             {'G', "Gold" },
             {'L', "Iron" },
-            {'*', "ManaCrystals" }
+            {'*', "ManaCrystals" },
+            {'@', "Coast Land on North"}, // @
+            {'/', "Coast Land on East"}, // /
+            {'&', "Coast Land on South"}, // &
+            {'#', "Coast Land on West"}, // #
+            {'^', "River Straight Vertical"},
+            {',', "River Straight Horizontal"},
+            {'<', "River East and South"},
+            {'>', "River West and South"},
+            {']', "River West and North"},
+            {'[', "River East and North"},
         };
 
         public EngineMap(Engine engine, int width, int height)
