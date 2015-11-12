@@ -296,6 +296,8 @@ namespace mst_boredom_remover
             Menu newGameMenu = new Menu(hudBackground, Vector2.Zero, newGameControls, Color.White, 2);
             #endregion
 
+            SoundEngine.backgroundMusic = Content.Load<Song>("Audio\\Tetris");
+
             // list of all UI objects to be drawn/updated
             userInterface = new List<UiObject>();
 
@@ -440,6 +442,7 @@ namespace mst_boredom_remover
         public void goButton_Clicked(object sender, EventArgs e)
         {
             ChangeScreen(MenuScreen.InGame); // change to main menu screen
+            SoundEngine.PlayBGM();
         }
         public void goButton_OnPress(object sender, EventArgs e)
         {
