@@ -110,6 +110,7 @@
     <Compile Include="engine\AI.cs" />
     <Compile Include="engine\Engine.cs" />
     <Compile Include="engine\EngineMap.cs" />
+    <Compile Include="engine\Quadtree.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Hud.cs" />
     <Compile Include="Map.cs" />
