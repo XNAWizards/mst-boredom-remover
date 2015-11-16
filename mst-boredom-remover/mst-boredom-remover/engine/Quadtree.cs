@@ -74,8 +74,12 @@ namespace mst_boredom_remover.engine
             }
         }
 
-        public Unit NearestUnit(Position startPosition, int maxDistance)
+        public Unit NearestUnitTo(Unit startUnit, int maxDistance, Position startPosition=null)
         {
+            if (startPosition == null)
+            {
+                startPosition = startUnit.position;
+            }
             if (!Inside(startPosition))
             {
                 var nearestPosition = new Position(Math.Max(0, Math.Min(startPosition.x, width - 1)),
@@ -99,7 +103,7 @@ namespace mst_boredom_remover.engine
                 foreach (var unit in top.units)
                 {
                     int distance = startPosition.Distance(unit.position);
-                    if (distance < nearestDistance)
+                    if (distance < nearestDistance && unit != startUnit)
                     {
                         nearestDistance = distance;
                         closestUnit = unit;
