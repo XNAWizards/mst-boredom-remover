@@ -11,6 +11,7 @@ namespace mst_boredom_remover.engine
 
         private readonly int chunkWidth, chunkHeight;
         private readonly int xChunks, yChunks;
+        private readonly Dictionary<Unit, Position> previousUnitPositions;
         private readonly Chunk[,] chunks;
 
         public Quadtree(int width, int height, int chunkWidth=8, int chunkHeight=8)
@@ -22,6 +23,8 @@ namespace mst_boredom_remover.engine
 
             xChunks = width/chunkWidth;
             yChunks = height/chunkHeight;
+
+            previousUnitPositions = new Dictionary<Unit, Position>();
 
             chunks = new Chunk[xChunks, yChunks];
 
@@ -61,17 +64,33 @@ namespace mst_boredom_remover.engine
         public void AddUnit(Unit unit)
         {
             GetChunk(unit.position)?.AddUnit(unit);
+            previousUnitPositions[unit] = new Position(unit.position);
         }
 
-        public void UpdateUnit(Unit unit, Position previousPosition)
+        public void UpdateUnit(Unit unit)
         {
+            // It is an error to call this when unit was never added to the quadtree
+            Debug.Assert(previousUnitPositions.ContainsKey(unit));
+
+            Position previousPosition = previousUnitPositions[unit];
             var previousChunk = GetChunk(previousPosition);
             var newChunk = GetChunk(unit.position);
             if (previousChunk != newChunk)
             {
-                previousChunk?.CheckAndRemoveUnit(unit);
+                previousChunk?.RemoveUnit(unit);
                 newChunk?.AddUnit(unit);
             }
+
+            previousUnitPositions[unit] = unit.position;
+        }
+
+        public void RemoveUnit(Unit unit)
+        {
+            // It is an error to call this when unit was never added to the quadtree
+            Debug.Assert(previousUnitPositions.ContainsKey(unit));
+
+            GetChunk(previousUnitPositions[unit]).RemoveUnit(unit);
+            previousUnitPositions.Remove(unit);
         }
 
         public Unit NearestUnitTo(Unit startUnit, int maxDistance, Position startPosition=null)
@@ -103,7 +122,7 @@ namespace mst_boredom_remover.engine
                 foreach (var unit in top.units)
                 {
                     int distance = startPosition.Distance(unit.position);
-                    if (distance < nearestDistance && unit != startUnit)
+                    if (distance <= nearestDistance && unit != startUnit)
                     {
                         nearestDistance = distance;
                         closestUnit = unit;
@@ -172,9 +191,9 @@ namespace mst_boredom_remover.engine
                 units.Add(unit);
             }
 
-            public bool CheckAndRemoveUnit(Unit unit)
+            public void RemoveUnit(Unit unit)
             {
-                return !Inside(unit.position) && units.Remove(unit);
+                units.Remove(unit);
             }
 
             public void AddNeighbor(Chunk chunk)

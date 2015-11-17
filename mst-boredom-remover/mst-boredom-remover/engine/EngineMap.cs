@@ -62,23 +62,23 @@ namespace mst_boredom_remover.engine
         {
             // Initialize tiles
             tiles = new Tile[width, height];
-            Position targetPosition = new Position(0, 0);
-            for (targetPosition.y = 0; targetPosition.y < height; ++targetPosition.y)
+            for (var y = 0; y < height; ++y)
             {
-                for (targetPosition.x = 0; targetPosition.x < width; ++targetPosition.x)
+                for (var x = 0; x < width; ++x)
                 {
-                    engine.AddTile(null, targetPosition.Clone()); // This looks error prone
+                    engine.AddTile(null, new Position(x, y));
                 }
             }
             // Initialize neighbors
-            for (targetPosition.y = 0; targetPosition.y < height; ++targetPosition.y)
+            for (var y = 0; y < height; ++y)
             {
-                for (targetPosition.x = 0; targetPosition.x < width; ++targetPosition.x)
+                for (var x = 0; x < width; ++x)
                 {
-                    Tile targetTile = GetTileAt(targetPosition);
+                    var targetPosition = new Position(x, y);
+                    Tile targetTile = GetTileAt(x, y);
                     targetTile.neighbors = new List<Tile>(from delta in directionDeltas
                                                           where Inside(targetPosition + delta)
-                                                          select tiles[targetPosition.x + delta.x, targetPosition.y + delta.y]);
+                                                          select tiles[x + delta.x, y + delta.y]);
                 }
             }
         }
@@ -86,6 +86,11 @@ namespace mst_boredom_remover.engine
         public Tile GetTileAt(Position position)
         {
             return Inside(position) ? tiles[position.x, position.y] : null;
+        }
+
+        public Tile GetTileAt(int x, int y)
+        {
+            return Inside(x, y) ? tiles[x, y] : null;
         }
 
         public void SetTileAt(Position position, Tile tile)
@@ -101,31 +106,32 @@ namespace mst_boredom_remover.engine
             engine.ai.goldTiles = new List<Position>();
             engine.ai.ironTiles = new List<Position>();
             engine.ai.manaTiles = new List<Position>();
-            Position targetPosition = new Position(0, 0);
-            for (targetPosition.y = 0; targetPosition.y < height; ++targetPosition.y)
+            for (var y = 0; y < height; ++y)
             {
-                for (targetPosition.x = 0; targetPosition.x < width; ++targetPosition.x)
+                for (var x = 0; x < width; ++x)
                 {
+                    var targetPosition = new Position(x, y);
+
                     string biomeName = "Ocean";
-                    if (charToBiomeString.ContainsKey(charmap[targetPosition.x, targetPosition.y]))
+                    if (charToBiomeString.ContainsKey(charmap[x, y]))
                     {
-                        biomeName = charToBiomeString[charmap[targetPosition.x, targetPosition.y]];
+                        biomeName = charToBiomeString[charmap[x, y]];
                     }
-                    var  tileType = engine.GetTileTypeByName(biomeName);
+                    var tileType = engine.GetTileTypeByName(biomeName);
                     
                     GetTileAt(targetPosition).tileType = tileType;
                     
                     if ( tileType.resourceType == TileType.ResourceType.Gold )
                     {
-                        engine.ai.goldTiles.Add(new Position(targetPosition));
+                        engine.ai.goldTiles.Add(targetPosition);
                     } 
                     else if (tileType.resourceType == TileType.ResourceType.Iron)
                     {
-                        engine.ai.ironTiles.Add(new Position(targetPosition));
+                        engine.ai.ironTiles.Add(targetPosition);
                     } 
                     else if (tileType.resourceType == TileType.ResourceType.ManaCrystals)
                     {
-                        engine.ai.manaTiles.Add(new Position(targetPosition));
+                        engine.ai.manaTiles.Add(targetPosition);
                     }
                 }
             }
@@ -134,6 +140,11 @@ namespace mst_boredom_remover.engine
         public bool Inside(Position position)
         {
             return (position.x >= 0 && position.y >= 0 && position.x < width && position.y < height);
+        }
+
+        public bool Inside(int x, int y)
+        {
+            return (x >= 0 && y >= 0 && x < width && y < height);
         }
 
         /// <summary>

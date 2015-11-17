@@ -179,7 +179,16 @@ namespace mst_boredom_remover.engine
             if (targetPosition != null)
             {
                 engine.ScheduleUpdate(GetMoveCooldown(position, targetPosition), this);
-                engine.MoveUnit(this, targetPosition);
+
+                var blockingUnit = engine.GetUnitAt(targetPosition);
+                if (blockingUnit != null)
+                {
+                    engine.SwapUnits(this, blockingUnit);
+                }
+                else
+                {
+                    engine.MoveUnit(this, targetPosition);
+                }
             }
             else
             {

@@ -43,8 +43,8 @@ namespace mst_boredom_remover
             
             engine = new Engine(width, height);
             // Create initial players
-            engine.AddPlayer("Frodo", 0);
-            engine.AddPlayer("Sauron", 1);
+            engine.AddPlayer("Frodo", teamIndex: 0);
+            engine.AddPlayer("Sauron", teamIndex: 1);
             engine.ai.me = engine.players[1];
 
             graphics.PreferredBackBufferWidth = 1280;
