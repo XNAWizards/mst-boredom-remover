@@ -145,12 +145,11 @@ namespace mst_boredom_remover
             Position endTile = new Position((int)Math.Ceiling(endPosition.X), (int)Math.Ceiling(endPosition.Y));
 
             // search only the grid. hopefully small n^2
-            Position tilePosition = new Position(0, 0);
-            for (tilePosition.y = startTile.y; tilePosition.y < endTile.y; ++tilePosition.y)
+            for (var y = startTile.y; y < endTile.y; ++y)
             {
-                for (tilePosition.x = startTile.x; tilePosition.x < endTile.x; ++tilePosition.x)
+                for (var x = startTile.x; x < endTile.x; ++x)
                 {
-                    Unit unit = engine.GetUnitAt(tilePosition);
+                    Unit unit = engine.GetUnitAt(x, y);
                     if (unit != null && unit.owner.Equals(owner))
                     {
                         unit.selected = true;

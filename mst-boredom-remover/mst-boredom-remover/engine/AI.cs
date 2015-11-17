@@ -58,7 +58,7 @@ namespace mst_boredom_remover.engine
                 int distance = unitPosition.Distance(closestGold);
                 foreach (Position p in goldTiles)
                 {
-                    if (engine.unitGrid[p.x, p.y] == null) //no one is on the tile
+                    if (engine.GetUnitAt(p) == null) //no one is on the tile
                     {
                         if (unitPosition.Distance(p) < distance)
                         {
