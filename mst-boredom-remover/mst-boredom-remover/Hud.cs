@@ -10,7 +10,7 @@ namespace mst_boredom_remover
     class Hud : UiObject
     {
         readonly Engine engine;
-
+        Player currentPlayer;
         Texture2D boxSelect;
         List<Unit> selectedUnits;
         KeyboardState k;
@@ -32,6 +32,7 @@ namespace mst_boredom_remover
             this.map = map;
             this.boxSelect = boxSelect;
             this.HPbar = HPbar;
+            this.currentPlayer = engine.players[0];
 
             selectedUnits = new List<Unit>();
             startRect = new Vector2();
@@ -162,7 +163,10 @@ namespace mst_boredom_remover
                     }
                     if (clickedUnit == unit) // Produce units
                     {
-                        engine.OrderProduce(unit, engine.unitTypes[1]);
+                        if (unit.CanProduce())
+                        {
+                            engine.OrderProduce(unit, engine.unitTypes[1]);
+                        }
                         break;
                     }
                     else if (clickedUnit != null) //Clicked a different unit TODO:make it so you don't attack your buddies
@@ -171,7 +175,10 @@ namespace mst_boredom_remover
                         {
                             continue;
                         }
-                        engine.OrderAttack(unit, clickedUnit);
+                        if (unit.CanAttack())
+                        {
+                            engine.OrderAttack(unit, clickedUnit);
+                        }
                     }
                     else // Move units or gather
                     {
@@ -179,6 +186,7 @@ namespace mst_boredom_remover
                         if (resource != TileType.ResourceType.None)
                         {
                             engine.OrderGather(unit, enumerator.Current);
+                            enumerator.MoveNext();
                             continue;
                         }
 
@@ -306,7 +314,7 @@ namespace mst_boredom_remover
                 bounds.Y = 0;
             }
 
-            return map.Select(bounds);
+            return map.Select(bounds, currentPlayer);
         }
 
         public override void ChangeFont(SpriteFont f)
@@ -348,6 +356,14 @@ namespace mst_boredom_remover
             m = Mouse.GetState();
             k = Keyboard.GetState();
 
+            if (k.IsKeyDown(Keys.NumPad1))
+            {
+                currentPlayer = engine.players[0];
+            }
+            else if (k.IsKeyDown(Keys.NumPad2))
+            {
+                currentPlayer = engine.players[1];
+            }
             if (m.RightButton == ButtonState.Pressed && m2.RightButton == ButtonState.Released)
             {
 

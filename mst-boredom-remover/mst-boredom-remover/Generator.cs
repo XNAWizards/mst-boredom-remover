@@ -375,9 +375,9 @@ namespace mst_boredom_remover
 				}
 			}
             //Adding Resources.
-            for (int j = 0; j < height; j++)
+            for (int i = 0; i < height; i++) // y
             {
-                for (int i = 0; i < width; i++)
+                for (int j = 0; j < width; j++) // x
                 {
                     if (field[j, i] == 'M')
                     {

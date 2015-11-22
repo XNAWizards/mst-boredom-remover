@@ -10,21 +10,24 @@ namespace mst_boredom_remover.engine
         // In C# int's are always 32-bits, if we assume 60 ticks a second we should be able to handle
         //  a game that lasts a full year long without overflowing. =D
         public int currentTick;
-        public Dictionary<int, List<Unit>> futureUpdates;
+        public readonly Dictionary<int, List<Unit>> futureUpdates;
 
         // Map stuff
-        public EngineMap map;
+        public readonly EngineMap map;
         
         // Game types
-        public List<UnitType> unitTypes;
-        public List<TileType> tileTypes;
+        public readonly List<UnitType> unitTypes;
+        public readonly List<TileType> tileTypes;
 
         // Game objects
-        public List<Player> players;
-        public List<Unit> units;
-        public Unit[,] unitGrid;
-        
+        public readonly List<Player> players;
+        public readonly List<Unit> units;
+
+        public AI ai;
+
         private int idCounter;
+        private readonly Unit[,] unitGrid;
+        private readonly Dictionary<Player, Quadtree> unitQuadtrees;
 
         public Engine(int mapWidth, int mapHeight)
         {
@@ -36,9 +39,15 @@ namespace mst_boredom_remover.engine
             players = new List<Player>();
             units = new List<Unit>();
             unitGrid = new Unit[map.width, map.height];
+            unitQuadtrees = new Dictionary<Player, Quadtree>();
+
             idCounter = 0;
 
             map.Initialize();
+            List<Position> goldTiles = new List<Position>();
+            List<Position> ironTiles = new List<Position>();
+            List<Position> manaTiles = new List<Position>();
+            ai = new AI(this, null, goldTiles, ironTiles, manaTiles);
         }
 
         public Unit GetUnitAt(Position position)
@@ -46,18 +55,16 @@ namespace mst_boredom_remover.engine
             return map.Inside(position) ? unitGrid[position.x, position.y] : null;
         }
 
-        public void SetUnitAt(Position position, Unit unit)
+        public Unit GetUnitAt(int x, int y)
         {
-            if (map.Inside(position))
-            {
-                unitGrid[position.x, position.y] = unit;
-            }
+            return map.Inside(x, y) ? unitGrid[x, y] : null;
         }
 
         public Player AddPlayer(string name, int teamIndex=0)
         {
             Player newPlayer = new Player(GetNextId(), name, teamIndex);
             players.Add(newPlayer);
+            unitQuadtrees[newPlayer] = new Quadtree(map.width, map.height);
             return newPlayer;
         }
 
@@ -67,7 +74,8 @@ namespace mst_boredom_remover.engine
 
             var newUnit = new Unit(GetNextId(), this, unitType, position, owner);
             units.Add(newUnit);
-            SetUnitAt(newUnit.position, newUnit);
+            unitQuadtrees[owner].AddUnit(newUnit);
+            CacheSetUnitAt(newUnit);
             return newUnit;
         }
 
@@ -98,8 +106,20 @@ namespace mst_boredom_remover.engine
 
                 // We are done with all the updates for this tick
                 futureUpdates.Remove(currentTick);
-            }
 
+                foreach (Unit unit in units.Where(unit => unit.orders.Count == 0))
+                {
+                    Unit nearestEnemy = FindNearestEnemy(unit, 20);
+                    if (nearestEnemy != null)
+                    {
+                        OrderAttack(unit, nearestEnemy);
+                    }
+                }
+            }
+            if ( currentTick%100 == 0 )
+            {
+                ai.makeMoves(1);
+            }
             currentTick += 1;
         }
 
@@ -126,25 +146,6 @@ namespace mst_boredom_remover.engine
             if( futureUpdates[unit.nextMove].Contains(unit))
             {
                 futureUpdates[unit.nextMove].Remove(unit);
-            }
-        }
-        
-        // This function should not have any Unit-specific logic
-        //  Therefore this should only be called when the Unit KNOWS that it can move to a location
-        public void MoveUnit(Unit unit, Position targetPosition)
-        {
-            var blockingUnit = GetUnitAt(targetPosition);
-            if (blockingUnit != null)
-            {
-                SwapUnits(unit, blockingUnit);
-            }
-            else
-            {
-                // Update cache
-                SetUnitAt(unit.position, null);
-                SetUnitAt(targetPosition, unit);
-                // Change units position
-                unit.position = targetPosition;
             }
         }
 
@@ -183,11 +184,65 @@ namespace mst_boredom_remover.engine
             if (target.health<=0) //target dead
             {
                 RemoveUpdate(target);
-                SetUnitAt(target.position, null);
+                CacheRemoveUnitAt(target.position);
                 units.Remove(target);
+                unitQuadtrees[target.owner].RemoveUnit(target);
                 target.status = Unit.Status.Dead;
             }
+        }
 
+        public Unit FindNearestEnemy(Unit unit, int maxDistance)
+        {
+            Unit nearestEnemy = null;
+            int nearestDistance = int.MaxValue;
+            foreach (var player in players)
+            {
+                if (player.team != unit.owner.team)
+                {
+                    Unit nearUnit = unitQuadtrees[player].NearestUnitTo(unit, maxDistance);
+                    if (nearUnit != null)
+                    {
+                        int distance = nearUnit.position.Distance(unit.position);
+                        if (nearestEnemy == null || distance < nearestDistance)
+                        {
+                            nearestEnemy = nearUnit;
+                            nearestDistance = distance;
+                        }
+                    }
+                }
+            }
+            return nearestEnemy;
+        }
+
+        // Kinda private methods
+        
+        public void MoveUnit(Unit unit, Position targetPosition)
+        {
+            Debug.Assert(targetPosition.Distance(unit.position) == 1);
+            Debug.Assert(unitGrid[targetPosition.x, targetPosition.y] == null);
+            
+            CacheRemoveUnitAt(unit.position);
+            unit.position = targetPosition;
+            CacheSetUnitAt(unit);
+        }
+
+        public void SwapUnits(Unit a, Unit b)
+        {
+            Debug.Assert(a.position.Distance(b.position) == 1);
+
+            var targetPosition = b.position;
+            // Remove a
+            CacheRemoveUnitAt(a.position);
+            // Tell b to move into a's spot
+            Debug.Assert(b.orders.Count == 0, "Swap: b still had orders left.");
+            b.orders.Add(Order.CreateMoveOrder(a.position));
+            b.Update(); // This will force the unit to wait the appropriate amount of time before moving back
+            Debug.Assert(b.position.Equals(a.position), "Swap: b did not move back to original position.");
+            // Add a to b's old position
+            a.position = targetPosition;
+            CacheSetUnitAt(a);
+            // Give an order to b to go back to his original position
+            OrderMove(b, targetPosition);
         }
 
         // Private methods
@@ -196,22 +251,23 @@ namespace mst_boredom_remover.engine
         {
             return ++idCounter;
         }
-
-        private void SwapUnits(Unit a, Unit b)
+        
+        private void CacheSetUnitAt(Unit unit)
         {
-            var targetPosition = b.position;
-            // Remove a
-            SetUnitAt(a.position, null);
-            // Tell b to move into a's spot
-            Debug.Assert(b.orders.Count == 0, "Swap: b still had orders left.");
-            b.orders.Add(Order.CreateMoveOrder(a.position));
-            b.Update(); // This will force the unit to wait the appropriate amount of time before moving back
-            Debug.Assert(b.position.Equals(a.position), "Swap: b did not move back to original position.");
-            // Add a to b's old position
-            a.position = targetPosition;
-            SetUnitAt(a.position, a);
-            // Give an order to b to go back to his original position
-            OrderMove(b, targetPosition);
+            Debug.Assert(unit != null);
+            if (map.Inside(unit.position))
+            {
+                unitGrid[unit.position.x, unit.position.y] = unit;
+                unitQuadtrees[unit.owner].UpdateUnit(unit);
+            }
+        }
+
+        private void CacheRemoveUnitAt(Position position)
+        {
+            if (map.Inside(position))
+            {
+                unitGrid[position.x, position.y] = null;
+            }
         }
     }
 }

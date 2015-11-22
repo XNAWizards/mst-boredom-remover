@@ -17,6 +17,8 @@ namespace mst_boredom_remover.engine
             Dreadlands,
             Desert,
             Tundra,
+            Shore,
+            River,
             Gold,
             Iron,
             ManaCrystals
@@ -33,9 +35,11 @@ namespace mst_boredom_remover.engine
         };
         public readonly ResourceType resourceType;
         public readonly Texture2D texture;
+        public readonly float rotation;
 
         public TileType(string name="", Texture2D texture = null, double movementCost=1.0, Biome biome=Biome.Plain,
-            List<UnitType.MovementType> allowedMovementTypes=null, ResourceType resourceType=ResourceType.None)
+            List<UnitType.MovementType> allowedMovementTypes=null, ResourceType resourceType=ResourceType.None,
+            float rotation=0.0f)
         {
             this.name = name;
             this.texture = texture;
@@ -43,6 +47,7 @@ namespace mst_boredom_remover.engine
             this.biome = biome;
             this.allowedMovementTypes = allowedMovementTypes ?? new List<UnitType.MovementType>();
             this.resourceType = resourceType;
+            this.rotation = rotation; // In radians clockwise
         }
     }
 }
