@@ -42,7 +42,7 @@ namespace mst_boredom_remover
             
 			//start terrain set
             int p = 0;
-            while (p < 750){
+            while (p < 200){
                 //check for NO or LOW biome values.
               if (tundraAmount == 0) { }
               else
@@ -202,6 +202,30 @@ namespace mst_boredom_remover
                     p++;
                 }
             }
+			
+			for(int i= p; i < 750; i++)
+            {
+                bio[i].x = r.Next(10, rx);
+                bio[i].y = r.Next(10, ry);
+           
+    
+                char nearest = '~';
+                int dist = 5000;
+                for (int z = 0; z < p; z++)
+                {
+                    int xdiff = bio[z].x - bio[i].x;
+                    int ydiff = bio[z].y - bio[i].y;
+                    int cdist = xdiff * xdiff + ydiff * ydiff;
+                    if (cdist < dist)
+                    {
+                        nearest = bio[z].type;
+                        dist = cdist;
+                    }
+
+                }
+                bio[i].type = nearest;
+            }
+			
 			
             //Sets Border To Ocean Biome
             for (int k = 0; k < width; k++)
