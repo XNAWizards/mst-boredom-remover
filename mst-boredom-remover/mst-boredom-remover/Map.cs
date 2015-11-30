@@ -31,6 +31,15 @@ namespace mst_boredom_remover
         public readonly int width;
         public readonly int height;
 
+        public int numberOfOceans;
+        public int numberOfForests;
+        public int numberOfDreadlands;
+        public int numberOfDeserts;
+        public int numberOfPlains;
+        public int numberOfTundras;
+        public int numberOfMountains;
+        public int numberOfResourceNodes;
+
         private readonly GraphicsDevice graphicsDevice;
         private readonly Engine engine;
         private readonly int xCaches;
@@ -53,16 +62,27 @@ namespace mst_boredom_remover
 
         private Vector2 mouseTile;
 
-        public Map(Vector2 startingPosition, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice)
+        public Map(Vector2 startingPosition, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice,
+            int numberOfDreadlands, int numberOfDeserts, int numberOfPlains, int numberOfMountains, int numberOfTundras,
+            int numberOfForests, int numberOfOceans, int numberOfResourceNodes)
         {
             tileIndex = startingPosition;
             this.width = width;
             this.height = height;
             this.engine = engine;
             this.graphicsDevice = graphicsDevice;
-            
+
+            this.numberOfDreadlands = numberOfDreadlands;
+            this.numberOfDeserts = numberOfDeserts;
+            this.numberOfPlains = numberOfPlains;
+            this.numberOfMountains = numberOfMountains;
+            this.numberOfTundras = numberOfTundras;
+            this.numberOfForests = numberOfForests;
+            this.numberOfOceans = numberOfOceans;
+            this.numberOfResourceNodes = numberOfResourceNodes;
+
             // Generate map
-            charmap = Generator.generate(width, height);
+            charmap = Generator.generate(width, height, numberOfDreadlands, numberOfDeserts, numberOfPlains, numberOfMountains, numberOfTundras, numberOfForests, numberOfOceans, numberOfResourceNodes);
             engine.map.UpdateTilesFromCharmap(charmap);
             
             // Generate map cache
@@ -315,7 +335,7 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.G) && disableMapRegeneration == false)
             {
                 // generate a new map, reconstruct cache
-                charmap = Generator.generate(width, height);
+                charmap = Generator.generate(width, height, numberOfDreadlands, numberOfDeserts, numberOfPlains, numberOfMountains, numberOfTundras, numberOfForests, numberOfOceans, numberOfResourceNodes);
                 engine.map.UpdateTilesFromCharmap(charmap);
                 disableMapRegeneration = true;
                 buildMapCache = true;

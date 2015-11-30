@@ -168,8 +168,29 @@ namespace mst_boredom_remover
             
             TextInput testTextInput = new TextInput(textInBackground, textInBackgroundActive, new Vector2(100, 50), font);
             //testTextInput.newInput += new EventHandler(testTextInput_newInput);
+
+            Texture2D Biomeback = Content.Load<Texture2D>("BiomeB");
+            Texture2D BiomeBackActive = Content.Load<Texture2D>("BiomeBA");
+
+            TextInput numOcean = new TextInput(Biomeback, BiomeBackActive, new Vector2(700, 100), font);
+            TextInput numPlain = new TextInput(Biomeback, BiomeBackActive, new Vector2(850, 100), font);
+            TextInput numForest = new TextInput(Biomeback, BiomeBackActive, new Vector2(1000, 100), font);
+            TextInput numMountain = new TextInput(Biomeback, BiomeBackActive, new Vector2(700, 200), font);
+            TextInput numDesert = new TextInput(Biomeback, BiomeBackActive, new Vector2(850, 200), font);
+            TextInput numTundra = new TextInput(Biomeback, BiomeBackActive, new Vector2(1000, 200), font);
+            TextInput numDreadland = new TextInput(Biomeback, BiomeBackActive, new Vector2(775, 300), font);
+            TextInput numResource = new TextInput(Biomeback, BiomeBackActive, new Vector2(925, 300), font);
+            //testTextInput.newInput += new EventHandler(testTextInput_newInput);                                  
+            numOcean.SetText("2");
+            numPlain.SetText("2");
+            numForest.SetText("2");
+            numMountain.SetText("2");
+            numDesert.SetText("2");
+            numTundra.SetText("2");
+            numDreadland.SetText("2");
+            numResource.SetText("500");
             #endregion
-            
+
             #region Menus
             Texture2D mainBackground = Content.Load<Texture2D>("MainBackground");
             Texture2D hudBackground = Content.Load<Texture2D>("Hud");
@@ -221,7 +242,8 @@ namespace mst_boredom_remover
             engine.tileTypes.Add(new TileType("River West and North", texture: riverBendTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 0.5f));
             engine.tileTypes.Add(new TileType("River East and North", texture: riverBendTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 1.0f));
             
-            Map m = new Map(Vector2.Zero, width, height, ref engine, GraphicsDevice);
+            //Map m = new Map(Vector2.Zero, width, height, ref engine, GraphicsDevice);
+            Map m = new Map(Vector2.Zero, width, height, ref engine, GraphicsDevice, numDreadland.GetTextAsInt(), numDesert.GetTextAsInt(), numPlain.GetTextAsInt(), numMountain.GetTextAsInt(), numTundra.GetTextAsInt(), numForest.GetTextAsInt(), numOcean.GetTextAsInt(), numResource.GetTextAsInt());
             List<UiObject> gameControls = new List<UiObject>();
 
             Texture2D gameBackground = Content.Load<Texture2D>("gameBackground");
@@ -252,6 +274,14 @@ namespace mst_boredom_remover
             newGameControls.Add(testTextInput);
             newGameControls.Add(goButton);
             newGameControls.Add(ngbackButton);
+            newGameControls.Add(numOcean);
+            newGameControls.Add(numForest);
+            newGameControls.Add(numPlain);
+            newGameControls.Add(numMountain);
+            newGameControls.Add(numDesert);
+            newGameControls.Add(numTundra);
+            newGameControls.Add(numDreadland);
+            newGameControls.Add(numResource);
 
             Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
             Texture2D swordUnitAttackTexture = Content.Load<Texture2D>("Units\\Kbaseatk");
