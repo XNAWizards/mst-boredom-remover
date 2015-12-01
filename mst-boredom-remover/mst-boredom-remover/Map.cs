@@ -30,18 +30,17 @@ namespace mst_boredom_remover
 
         public readonly int width;
         public readonly int height;
-		
-		public int typeO;
-        public int typeF;
-        public int typeDrd;
-        public int typeDst;
-        public int typeP;
-        public int typeT;
-        public int typeM;
-        public int resource;
+
+        public int numberOfOceans;
+        public int numberOfForests;
+        public int numberOfDreadlands;
+        public int numberOfDeserts;
+        public int numberOfPlains;
+        public int numberOfTundras;
+        public int numberOfMountains;
+        public int numberOfResourceNodes;
 
         private readonly GraphicsDevice graphicsDevice;
-        private readonly List<Texture2D> tileTextures;
         private readonly Engine engine;
         private readonly int xCaches;
         private readonly int yCaches;
@@ -63,25 +62,27 @@ namespace mst_boredom_remover
 
         private Vector2 mouseTile;
 
-        public Map(Vector2 startingPosition, List<Texture2D> tileTextures, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice, int typeDrd, int typeDst, int typeP, int typeM, int typeT, int typeF, int typeO, int resource)
+        public Map(Vector2 startingPosition, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice,
+            int numberOfDreadlands, int numberOfDeserts, int numberOfPlains, int numberOfMountains, int numberOfTundras,
+            int numberOfForests, int numberOfOceans, int numberOfResourceNodes)
         {
             tileIndex = startingPosition;
-            this.tileTextures = tileTextures;
             this.width = width;
             this.height = height;
             this.engine = engine;
             this.graphicsDevice = graphicsDevice;
-			this.typeDrd = typeDrd;
-            this.typeDst = typeDst;
-            this.typeP = typeP;
-            this.typeM = typeM;
-            this.typeT = typeT;
-            this.typeF = typeF;
-            this.typeO = typeO;
-            this.resource = resource;
-            
+
+            this.numberOfDreadlands = numberOfDreadlands;
+            this.numberOfDeserts = numberOfDeserts;
+            this.numberOfPlains = numberOfPlains;
+            this.numberOfMountains = numberOfMountains;
+            this.numberOfTundras = numberOfTundras;
+            this.numberOfForests = numberOfForests;
+            this.numberOfOceans = numberOfOceans;
+            this.numberOfResourceNodes = numberOfResourceNodes;
+
             // Generate map
-            charmap = Generator.generate(width, height, typeDrd, typeDst, typeP, typeM, typeT, typeF, typeO, resource);
+            charmap = Generator.generate(width, height, numberOfDreadlands, numberOfDeserts, numberOfPlains, numberOfMountains, numberOfTundras, numberOfForests, numberOfOceans, numberOfResourceNodes);
             engine.map.UpdateTilesFromCharmap(charmap);
             
             // Generate map cache
@@ -154,7 +155,7 @@ namespace mst_boredom_remover
         }
 
         // returns a list of units in the bounds provided.
-        public List<Unit> Select(Rectangle bounds)
+        public List<Unit> Select(Rectangle bounds, Player owner)
         {
             List<Unit> selectedUnits = new List<Unit>();
 
@@ -164,13 +165,12 @@ namespace mst_boredom_remover
             Position endTile = new Position((int)Math.Ceiling(endPosition.X), (int)Math.Ceiling(endPosition.Y));
 
             // search only the grid. hopefully small n^2
-            Position tilePosition = new Position(0, 0);
-            for (tilePosition.y = startTile.y; tilePosition.y < endTile.y; ++tilePosition.y)
+            for (var y = startTile.y; y < endTile.y; ++y)
             {
-                for (tilePosition.x = startTile.x; tilePosition.x < endTile.x; ++tilePosition.x)
+                for (var x = startTile.x; x < endTile.x; ++x)
                 {
-                    Unit unit = engine.GetUnitAt(tilePosition);
-                    if (unit != null)
+                    Unit unit = engine.GetUnitAt(x, y);
+                    if (unit != null && unit.owner.Equals(owner))
                     {
                         unit.selected = true;
                         selectedUnits.Add(unit);
@@ -194,6 +194,7 @@ namespace mst_boredom_remover
             try
             {
                 tileName = engine.map.tiles[(int)mouseTile.X, (int)mouseTile.Y].tileType.name;
+                tileName += " " + charmap[(int)mouseTile.X, (int)mouseTile.Y];
             }
             catch (IndexOutOfRangeException)
             {
@@ -221,6 +222,10 @@ namespace mst_boredom_remover
 
         private void ForceBounds()
         {
+            // Align viewport to integers
+            tileIndex.X = (float) Math.Round(tileIndex.X);
+            tileIndex.Y = (float) Math.Round(tileIndex.Y);
+
             // min bounds
             if (tileIndex.X < 0)
             {
@@ -256,6 +261,7 @@ namespace mst_boredom_remover
                 ForceBounds();
             }
         }
+
         private void ZoomOut()
         {
             if (pxMod > -16)
@@ -276,6 +282,7 @@ namespace mst_boredom_remover
         {
             int startX = numX * 214;
             int startY = numY * 214;
+            int tileWidth = tilePxSize + pxMod;
             sb.End();
             graphicsDevice.SetRenderTarget(cache);
             sb.Begin();
@@ -284,7 +291,17 @@ namespace mst_boredom_remover
             {
                 for (int y = startY; y < startY + 214 && y < height; y++)
                 {
-                    sb.Draw(tileTextures[CharToInt(charmap[x, y])], new Rectangle((x - (numX * 214)) * (tilePxSize + pxMod), (y - (numY * 214)) * (tilePxSize + pxMod), (tilePxSize + pxMod), (tilePxSize + pxMod)), Color.White);
+                    Rectangle bounds = new Rectangle((x - startX) * tileWidth, (y - startY) * tileWidth, tileWidth, tileWidth);
+                    
+                    TileType tileType = engine.map.tiles[x, y].tileType;
+
+                    // Translate the image to account for rotating around the top-left point
+                    Vector2 origin = new Vector2(bounds.Width / 2.0f, bounds.Height / 2.0f);
+                    Vector2 image = Vector2.Transform(origin, Matrix.CreateRotationZ(tileType.rotation));
+                    Vector2 deltaVector = origin - image;
+                    bounds.Offset((int)Math.Round(deltaVector.X), (int)Math.Round(deltaVector.Y));
+
+                    sb.Draw(tileType.texture, bounds, null, Color.White, tileType.rotation, Vector2.Zero, SpriteEffects.None, 0);
                 }
              }
                 
@@ -318,7 +335,7 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.G) && disableMapRegeneration == false)
             {
                 // generate a new map, reconstruct cache
-                charmap = Generator.generate(width, height, typeDrd, typeDst, typeP, typeM, typeT, typeF, typeO, resource);
+                charmap = Generator.generate(width, height, numberOfDreadlands, numberOfDeserts, numberOfPlains, numberOfMountains, numberOfTundras, numberOfForests, numberOfOceans, numberOfResourceNodes);
                 engine.map.UpdateTilesFromCharmap(charmap);
                 disableMapRegeneration = true;
                 buildMapCache = true;
@@ -437,6 +454,9 @@ namespace mst_boredom_remover
                     case Unit.Status.Attacking:
                         currentTextures = unit.type.attackTextures;
                         break;
+                    default:
+                        currentTextures = unit.type.idleTextures;
+                        break;
                 }
 
                 // calculate screen space based on map coordinates
@@ -462,84 +482,6 @@ namespace mst_boredom_remover
                 DebugDraw(sb);
             }
             //base.Draw(sb);
-        }
-
-        private int CharToInt(char c)
-        {
-            switch (c)
-            {
-                case '+':
-                    return 1;
-                case 'M':
-                    return 2;
-                case 'D':
-                    return 3;
-                case '~':
-                    return 4;
-                case '%':
-                    return 5;
-                case 'T':
-                    return 6;
-                case 'F':
-                    return 7;
-				case '@': //coast on the north
-                    return 8;
-				case 'Q': //coast on the east
-                    return 9;
-				case '&': // coast on the south
-                    return 10;
-				case '#': // coast on the west
-                    return 11;
-				case '^': //river running north and south
-                    return 12;
-				case ',': //river running west and east
-                    return 13;
-				case '<': // river mouth at east and south
-                    return 14;
-				case '>': //river mouth at west and south
-                    return 15;
-				case ']': //river mouth at west and north
-                    return 16;
-				case '[': //river mouth at north and east
-                    return 17;
-				case '$': //coast line land on northeast
-                    return 18;
-				case ')'://coast line land on southeast
-                    return 19;
-				case '('://coast line land on southwest
-                    return 20;
-				case '!'://coast line land on northwest
-                    return 21;
-				case '/'://triple river north east west
-                    return 22;
-				case '|'://triple river east south north
-                    return 23;
-				case '?'://triple river south east west
-                    return 24;
-				case '_'://triple river west north south
-                    return 25;
-				case 'C'://dot of land to the northeast
-					return 26;
-				case 'c'://dot of land to the northwest
-					return 27;
-				case 'N'://dot of land to the southeast
-					return 28;
-				case 'n'://dot of land to the southwest
-					return 29;
-				case 'B'://triple coast, bay mouth north
-					return 30;
-				case 'b'://triple coast, bay mouth east
-					return 31;
-				case 'V'://triple coast, bay mouth south
-					return 32;
-				case 'v'://triple coast, bay mouth west
-					return 33;
-				case 'X': // 4 way river
-					return 34;
-                default:
-                    // 0 is not a tile, more efficient than try-catch index out of bounds
-                    return 0;
-            }
         }
     }
 }

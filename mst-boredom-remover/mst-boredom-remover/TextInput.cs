@@ -20,19 +20,7 @@ namespace mst_boredom_remover
         private KeyboardState previousKeys;
         private Rectangle bounds;
 
-        //set and get function for text input
-		public void setText(string value)
-        {
-            currentText = value;
-        }
-
-        public int getText()
-        {
-            int stringint = Int32.Parse(currentText);
-            return stringint;
-        }
-		
-		//public event EventHandler newInput;
+        //public event EventHandler newInput;
 
         public TextInput(Texture2D texture, Texture2D activeTexture, Vector2 position, SpriteFont font)
             : base()
@@ -45,7 +33,16 @@ namespace mst_boredom_remover
             bounds = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
         }
 
-        
+        //set and get function for text input
+		public void SetText(string value)
+        {
+            currentText = value;
+        }
+
+        public int GetTextAsInt()
+        {
+            return Int32.Parse(currentText);
+        }
 
         public override void ToggleDebugMode()
         {
@@ -139,7 +136,7 @@ namespace mst_boredom_remover
                     if (_font.MeasureString((currentText + "W")).X < texture.Width - 10)
                     {
                         // verify string contents
-                        if (c != ' ' && (c >= 65 && c <= 90) || (c > 96 && c <= 122) || (c>=48 && c<=57))
+                        if (c != ' ' && (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))
                         {
                             currentText += c;
                         }

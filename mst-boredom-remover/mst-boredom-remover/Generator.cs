@@ -17,15 +17,15 @@ namespace mst_boredom_remover
         {
             // chance out of 1000
             int resourceSparce = resource;
-			int tundraAmount = typeT;
+            int tundraAmount = typeT;
             int forestAmount = typeF;
             int mountainAmount = typeM;
             int plainAmount = typeP;
             int dreadlandAmount = typeDrd;
             int desertAmount = typeDst;
             int oceanAmount = typeO;
-            int RX = width - 10;
-            int RY = height - 10;
+            int rx = width - 10;
+            int ry = height - 10;
             const int MAX_CHANCE = 1000;
             const int GOLD_CHANCE = 5;
             const int IRON_CHANCE = 2;
@@ -39,176 +39,177 @@ namespace mst_boredom_remover
             {
                 bio[i] = new BiomeInfo();
             }
-            
-			//start terrain set
-            int p = 0;
-            while (p < 200){
-                //check for NO or LOW biome values.
-              if (tundraAmount == 0) { }
-              else
-              {
-                    bio[p].type = 'T';//Tundra
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
-                    p++;
-                }
-              if (forestAmount == 0) { }
-              else
-              {
-                    bio[p].type = 'F';//Forest
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
-                    p++;
-                }
-              if (mountainAmount == 0) { }
-              else
-              {
-                    bio[p].type = 'M';//Mountain
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
-                    p++;
-                }
-              if (plainAmount == 0) { }
-              else
-              {
-                    bio[p].type = '+';//Plain
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
-                    p++;
-                }
-              if (dreadlandAmount == 0) { }
-              else
-              {
-                    bio[p].type = '%';//Dreadland
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
-                    p++;
-                }
-              if (desertAmount == 0) { }
-              else
-              {
-                    bio[p].type = 'D';//Desert
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
-                    p++;
-                }
-              if (oceanAmount == 0) { }
-              else
-              {
-                    bio[p].type = '~'; //Ocean
-                    bio[p].x = r.Next(0, width);
-                    bio[p].y = r.Next(0, height);
-                    p++;
-              }
 
-              //checks for DEFAULT/NORMAL biome value
-              if (tundraAmount >= 2)
-              {
+            //start terrain set
+            int p = 0;
+            while (p < 200)
+            {
+                //check for NO or LOW biome values.
+                if (tundraAmount == 0) { }
+                else
+                {
                     bio[p].type = 'T';//Tundra
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (forestAmount >= 2)
-              {
+                if (forestAmount == 0) { }
+                else
+                {
                     bio[p].type = 'F';//Forest
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (mountainAmount >= 2)
-              {
+                if (mountainAmount == 0) { }
+                else
+                {
                     bio[p].type = 'M';//Mountain
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (plainAmount >= 2)
-              {
+                if (plainAmount == 0) { }
+                else
+                {
                     bio[p].type = '+';//Plain
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (dreadlandAmount >= 2)
-              {
+                if (dreadlandAmount == 0) { }
+                else
+                {
                     bio[p].type = '%';//Dreadland
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (desertAmount >= 2)
-              {
+                if (desertAmount == 0) { }
+                else
+                {
                     bio[p].type = 'D';//Desert
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (oceanAmount >= 2)
-              {
+                if (oceanAmount == 0) { }
+                else
+                {
                     bio[p].type = '~'; //Ocean
                     bio[p].x = r.Next(0, width);
                     bio[p].y = r.Next(0, height);
                     p++;
                 }
-              //checks for HIGH biome value
-              if (tundraAmount >= 3)
-              {
+
+                //checks for DEFAULT/NORMAL biome value
+                if (tundraAmount >= 2)
+                {
                     bio[p].type = 'T';//Tundra
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (forestAmount >= 3)
-              {
+                if (forestAmount >= 2)
+                {
                     bio[p].type = 'F';//Forest
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (mountainAmount >= 3)
-              {
+                if (mountainAmount >= 2)
+                {
                     bio[p].type = 'M';//Mountain
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (plainAmount >= 3)
-              {
+                if (plainAmount >= 2)
+                {
                     bio[p].type = '+';//Plain
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (dreadlandAmount >= 3)
-              {
+                if (dreadlandAmount >= 2)
+                {
                     bio[p].type = '%';//Dreadland
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (desertAmount >= 3)
-              {
+                if (desertAmount >= 2)
+                {
                     bio[p].type = 'D';//Desert
-                    bio[p].x = r.Next(10, RX);
-                    bio[p].y = r.Next(10, RY);
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
                     p++;
                 }
-              if (oceanAmount >= 3)
-              {
+                if (oceanAmount >= 2)
+                {
+                    bio[p].type = '~'; //Ocean
+                    bio[p].x = r.Next(0, width);
+                    bio[p].y = r.Next(0, height);
+                    p++;
+                }
+                //checks for HIGH biome value
+                if (tundraAmount >= 3)
+                {
+                    bio[p].type = 'T';//Tundra
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
+                    p++;
+                }
+                if (forestAmount >= 3)
+                {
+                    bio[p].type = 'F';//Forest
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
+                    p++;
+                }
+                if (mountainAmount >= 3)
+                {
+                    bio[p].type = 'M';//Mountain
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
+                    p++;
+                }
+                if (plainAmount >= 3)
+                {
+                    bio[p].type = '+';//Plain
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
+                    p++;
+                }
+                if (dreadlandAmount >= 3)
+                {
+                    bio[p].type = '%';//Dreadland
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
+                    p++;
+                }
+                if (desertAmount >= 3)
+                {
+                    bio[p].type = 'D';//Desert
+                    bio[p].x = r.Next(10, rx);
+                    bio[p].y = r.Next(10, ry);
+                    p++;
+                }
+                if (oceanAmount >= 3)
+                {
                     bio[p].type = '~'; //Ocean
                     bio[p].x = r.Next(0, width);
                     bio[p].y = r.Next(0, height);
                     p++;
                 }
             }
-			
-			for(int i= p; i < 750; i++)
+
+            for (int i = p; i < 750; i++)
             {
                 bio[i].x = r.Next(10, rx);
                 bio[i].y = r.Next(10, ry);
-           
-    
+
+
                 char nearest = '~';
                 int dist = 5000;
                 for (int z = 0; z < p; z++)
@@ -225,8 +226,8 @@ namespace mst_boredom_remover
                 }
                 bio[i].type = nearest;
             }
-			
-			
+
+
             //Sets Border To Ocean Biome
             for (int k = 0; k < width; k++)
             {//goes through and sets top and bottom rows to Ocean biome.
@@ -261,8 +262,8 @@ namespace mst_boredom_remover
                     int dist = 5000;
                     for (int z = 0; z < NumBio + Border; z++)
                     {
-                        int Xdiff = bio[z].x - j;
-                        int Ydiff = bio[z].y - i;
+                        int Xdiff = bio[z].x - i;
+                        int Ydiff = bio[z].y - j;
                         int Cdist = Xdiff * Xdiff + Ydiff * Ydiff;
                         if (Cdist < dist)
                         {
@@ -271,7 +272,7 @@ namespace mst_boredom_remover
                         }
 
                     }
-                    field[j, i] = nearest;
+                    field[i, j] = nearest;
                 }
             }
             for (int i = 0; i < height; i++)
@@ -284,96 +285,107 @@ namespace mst_boredom_remover
                 field[j, 0] = '~';          // top
                 field[j, height - 1] = '~';  // bottom
             }
-			
-			//River Algorithm
-			for(int j=0;j<height;j++){
-				for(int i=0;i<width;i++){
-					if(field[j, i]=='M')
-						elevation[j, i] = r.Next(40,90);
-					if(field[j, i]=='T')
-						elevation[j, i] = r.Next(10,40);
-					if(field[j, i]=='P')
-						elevation[j, i] = r.Next(5,35);
-					if(field[j, i]=='D')
-						elevation[j, i] = r.Next(10,35);
-					if(field[j, i]=='%')
-						elevation[j, i] = r.Next(0,20);
-					if(field[j, i]=='~')
-						elevation[j, i] = 0;
-					if(field[j, i]=='F')
-						elevation[j, i] = r.Next(20,60);
-				}
-			}
-			
-			for(int i=0;i<numRivers;i++){
-				int riveRX = r.Next(50,width - 50);
-				int riveRY = r.Next(50,height - 50);
-				if(elevation[riveRX,riveRY] < 25){
-					riveRX = r.Next(50,width - 50);
-					riveRY = r.Next(50,height - 50);
-				}
-				
-				int lastDir =5;
-				int Direction = r.Next(0, 4); //0=North, 1=East, 2=South 3=West
-				int riverLength = r.Next(0,6);
-				switch(riverLength){//0=medium, 1=long, 2=extensive, else small
-					case 0:
-						riverLength = r.Next(100,180);
-						break;
-					case 1:
-						riverLength = r.Next(200,350);
-						break;
-					case 2:
-						riverLength = r.Next(400,600);
-						break;
-					default:
-						riverLength = r.Next(30,70);
-						break;
-				}
-				
-				//make this random length
-				field[riveRX,riveRY] = '-';//Designed for '-' character, but use ocean biome for now.
-				for(int j=0;j<riverLength;j++){
-					int minHeight = 100;
-					if(lastDir != 2 &&elevation[riveRX-1,riveRY]<minHeight){
-						minHeight = elevation[riveRX-1,riveRY];
-						Direction=0;
-					}
-					if(lastDir != 3 &&elevation[riveRX,riveRY+1]<minHeight){
-						minHeight = elevation[riveRX,riveRY+1];
-						Direction=1;
-					}
-					if(lastDir != 0 &&elevation[riveRX+1,riveRY]<minHeight){
-						minHeight = elevation[riveRX+1,riveRY];
-						Direction=2;
-					}
-					if(lastDir != 1 &&elevation[riveRX,riveRY-1]<minHeight){
-						minHeight = elevation[riveRX,riveRY-1];
+
+            //River Algorithm
+            for (int j = 0; j < height; j++)
+            {
+                for (int i = 0; i < width; i++)
+                {
+                    if (field[i, j] == 'M')
+                        elevation[i, j] = r.Next(40, 90);
+                    if (field[i, j] == 'T')
+                        elevation[i, j] = r.Next(10, 40);
+                    if (field[i, j] == 'P')
+                        elevation[i, j] = r.Next(5, 35);
+                    if (field[i, j] == 'D')
+                        elevation[i, j] = r.Next(10, 35);
+                    if (field[i, j] == '%')
+                        elevation[i, j] = r.Next(0, 20);
+                    if (field[i, j] == '~')
+                        elevation[i, j] = 0;
+                    if (field[i, j] == 'F')
+                        elevation[i, j] = r.Next(20, 60);
+                }
+            }
+
+            for (int i = 0; i < numRivers; i++)
+            {
+                int riveRX = r.Next(50, width - 50);
+                int riveRY = r.Next(50, height - 50);
+                if (elevation[riveRX, riveRY] < 25)
+                {
+                    riveRX = r.Next(50, width - 50);
+                    riveRY = r.Next(50, height - 50);
+                }
+
+                int lastDir = 5;
+                int Direction = r.Next(0, 4); //0=North, 1=East, 2=South 3=West
+                int riverLength = r.Next(0, 6);
+                switch (riverLength)
+                {//0=medium, 1=long, 2=extensive, else small
+                    case 0:
+                        riverLength = r.Next(100, 180);
+                        break;
+                    case 1:
+                        riverLength = r.Next(200, 350);
+                        break;
+                    case 2:
+                        riverLength = r.Next(400, 600);
+                        break;
+                    default:
+                        riverLength = r.Next(30, 70);
+                        break;
+                }
+
+                //make this random length
+                field[riveRX, riveRY] = '-';//Designed for '-' character, but use ocean biome for now.
+                for (int j = 0; j < riverLength; j++)
+                {
+                    int minHeight = 100;
+                    if (lastDir != 2 && elevation[riveRX - 1, riveRY] < minHeight)
+                    {
+                        minHeight = elevation[riveRX - 1, riveRY];
+                        Direction = 0;
+                    }
+                    if (lastDir != 3 && elevation[riveRX, riveRY + 1] < minHeight)
+                    {
+                        minHeight = elevation[riveRX, riveRY + 1];
+                        Direction = 1;
+                    }
+                    if (lastDir != 0 && elevation[riveRX + 1, riveRY] < minHeight)
+                    {
+                        minHeight = elevation[riveRX + 1, riveRY];
+                        Direction = 2;
+                    }
+                    if (lastDir != 1 && elevation[riveRX, riveRY - 1] < minHeight)
+                    {
+                        minHeight = elevation[riveRX, riveRY - 1];
                         Direction = 3;
-					}
-					switch(Direction){
-						case 0:
-							riveRX-=1;
-							break;
-						case 1:
-							riveRY+=1;
-							break;
-						case 2:
-							riveRX+=1;
-							break;
-						case 3:
-							riveRY-=1;
-							break;
-						default:
-							break;
-					}
-					lastDir = Direction;
-					if(field[riveRX,riveRY] == '~')
-						break;
-					else
-						field[riveRX,riveRY] = '-';
-				}
-			}
+                    }
+                    switch (Direction)
+                    {
+                        case 0:
+                            riveRX -= 1;
+                            break;
+                        case 1:
+                            riveRY += 1;
+                            break;
+                        case 2:
+                            riveRX += 1;
+                            break;
+                        case 3:
+                            riveRY -= 1;
+                            break;
+                        default:
+                            break;
+                    }
+                    lastDir = Direction;
+                    if (field[riveRX, riveRY] == '~')
+                        break;
+                    else
+                        field[riveRX, riveRY] = '-';
+                }
+            }
             //Adding Resources.
             for (int i = 0; i < height; i++) // y
             {
@@ -394,147 +406,166 @@ namespace mst_boredom_remover
                         if (r.Next(0, MAX_CHANCE) <= MANA_CHANCE)
                             field[j, i] = '*';//magic crystal resource
                     }
-					else if(r.Next(0,resourceSparce)<=1){
-						if(field[j,i] != '~'){
-							int resourceType = r.Next(0, 3);
+                    else if (r.Next(0, resourceSparce) <= 1)
+                    {
+                        if (field[j, i] != '~')
+                        {
+                            int resourceType = r.Next(0, 3);
                             if (resourceType == 0)
                                 field[j, i] = 'L';
                             if (resourceType == 1)
                                 field[j, i] = 'G';
                             if (resourceType == 2)
                                 field[j, i] = '*';
-						}
-					}
+                        }
+                    }
 
                 }
             }
-			//Generates coastlines and gives rivers a direction.
-			//each direction of river/Ocean will be set to a different character.
-			for(int j=1;j<width-1;j++)
-			{
-				for(int i=1;i<height-1;i++)
-				{
-					//******Ocean Border*****//
-					if(field[j,i]=='~')
-					{
-						//Cardinal Directions of Coast
-						if(field[j-1,i]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i-1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i+1]== ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='@';//Coast tile with land on north.
-						}
-						if(field[j+1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='Q';//Coast tile with land on east.
-						}
-						if(field[j+1,i]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i-1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i+1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='&';//Coast tile with land on south.
-						}
-						if(field[j+1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='#';//Coast tile with land on west.
-						}
-						
-						//3 edged by land Ocean tile
-						if(field[j-1,i]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i-1] != ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i+1]!= ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='V';//Coast tile triple with bay mouth at north
-						}
-						if(field[j+1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i] != ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='v';//Coast tile triple with bay mouth at east
-						}
-						if(field[j+1,i]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i-1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i+1] != ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='B';//Coast tile triple with bay mouth at south
-						}
-						if(field[j+1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i] != ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='b';//Coast tile triple with bay mouth at west
-						}
-						
-						//smooth corner Ocean tile
-						if(field[j-1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i+1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i-1]== ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='$';//Smooth corner Coast tile with land on NE
-						}
-						if(field[j-1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i+1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i-1]== ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='!';//Smooth corner Coast tile with land on NW
-						}
-						if(field[j+1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i-1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i+1]== ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='(';//Smooth corner Coast tile with land on SW
-						}
-						if(field[j+1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i-1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i+1]== ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]=')';//Smooth corner Coast tile with land on SE
-						}
-						
-						//dot corner Ocean tile
-						if(field[j-1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i]==('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i+1]==('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i+1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i-1]== ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='C';//Smooth corner Coast tile with land on NE
-						}
-						if(field[j-1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i]==('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i-1]==('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i+1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i-1]== ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='c';//Smooth corner Coast tile with land on NW
-						}
-						if(field[j+1,i-1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i]==('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i-1]==('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i-1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i+1]== ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='n';//Smooth corner Coast tile with land on SW
-						}
-						if(field[j+1,i+1]!=('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i]==('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j,i+1]==('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j+1,i-1] == ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n') && field[j-1,i+1]== ('~'||'@'||'Q'||'&'||'#'||'$'||'('||')'||'!'||'B'||'b'||'V'||'v'||'C'||'c'||'N'||'n'))
-						{
-							field[j,i]='N';//Smooth corner Coast tile with land on SE
-						}
-					}
-					//*****River Direction*****//
-					if(field[j,i]=='-')
-					{
-						if(field[j-1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j+1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?'))
-						{
-							field[j,i]='^';//River running north to south.
-						}
-						if(field[j,i-1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j,i+1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?'))
-						{
-							field[j,i]=',';//River running east to west.
-						}
-						if(field[j+1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j,i+1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?'))
-						{
-							field[j,i]='<';//River mouths at east and south.
-						}
-						if(field[j+1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j,i-1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?'))
-						{
-							field[j,i]='>';//River mouths at west and south.
-						}
-						if(field[j-1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j,i-1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?'))
-						{
-							field[j,i]=']';//River mouths at west and north.
-						}
-						if(field[j-1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j,i+1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?'))
-						{
-							field[j,i]='[';//River mouths at east and north.
-						}
-						if(field[j,i-1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j,i+1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j-1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j+1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?')){
-							field[j,i]='X'; // 4-way river
-						}
-						if(field[j,i-1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j,i+1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j-1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j+1,i]!=('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?')){
-							field[j,i]='/'; // triple river land at south
-						}
-						if(field[j,i-1]!=('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j,i+1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j-1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j+1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?')){
-							field[j,i]='|'; // triple river land at west
-						}
-						if(field[j,i-1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j,i+1]!=('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j-1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j+1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?')){
-							field[j,i]='_'; // triple river land at east
-						}
-						if(field[j,i-1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j,i+1]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j-1,i]!=('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?') && field[j+1,i]==('-'||'^'||','||'<'||'>'||'['||']'||'X'||'/'||'|'||'_'||'?')){
-							field[j,i]='?'; // triple river land at north
-						}
-					}
-				}
-			}
+            //Generates coastlines and gives rivers a direction.
+            //each direction of river/Ocean will be set to a different character.
+            for (int j = 1; j < width - 1; j++)
+            {
+                for (int i = 1; i < height - 1; i++)
+                {
+                    //******Ocean Border*****//
+                    if (field[j, i] == '~')
+                    {
+                        //Cardinal Directions of Coast
+                        if (!IsLandOrShore(field[j - 1, i]) && !IsLandOrShore(field[j - 1, i - 1]) && !IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j, i + 1]))
+                        {
+                            field[j, i] = '@';//Coast tile with land on north.
+                        }
+                        if (!IsLandOrShore(field[j + 1, i + 1]) && !IsLandOrShore(field[j, i + 1]) && !IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j + 1, i]) && IsLandOrShore(field[j - 1, i]))
+                        {
+                            field[j, i] = 'Q';//Coast tile with land on east.
+                        }
+                        if (!IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j + 1, i - 1]) && !IsLandOrShore(field[j + 1, i + 1]) && IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j, i + 1]))
+                        {
+                            field[j, i] = '&';//Coast tile with land on south.
+                        }
+                        if (!IsLandOrShore(field[j + 1, i - 1]) && !IsLandOrShore(field[j, i - 1]) && !IsLandOrShore(field[j - 1, i - 1]) && IsLandOrShore(field[j + 1, i]) && IsLandOrShore(field[j - 1, i]))
+                        {
+                            field[j, i] = '#';//Coast tile with land on west.
+                        }
+
+                        //3 edged by land Ocean tile
+                        if (!IsLandOrShore(field[j - 1, i]) && !IsLandOrShore(field[j - 1, i - 1]) && !IsLandOrShore(field[j - 1, i + 1]) && !IsLandOrShore(field[j, i - 1]) && !IsLandOrShore(field[j, i + 1]))
+                        {
+                            field[j, i] = 'V';//Coast tile triple with bay mouth at north
+                        }
+                        if (!IsLandOrShore(field[j + 1, i + 1]) && !IsLandOrShore(field[j, i + 1]) && !IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j - 1, i]))
+                        {
+                            field[j, i] = 'v';//Coast tile triple with bay mouth at east
+                        }
+                        if (!IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j + 1, i - 1]) && !IsLandOrShore(field[j + 1, i + 1]) && IsLandOrShore(field[j, i - 1]) && !IsLandOrShore(field[j, i + 1]))
+                        {
+                            field[j, i] = 'B';//Coast tile triple with bay mouth at south
+                        }
+                        if (!IsLandOrShore(field[j + 1, i - 1]) && !IsLandOrShore(field[j, i - 1]) && !IsLandOrShore(field[j - 1, i - 1]) && IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j - 1, i]))
+                        {
+                            field[j, i] = 'b';//Coast tile triple with bay mouth at west
+                        }
+
+                        //smooth corner Ocean tile
+                        if (!IsLandOrShore(field[j - 1, i + 1]) && !IsLandOrShore(field[j - 1, i]) && !IsLandOrShore(field[j, i + 1]) && IsLandOrShore(field[j + 1, i + 1]) && IsLandOrShore(field[j - 1, i - 1]))
+                        {
+                            field[j, i] = '$';//Smooth corner Coast tile with land on NE
+                        }
+                        if (!IsLandOrShore(field[j - 1, i - 1]) && !IsLandOrShore(field[j - 1, i]) && !IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j + 1, i - 1]))
+                        {
+                            field[j, i] = '!';//Smooth corner Coast tile with land on NW
+                        }
+                        if (!IsLandOrShore(field[j + 1, i - 1]) && !IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j - 1, i - 1]) && IsLandOrShore(field[j + 1, i + 1]))
+                        {
+                            field[j, i] = '(';//Smooth corner Coast tile with land on SW
+                        }
+                        if (!IsLandOrShore(field[j + 1, i + 1]) && !IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j, i + 1]) && IsLandOrShore(field[j + 1, i - 1]) && IsLandOrShore(field[j - 1, i + 1]))
+                        {
+                            field[j, i] = ')';//Smooth corner Coast tile with land on SE
+                        }
+
+                        //dot corner Ocean tile
+                        if (!IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j - 1, i]) && IsLandOrShore(field[j, i + 1]) && IsLandOrShore(field[j + 1, i + 1]) && IsLandOrShore(field[j - 1, i - 1]))
+                        {
+                            field[j, i] = 'C';//Smooth corner Coast tile with land on NE
+                        }
+                        if (!IsLandOrShore(field[j - 1, i - 1]) && IsLandOrShore(field[j - 1, i]) && IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j + 1, i - 1]))
+                        {
+                            field[j, i] = 'c';//Smooth corner Coast tile with land on NW
+                        }
+                        if (!IsLandOrShore(field[j + 1, i - 1]) && IsLandOrShore(field[j + 1, i]) && IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j - 1, i - 1]) && IsLandOrShore(field[j + 1, i + 1]))
+                        {
+                            field[j, i] = 'n';//Smooth corner Coast tile with land on SW
+                        }
+                        if (!IsLandOrShore(field[j + 1, i + 1]) && IsLandOrShore(field[j + 1, i]) && IsLandOrShore(field[j, i + 1]) && IsLandOrShore(field[j + 1, i - 1]) && IsLandOrShore(field[j - 1, i + 1]))
+                        {
+                            field[j, i] = 'N';//Smooth corner Coast tile with land on SE
+                        }
+                    }
+                    //*****River Direction*****//
+                    if (field[j, i] == '-')
+                    {
+                        if (IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i]))
+                        {
+                            field[j, i] = '^';//River running north to south.
+                        }
+                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]))
+                        {
+                            field[j, i] = ',';//River running east to west.
+                        }
+                        if (IsRiver(field[j + 1, i]) && IsRiver(field[j, i + 1]))
+                        {
+                            field[j, i] = '<';//River mouths at east and south.
+                        }
+                        if (IsRiver(field[j + 1, i]) && IsRiver(field[j, i - 1]))
+                        {
+                            field[j, i] = '>';//River mouths at west and south.
+                        }
+                        if (IsRiver(field[j - 1, i]) && IsRiver(field[j, i - 1]))
+                        {
+                            field[j, i] = ']';//River mouths at west and north.
+                        }
+                        if (IsRiver(field[j - 1, i]) && IsRiver(field[j, i + 1]))
+                        {
+                            field[j, i] = '[';//River mouths at east and north.
+                        }
+                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i]))
+                        {
+                            field[j, i] = 'X'; // 4-way river
+                        }
+                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && !IsRiver(field[j + 1, i]))
+                        {
+                            field[j, i] = '/'; // triple river land at south
+                        }
+                        if (!IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i]))
+                        {
+                            field[j, i] = '|'; // triple river land at west
+                        }
+                        if (IsRiver(field[j, i - 1]) && !IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i]))
+                        {
+                            field[j, i] = '_'; // triple river land at east
+                        }
+                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && !IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i]))
+                        {
+                            field[j, i] = '?'; // triple river land at north
+                        }
+                    }
+                }
+            }
             return field;
+        }
+
+        private static readonly HashSet<char> landsAndShores = new HashSet<char>{'~', '@', 'Q', '&', '#', '$', '(', ')', '!', 'B', 'b', 'V', 'v', 'C', 'c', 'N', 'n'};
+        private static readonly HashSet<char> rivers = new HashSet<char> { '-', '^', ',', '<', '>', '[', ']', 'X', '/', '|', '_', '?' };
+        private static bool IsLandOrShore(char c)
+        {
+            return landsAndShores.Contains(c);
+        }
+
+        private static bool IsRiver(char c)
+        {
+            return rivers.Contains(c);
         }
     }
 }
