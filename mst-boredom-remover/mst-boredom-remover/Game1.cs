@@ -214,6 +214,9 @@ namespace mst_boredom_remover
             Texture2D coastTexture = Content.Load<Texture2D>("Terrain\\CoastStraight"); // 8-11
             Texture2D riverStraightTexture = Content.Load<Texture2D>("Terrain\\RiverStraight"); //12-13
             Texture2D riverBendTexture = Content.Load<Texture2D>("Terrain\\RiverBend"); //14-17
+            Texture2D goldTexture = Content.Load<Texture2D>("Terrain\\Gold");
+            Texture2D ironTexture = Content.Load<Texture2D>("Terrain\\Iron");
+            Texture2D manaTexture = Content.Load<Texture2D>("Terrain\\Mana");
 
 
             // Create initial TileTypes
@@ -225,9 +228,9 @@ namespace mst_boredom_remover
             engine.tileTypes.Add(new TileType("Desert", texture: desertTexture, biome: TileType.Biome.Desert));
             engine.tileTypes.Add(new TileType("Tundra", texture: tundraTexture, biome: TileType.Biome.Tundra));
 
-            engine.tileTypes.Add(new TileType("Gold", texture: blankBackground, biome: TileType.Biome.Gold, resourceType: TileType.ResourceType.Gold));
-            engine.tileTypes.Add(new TileType("Iron", texture: blankBackground, biome: TileType.Biome.Iron, resourceType: TileType.ResourceType.Iron));
-            engine.tileTypes.Add(new TileType("ManaCrystals", texture: blankBackground, biome: TileType.Biome.ManaCrystals, resourceType: TileType.ResourceType.ManaCrystals));
+            engine.tileTypes.Add(new TileType("Gold", texture: goldTexture, biome: TileType.Biome.Gold, resourceType: TileType.ResourceType.Gold));
+            engine.tileTypes.Add(new TileType("Iron", texture: ironTexture, biome: TileType.Biome.Iron, resourceType: TileType.ResourceType.Iron));
+            engine.tileTypes.Add(new TileType("ManaCrystals", texture: manaTexture, biome: TileType.Biome.ManaCrystals, resourceType: TileType.ResourceType.ManaCrystals));
 
             engine.tileTypes.Add(new TileType("Coast Land on North", texture: coastTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 1.0f)); // Clockwise radians
             engine.tileTypes.Add(new TileType("Coast Land on East", texture: coastTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 1.5f));
