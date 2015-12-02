@@ -41,7 +41,7 @@ namespace mst_boredom_remover
 
         public int GetTextAsInt()
         {
-            return Int32.Parse(currentText);
+            return System.Convert.ToInt32(currentText);
         }
 
         public override void ToggleDebugMode()
