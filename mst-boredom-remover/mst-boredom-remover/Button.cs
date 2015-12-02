@@ -13,7 +13,7 @@ namespace mst_boredom_remover
     }
     public class Button : UiObject
     {
-        private string text = "";
+        public string text = "";
         private Vector2 textPosition;
         private Texture2D texture;
         private bool visible = true;
@@ -46,7 +46,7 @@ namespace mst_boredom_remover
         // event upon being held down
         public event EventHandler OnPress;
 
-        public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position, float scale, string text, SpriteFont f, Vector2 forceBounds = default(Vector2))
+        public Button(Texture2D texture, Texture2D hoverTexture, Texture2D pressedTexture, Vector2 position, string text, SpriteFont f, Vector2 forceBounds = default(Vector2))
         {
             this.texture = texture;
             this.hoverTexture = hoverTexture;

@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentLoader.cs" />
     <Compile Include="engine\AI.cs" />
     <Compile Include="engine\Engine.cs" />
     <Compile Include="engine\EngineMap.cs" />
