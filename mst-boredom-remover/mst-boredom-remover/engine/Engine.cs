@@ -222,7 +222,9 @@ namespace mst_boredom_remover.engine
             Debug.Assert(unitGrid[targetPosition.x, targetPosition.y] == null);
             
             CacheRemoveUnitAt(unit.position);
+            unit.previousPosition = unit.position;
             unit.position = targetPosition;
+            unit.animationStartTick = currentTick;
             CacheSetUnitAt(unit);
         }
 
@@ -239,7 +241,9 @@ namespace mst_boredom_remover.engine
             b.Update(); // This will force the unit to wait the appropriate amount of time before moving back
             Debug.Assert(b.position.Equals(a.position), "Swap: b did not move back to original position.");
             // Add a to b's old position
+            a.previousPosition = a.position;
             a.position = targetPosition;
+            a.animationStartTick = currentTick;
             CacheSetUnitAt(a);
             // Give an order to b to go back to his original position
             OrderMove(b, targetPosition);

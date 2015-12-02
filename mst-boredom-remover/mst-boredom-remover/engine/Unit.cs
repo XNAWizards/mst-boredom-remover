@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 
 namespace mst_boredom_remover.engine
 {
@@ -140,7 +141,19 @@ namespace mst_boredom_remover.engine
             // TODO: Account for modifiers
             return (int) (10.0/type.attackSpeed);
         }
-        
+
+        public Vector2 GetAnimatedPosition()
+        {
+            if (status == Status.Moving)
+            {
+                // LLLLLEEEEERRRRRRP
+                return Vector2.Lerp(previousPosition.ToVector2(),
+                    position.ToVector2(),
+                    (engine.currentTick - animationStartTick)/(float)GetMoveCooldown(previousPosition, position));
+            }
+            return position.ToVector2();
+        }
+
         public void Update()
         {
             if (orders.Count == 0)
@@ -178,6 +191,7 @@ namespace mst_boredom_remover.engine
         {
             if (targetPosition != null)
             {
+                status = Status.Moving;
                 engine.ScheduleUpdate(GetMoveCooldown(position, targetPosition), this);
 
                 var blockingUnit = engine.GetUnitAt(targetPosition);
@@ -192,6 +206,7 @@ namespace mst_boredom_remover.engine
             }
             else
             {
+                status = Status.Idle;
                 // Retry after moveRetryCooldown ticks
                 engine.ScheduleUpdate(moveRetryCooldown, this);
             }
@@ -206,7 +221,6 @@ namespace mst_boredom_remover.engine
                 Update();
                 return;
             }
-            status = Status.Moving;
             Position nextPosition = Pathfinder.FindNextStep(engine, this, position, order.targetPosition);
             TryToMove(nextPosition);
         }
@@ -225,7 +239,6 @@ namespace mst_boredom_remover.engine
             if (position.Distance(targetPosition) > type.attackRange)
             {
                 // Move into range
-                status = Status.Moving;
                 var nextPosition = Pathfinder.FindNextStep(engine, this, position, targetPosition);
                 TryToMove(nextPosition);
                 return;
@@ -241,7 +254,6 @@ namespace mst_boredom_remover.engine
             // If the unit is told to build a structure far away, and he is not in range yet
             if (CanMove() && order.targetPosition != null && order.targetPosition.Distance(position) > 1)
             {
-                status = Status.Moving;
                 var nextPosition = Pathfinder.FindNextStep(engine, this, position, order.targetPosition);
                 TryToMove(nextPosition);
                 return;
@@ -309,12 +321,11 @@ namespace mst_boredom_remover.engine
             if (!position.Equals(order.targetPosition))
             {
                 // Move to resource
-                status = Status.Moving;
                 var nextPosition = Pathfinder.FindNextStep(engine, this, position, order.targetPosition);
                 TryToMove(nextPosition);
                 return;
             }
-
+            status = Status.Producing;
             // TODO: / ASSUPTION We have infinate resources, is that okay?
             var tileResoure = engine.map.tiles[order.targetPosition.x, order.targetPosition.y].tileType.resourceType;
             if (tileResoure == TileType.ResourceType.Gold)

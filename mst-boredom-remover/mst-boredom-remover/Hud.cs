@@ -457,7 +457,7 @@ namespace mst_boredom_remover
                 // calc hp percent
                 double percent = u.health / u.type.maxHealth;
 
-                Vector2 drawPosition = map.GetDrawPosition(u);
+                Vector2 drawPosition = map.getHPBarDrawPosition(u);
 
                 sb.Draw(HPbar, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (int)(map.GetPxSizeMod() * percent), 3), Color.White);
             }

@@ -311,16 +311,9 @@ namespace mst_boredom_remover
         }
 
 
-        public Vector2 GetDrawPosition(Unit u)
+        public Vector2 getHPBarDrawPosition(Unit unit)
         {
-            Vector2 drawPosition = new Vector2();
-
-            // calculate screen space position
-            drawPosition.X = (tilePxSize + pxMod) * u.position.x; // real screen coords
-            drawPosition.Y = (tilePxSize + pxMod) * u.position.y;
-
-            drawPosition.X -= (float)(tileIndex.X * (tilePxSize + pxMod));
-            drawPosition.Y -= (float)(tileIndex.Y * (tilePxSize + pxMod));
+            Vector2 drawPosition = (unit.GetAnimatedPosition() - tileIndex) * (tilePxSize + pxMod);
 
             // add offset for HP bar position
             drawPosition.Y += tilePxSize + pxMod;
@@ -461,7 +454,7 @@ namespace mst_boredom_remover
 
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
-                Vector2 drawPosition = (unit.position.ToVector2() - tileIndex) * (tilePxSize + pxMod);
+                Vector2 drawPosition = (unit.GetAnimatedPosition() - tileIndex) * (tilePxSize + pxMod);
                 Color c = Color.White;
                 
                 if (unit.owner == engine.players[1])
