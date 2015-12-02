@@ -175,19 +175,24 @@ namespace mst_boredom_remover.engine
 
         public void Attack( Unit attacker, Unit target )
         {
-            //check to make sure you are in range
-            if ( attacker.AttackRange() < attacker.position.Distance(target.position))
-            {
-                return;
-            }
+            Debug.Assert(attacker.AttackRange() >= attacker.position.Distance(target.position));
+
             target.health -= Math.Max(1, attacker.AttackStrength() - target.Defense());
-            if (target.health<=0) //target dead
+            if (target.health<=0) // Target dead
             {
                 RemoveUpdate(target);
                 CacheRemoveUnitAt(target.position);
                 units.Remove(target);
                 unitQuadtrees[target.owner].RemoveUnit(target);
                 target.status = Unit.Status.Dead;
+            }
+            else // I'm not dead yet
+            {
+                // Retaliate!
+                if (target.CanAttack() && target.orders.Count == 0)
+                {
+                    OrderAttack(target, attacker);
+                }
             }
         }
 
