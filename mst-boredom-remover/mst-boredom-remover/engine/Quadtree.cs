@@ -79,7 +79,7 @@ namespace mst_boredom_remover.engine
             if (previousChunk != newChunk)
             {
                 if (previousChunk != null) previousChunk.RemoveUnit(unit);
-                if (newChunk != null) newChunk.RemoveUnit(unit);
+                if (newChunk != null) newChunk.AddUnit(unit);
             }
 
             previousUnitPositions[unit] = unit.position;
