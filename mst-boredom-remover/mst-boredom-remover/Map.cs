@@ -31,6 +31,15 @@ namespace mst_boredom_remover
         public readonly int width;
         public readonly int height;
 
+        public int numberOfOceans;
+        public int numberOfForests;
+        public int numberOfDreadlands;
+        public int numberOfDeserts;
+        public int numberOfPlains;
+        public int numberOfTundras;
+        public int numberOfMountains;
+        public int numberOfResourceNodes;
+
         private readonly GraphicsDevice graphicsDevice;
         private readonly Engine engine;
         private readonly int xCaches;
@@ -53,16 +62,27 @@ namespace mst_boredom_remover
 
         private Vector2 mouseTile;
 
-        public Map(Vector2 startingPosition, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice)
+        public Map(Vector2 startingPosition, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice,
+            int numberOfDreadlands, int numberOfDeserts, int numberOfPlains, int numberOfMountains, int numberOfTundras,
+            int numberOfForests, int numberOfOceans, int numberOfResourceNodes)
         {
             tileIndex = startingPosition;
             this.width = width;
             this.height = height;
             this.engine = engine;
             this.graphicsDevice = graphicsDevice;
-            
+
+            this.numberOfDreadlands = numberOfDreadlands;
+            this.numberOfDeserts = numberOfDeserts;
+            this.numberOfPlains = numberOfPlains;
+            this.numberOfMountains = numberOfMountains;
+            this.numberOfTundras = numberOfTundras;
+            this.numberOfForests = numberOfForests;
+            this.numberOfOceans = numberOfOceans;
+            this.numberOfResourceNodes = numberOfResourceNodes;
+
             // Generate map
-            charmap = Generator.generate(width, height);
+            charmap = Generator.generate(width, height, numberOfDreadlands, numberOfDeserts, numberOfPlains, numberOfMountains, numberOfTundras, numberOfForests, numberOfOceans, numberOfResourceNodes);
             engine.map.UpdateTilesFromCharmap(charmap);
             
             // Generate map cache
@@ -145,12 +165,11 @@ namespace mst_boredom_remover
             Position endTile = new Position((int)Math.Ceiling(endPosition.X), (int)Math.Ceiling(endPosition.Y));
 
             // search only the grid. hopefully small n^2
-            Position tilePosition = new Position(0, 0);
-            for (tilePosition.y = startTile.y; tilePosition.y < endTile.y; ++tilePosition.y)
+            for (var y = startTile.y; y < endTile.y; ++y)
             {
-                for (tilePosition.x = startTile.x; tilePosition.x < endTile.x; ++tilePosition.x)
+                for (var x = startTile.x; x < endTile.x; ++x)
                 {
-                    Unit unit = engine.GetUnitAt(tilePosition);
+                    Unit unit = engine.GetUnitAt(x, y);
                     if (unit != null && unit.owner.Equals(owner))
                     {
                         unit.selected = true;
@@ -292,16 +311,9 @@ namespace mst_boredom_remover
         }
 
 
-        public Vector2 GetDrawPosition(Unit u)
+        public Vector2 getHPBarDrawPosition(Unit unit)
         {
-            Vector2 drawPosition = new Vector2();
-
-            // calculate screen space position
-            drawPosition.X = (tilePxSize + pxMod) * u.position.x; // real screen coords
-            drawPosition.Y = (tilePxSize + pxMod) * u.position.y;
-
-            drawPosition.X -= (float)(tileIndex.X * (tilePxSize + pxMod));
-            drawPosition.Y -= (float)(tileIndex.Y * (tilePxSize + pxMod));
+            Vector2 drawPosition = (unit.GetAnimatedPosition() - tileIndex) * (tilePxSize + pxMod);
 
             // add offset for HP bar position
             drawPosition.Y += tilePxSize + pxMod;
@@ -316,7 +328,7 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.G) && disableMapRegeneration == false)
             {
                 // generate a new map, reconstruct cache
-                charmap = Generator.generate(width, height);
+                charmap = Generator.generate(width, height, numberOfDreadlands, numberOfDeserts, numberOfPlains, numberOfMountains, numberOfTundras, numberOfForests, numberOfOceans, numberOfResourceNodes);
                 engine.map.UpdateTilesFromCharmap(charmap);
                 disableMapRegeneration = true;
                 buildMapCache = true;
@@ -442,7 +454,7 @@ namespace mst_boredom_remover
 
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
-                Vector2 drawPosition = (unit.position.ToVector2() - tileIndex) * (tilePxSize + pxMod);
+                Vector2 drawPosition = (unit.GetAnimatedPosition() - tileIndex) * (tilePxSize + pxMod);
                 Color c = Color.White;
                 
                 if (unit.owner == engine.players[1])
