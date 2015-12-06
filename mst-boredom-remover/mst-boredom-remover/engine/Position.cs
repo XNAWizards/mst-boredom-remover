@@ -6,13 +6,19 @@ namespace mst_boredom_remover.engine
     
     class Position
     {
-        public int x;
-        public int y;
+        public readonly int x;
+        public readonly int y;
 
         public Position(int x, int y)
         {
             this.x = x;
             this.y = y;
+        }
+
+        public Position( Position p )
+        {
+            x = p.x;
+            y = p.y;
         }
 
         public int Distance(Position other)

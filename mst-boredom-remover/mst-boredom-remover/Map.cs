@@ -31,8 +31,16 @@ namespace mst_boredom_remover
         public readonly int width;
         public readonly int height;
 
+        public int numberOfOceans;
+        public int numberOfForests;
+        public int numberOfDreadlands;
+        public int numberOfDeserts;
+        public int numberOfPlains;
+        public int numberOfTundras;
+        public int numberOfMountains;
+        public int numberOfResourceNodes;
+
         private readonly GraphicsDevice graphicsDevice;
-        private readonly List<Texture2D> tileTextures;
         private readonly Engine engine;
         private readonly int xCaches;
         private readonly int yCaches;
@@ -54,17 +62,27 @@ namespace mst_boredom_remover
 
         private Vector2 mouseTile;
 
-        public Map(Vector2 startingPosition, List<Texture2D> tileTextures, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice)
+        public Map(Vector2 startingPosition, int width, int height, ref Engine engine, GraphicsDevice graphicsDevice,
+            int numberOfDreadlands, int numberOfDeserts, int numberOfPlains, int numberOfMountains, int numberOfTundras,
+            int numberOfForests, int numberOfOceans, int numberOfResourceNodes)
         {
             tileIndex = startingPosition;
-            this.tileTextures = tileTextures;
             this.width = width;
             this.height = height;
             this.engine = engine;
             this.graphicsDevice = graphicsDevice;
-            
+
+            this.numberOfDreadlands = numberOfDreadlands;
+            this.numberOfDeserts = numberOfDeserts;
+            this.numberOfPlains = numberOfPlains;
+            this.numberOfMountains = numberOfMountains;
+            this.numberOfTundras = numberOfTundras;
+            this.numberOfForests = numberOfForests;
+            this.numberOfOceans = numberOfOceans;
+            this.numberOfResourceNodes = numberOfResourceNodes;
+
             // Generate map
-            charmap = Generator.generate(width, height);
+            charmap = Generator.generate(width, height, numberOfDreadlands, numberOfDeserts, numberOfPlains, numberOfMountains, numberOfTundras, numberOfForests, numberOfOceans, numberOfResourceNodes);
             engine.map.UpdateTilesFromCharmap(charmap);
             
             // Generate map cache
@@ -147,12 +165,11 @@ namespace mst_boredom_remover
             Position endTile = new Position((int)Math.Ceiling(endPosition.X), (int)Math.Ceiling(endPosition.Y));
 
             // search only the grid. hopefully small n^2
-            Position tilePosition = new Position(0, 0);
-            for (tilePosition.y = startTile.y; tilePosition.y < endTile.y; ++tilePosition.y)
+            for (var y = startTile.y; y < endTile.y; ++y)
             {
-                for (tilePosition.x = startTile.x; tilePosition.x < endTile.x; ++tilePosition.x)
+                for (var x = startTile.x; x < endTile.x; ++x)
                 {
-                    Unit unit = engine.GetUnitAt(tilePosition);
+                    Unit unit = engine.GetUnitAt(x, y);
                     if (unit != null && unit.owner.Equals(owner))
                     {
                         unit.selected = true;
@@ -177,7 +194,7 @@ namespace mst_boredom_remover
             try
             {
                 tileName = engine.map.tiles[(int)mouseTile.X, (int)mouseTile.Y].tileType.name;
-                tileName += " " + CharToInt(charmap[(int)mouseTile.X, (int)mouseTile.Y]).ToString();
+                tileName += " " + charmap[(int)mouseTile.X, (int)mouseTile.Y];
             }
             catch (IndexOutOfRangeException)
             {
@@ -206,8 +223,8 @@ namespace mst_boredom_remover
         private void ForceBounds()
         {
             // Align viewport to integers
-            tileIndex.X = (float) Math.Floor(tileIndex.X);
-            tileIndex.Y = (float) Math.Floor(tileIndex.Y);
+            tileIndex.X = (float) Math.Round(tileIndex.X);
+            tileIndex.Y = (float) Math.Round(tileIndex.Y);
 
             // min bounds
             if (tileIndex.X < 0)
@@ -244,6 +261,7 @@ namespace mst_boredom_remover
                 ForceBounds();
             }
         }
+
         private void ZoomOut()
         {
             if (pxMod > -16)
@@ -264,6 +282,7 @@ namespace mst_boredom_remover
         {
             int startX = numX * 214;
             int startY = numY * 214;
+            int tileWidth = tilePxSize + pxMod;
             sb.End();
             graphicsDevice.SetRenderTarget(cache);
             sb.Begin();
@@ -272,79 +291,17 @@ namespace mst_boredom_remover
             {
                 for (int y = startY; y < startY + 214 && y < height; y++)
                 {
-                    Rectangle bounds = new Rectangle((x - (numX * 214)) * (tilePxSize + pxMod), (y - (numY * 214)) * (tilePxSize + pxMod), (tilePxSize + pxMod), (tilePxSize + pxMod));
-                    float rotation = 0;
-                    Vector2 origin = new Vector2((tilePxSize + pxMod) / 2, (tilePxSize + pxMod) / 2);
-                    int tile = CharToInt(charmap[x,y]);
+                    Rectangle bounds = new Rectangle((x - startX) * tileWidth, (y - startY) * tileWidth, tileWidth, tileWidth);
+                    
+                    TileType tileType = engine.map.tiles[x, y].tileType;
 
-                    if (tile >= 8)
-                    {
-                        // rotate
-                        if (tile >= 8 && tile <= 11)
-                        {
-                            // coast straight
-                            switch (tile)
-                            {
-                                case 8:
-                                    rotation = (float)((Math.PI * 180) / 180);
-                                    break;
-                                case 9:
-                                    rotation = (float)((Math.PI * 180) / -90);
-                                    break;
-                                case 10:
+                    // Translate the image to account for rotating around the top-left point
+                    Vector2 origin = new Vector2(bounds.Width / 2.0f, bounds.Height / 2.0f);
+                    Vector2 image = Vector2.Transform(origin, Matrix.CreateRotationZ(tileType.rotation));
+                    Vector2 deltaVector = origin - image;
+                    bounds.Offset((int)Math.Round(deltaVector.X), (int)Math.Round(deltaVector.Y));
 
-                                    break;
-                                case 11:
-                                    rotation = (float)((Math.PI * 180) / 90);
-                                    break;
-                            }
-                        }
-                        if (tile >= 12 && tile <= 13)
-                        {
-                            // river straight
-                            switch (tile)
-                            {
-                                case 12:
-
-                                    break;
-                                case 13:
-                                    rotation = (float)(Math.PI * 180) / 90;
-                                    break;
-                            }
-                        }
-                        if (tile >= 14 && tile <= 17)
-                        {
-                            // river bend
-                            switch (tile)
-                            {
-                                case 14:
-                                    rotation = (float)(Math.PI * 180) / -90;
-                                    break;
-                                case 15:
-
-                                    break;
-                                case 16:
-                                    rotation = (float)(Math.PI * 180) / 90;
-                                    break;
-                                case 17:
-                                    rotation = (float)(Math.PI * 180) / 180;
-                                    break;
-                            }
-                        }
-                    }
-                    if (rotation == 0)
-                    {
-                        sb.Draw(tileTextures[tile], bounds, Color.White);
-                    }
-                    else
-                    {
-                        // offset half of the tile texture width to move the tile back after rotation
-                        //bounds.X -= (int)origin.X;
-                        //bounds.Y -= (int)origin.Y;
-                        
-                        sb.Draw(tileTextures[tile], bounds, null, Color.White, rotation, Vector2.Zero, SpriteEffects.None, 0);
-
-                    }
+                    sb.Draw(tileType.texture, bounds, null, Color.White, tileType.rotation, Vector2.Zero, SpriteEffects.None, 0);
                 }
              }
                 
@@ -354,16 +311,9 @@ namespace mst_boredom_remover
         }
 
 
-        public Vector2 GetDrawPosition(Unit u)
+        public Vector2 getHPBarDrawPosition(Unit unit)
         {
-            Vector2 drawPosition = new Vector2();
-
-            // calculate screen space position
-            drawPosition.X = (tilePxSize + pxMod) * u.position.x; // real screen coords
-            drawPosition.Y = (tilePxSize + pxMod) * u.position.y;
-
-            drawPosition.X -= (float)(tileIndex.X * (tilePxSize + pxMod));
-            drawPosition.Y -= (float)(tileIndex.Y * (tilePxSize + pxMod));
+            Vector2 drawPosition = (unit.GetAnimatedPosition() - tileIndex) * (tilePxSize + pxMod);
 
             // add offset for HP bar position
             drawPosition.Y += tilePxSize + pxMod;
@@ -378,7 +328,7 @@ namespace mst_boredom_remover
             if (keyboard.IsKeyDown(Keys.G) && disableMapRegeneration == false)
             {
                 // generate a new map, reconstruct cache
-                charmap = Generator.generate(width, height);
+                charmap = Generator.generate(width, height, numberOfDreadlands, numberOfDeserts, numberOfPlains, numberOfMountains, numberOfTundras, numberOfForests, numberOfOceans, numberOfResourceNodes);
                 engine.map.UpdateTilesFromCharmap(charmap);
                 disableMapRegeneration = true;
                 buildMapCache = true;
@@ -504,7 +454,7 @@ namespace mst_boredom_remover
 
                 // calculate screen space based on map coordinates
                 // (coordinate of the unit - coordinate of the camera) * tile_pixel_size
-                Vector2 drawPosition = (unit.position.ToVector2() - tileIndex) * (tilePxSize + pxMod);
+                Vector2 drawPosition = (unit.GetAnimatedPosition() - tileIndex) * (tilePxSize + pxMod);
                 Color c = Color.White;
                 
                 if (unit.owner == engine.players[1])
@@ -525,50 +475,6 @@ namespace mst_boredom_remover
                 DebugDraw(sb);
             }
             //base.Draw(sb);
-        }
-
-        private int CharToInt(char c)
-        {
-            switch (c)
-            {
-                case '+':
-                    return 1;
-                case 'M':
-                    return 2;
-                case 'D':
-                    return 3;
-                case '~':
-                    return 4;
-                case '%':
-                    return 5;
-                case 'T':
-                    return 6;
-                case 'F':
-                    return 7;
-                case '@':       // coast land on north
-                    return 8;
-                case '/':       // coast land on east
-                    return 9;
-                case '&':       // coast land on south
-                    return 10;
-                case '#':       // coast land on west
-                    return 11;
-                case '^':       // river rnning nort and south
-                    return 12;
-                case ',':       // river running east ot west
-                    return 13;
-                case '<':       // river mouths at east and south
-                    return 14;
-                case '>':       // river mouths at west and south
-                    return 15;
-                case ']':       // river mouths at west and north
-                    return 16;
-                case '[':       // river mouths at east and north
-                    return 17;
-                default:
-                    // 0 is not a tile, more efficient than try-catch index out of bounds
-                    return 0;
-            }
         }
     }
 }

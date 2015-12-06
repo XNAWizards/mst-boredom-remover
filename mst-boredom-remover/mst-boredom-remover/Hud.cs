@@ -157,11 +157,14 @@ namespace mst_boredom_remover
             {
                 if (lastButtonPressed.Equals("None"))
                 {
+                    // Hold shift to append orders
                     if (keys.IsKeyUp(Keys.LeftShift) && keys.IsKeyUp(Keys.RightShift))
                     {
                         unit.orders.Clear();
                     }
-                    if (clickedUnit == unit) // Produce units
+
+                    // Click on same unit to produce units
+                    if (clickedUnit == unit)
                     {
                         if (unit.CanProduce())
                         {
@@ -169,7 +172,8 @@ namespace mst_boredom_remover
                         }
                         break;
                     }
-                    else if (clickedUnit != null) //Clicked a different unit TODO:make it so you don't attack your buddies
+                    // Click on other units to attack them
+                    else if (clickedUnit != null) // TODO: make it so you don't attack your buddies
                     {
                         if (selectedUnits.Contains(clickedUnit)) //this check makes it so that you can produce without have the other selected units attack
                         {
@@ -180,8 +184,9 @@ namespace mst_boredom_remover
                             engine.OrderAttack(unit, clickedUnit);
                         }
                     }
-                    else // Move units or gather
+                    else if (unit.CanMove()) // Move units or gather
                     {
+                        // Click on a resource node to gather
                         var resource = engine.map.tiles[enumerator.Current.x, enumerator.Current.y].tileType.resourceType;
                         if (resource != TileType.ResourceType.None)
                         {
@@ -190,6 +195,7 @@ namespace mst_boredom_remover
                             continue;
                         }
 
+                        // Click on an empty tile to move
                         while (engine.GetUnitAt(enumerator.Current) != null)
                         {
                             enumerator.MoveNext();
@@ -457,7 +463,7 @@ namespace mst_boredom_remover
                 // calc hp percent
                 double percent = u.health / u.type.maxHealth;
 
-                Vector2 drawPosition = map.GetDrawPosition(u);
+                Vector2 drawPosition = map.getHPBarDrawPosition(u);
 
                 sb.Draw(HPbar, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (int)(map.GetPxSizeMod() * percent), 3), Color.White);
             }
