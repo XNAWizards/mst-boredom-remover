@@ -422,13 +422,6 @@
     <Folder Include="old tiles\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\Tetris.mp3">
-      <Name>Tetris</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="BiomeB.png">
       <Name>BiomeB</Name>
       <Importer>TextureImporter</Importer>
@@ -438,6 +431,13 @@
       <Name>BiomeBA</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audio\RTS_BGM.mp3">
+      <Name>RTS_BGM</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

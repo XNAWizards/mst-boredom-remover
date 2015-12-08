@@ -63,7 +63,8 @@ namespace mst_boredom_remover.engine
         
         public void AddUnit(Unit unit)
         {
-            GetChunk(unit.position)?.AddUnit(unit);
+            var chunk = GetChunk(unit.position);
+            if (chunk != null) chunk.AddUnit(unit);
             previousUnitPositions[unit] = new Position(unit.position);
         }
 
@@ -77,8 +78,8 @@ namespace mst_boredom_remover.engine
             var newChunk = GetChunk(unit.position);
             if (previousChunk != newChunk)
             {
-                previousChunk?.RemoveUnit(unit);
-                newChunk?.AddUnit(unit);
+                if (previousChunk != null) previousChunk.RemoveUnit(unit);
+                if (newChunk != null) newChunk.AddUnit(unit);
             }
 
             previousUnitPositions[unit] = unit.position;

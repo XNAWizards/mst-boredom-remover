@@ -21,5 +21,9 @@ namespace mst_boredom_remover
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(backgroundMusic);
         }
+        public static void StopBGM()
+        {
+            MediaPlayer.Stop();
+        }
     }
 }
