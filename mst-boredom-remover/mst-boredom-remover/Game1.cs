@@ -89,83 +89,83 @@ namespace mst_boredom_remover
             // UIObjects
             #region Buttons
             // New Game Button
-            Button newButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150,117), 1.0f, "New", bigFont);
-            newButton.OnPress += newButton_OnPress;
-            newButton.Clicked += newButton_Clicked;
+            //Button newButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150, 117), "New", bigFont);
+            //newButton.OnPress += newButton_OnPress;
+            //newButton.Clicked += newButton_Clicked;
 
-            // Load Game Button
-            Button loadButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150, 217), 1.0f, "Load", bigFont);
-            loadButton.OnPress += loadButton_OnPress;
-            loadButton.Clicked += loadButton_Clicked;
-            // Settings/Options Button
+            //// Load Game Button
+            //Button loadButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150, 217), "Load", bigFont);
+            //loadButton.OnPress += loadButton_OnPress;
+            //loadButton.Clicked += loadButton_Clicked;
+            //// Settings/Options Button
 
-            // main menu Exit Button
-            Button mmExitButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150, 317), 1.0f, "Exit", bigFont);
-            mmExitButton.OnPress += mmExitButton_OnPress;
-            mmExitButton.Clicked += mmExitButton_Clicked;
+            //// main menu Exit Button
+            //Button mmExitButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(150, 317), "Exit", bigFont);
+            //mmExitButton.OnPress += mmExitButton_OnPress;
+            //mmExitButton.Clicked += mmExitButton_Clicked;
 
-            // Back Button for ingame screen
-            Button backButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(1250, 27), .5f, "Back", bigFont, size);
-            backButton.OnPress += backButton_OnPress;
-            backButton.Clicked += backButton_Clicked;
+            //// Back Button for ingame screen
+            //Button backButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(1250, 27), "Back", bigFont, size);
+            //backButton.OnPress += backButton_OnPress;
+            //backButton.Clicked += backButton_Clicked;
 
-            // Go Button for New Game screen
-            Button goButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(600, 500), 1.0f, "Go", bigFont);
-            goButton.OnPress += goButton_OnPress;
-            goButton.Clicked += goButton_Clicked;
+            //// Go Button for New Game screen
+            //Button goButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(600, 500), "Go", bigFont);
+            //goButton.OnPress += goButton_OnPress;
+            //goButton.Clicked += goButton_Clicked;
 
-            // back button for new game
-            Button ngbackButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(20, 675), .5f, "Back", bigFont);
-            ngbackButton.OnPress += ngbackButton_OnPress;
-            ngbackButton.Clicked += ngbackButton_Clicked;
+            //// back button for new game
+            //Button ngbackButton = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(20, 675), "Back", bigFont);
+            //ngbackButton.OnPress += ngbackButton_OnPress;
+            //ngbackButton.Clicked += ngbackButton_Clicked;
 
-            Button igBuildTown = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(240, 660), 1.0f, "Build Town", bigFont, size);
-            igBuildTown.OnPress += igBuildTown_OnPress;
-            igBuildTown.Clicked += igBuildTown_Clicked;
+            //Button igBuildTown = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(240, 660), "Build Town", bigFont, size);
+            //igBuildTown.OnPress += igBuildTown_OnPress;
+            //igBuildTown.Clicked += igBuildTown_Clicked;
 
-            Button igBuildMine = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(240, 700), 1.0f, "Build Mine", bigFont, size);
-            igBuildMine.OnPress += igBuildMine_OnPress;
-            igBuildMine.Clicked += igBuildMine_Clicked;
+            //Button igBuildMine = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(240, 700), "Build Mine", bigFont, size);
+            //igBuildMine.OnPress += igBuildMine_OnPress;
+            //igBuildMine.Clicked += igBuildMine_Clicked;
 
-            Button igProduceKnight = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(320, 660), 1.0f, "Produce Knight", bigFont, size);
-            igProduceKnight.OnPress += igProduceKnight_OnPress;
-            igProduceKnight.Clicked += igProduceKnight_Clicked;
+            //Button igProduceKnight = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(320, 660), "Produce Knight", bigFont, size);
+            //igProduceKnight.OnPress += igProduceKnight_OnPress;
+            //igProduceKnight.Clicked += igProduceKnight_Clicked;
 
-            Button igProduceArcher = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(320, 700), 1.0f, "Produce Archer", bigFont, size);
-            igProduceArcher.OnPress += igProduceArcher_OnPress;
-            igProduceArcher.Clicked += igProduceArcher_Clicked;
+            //Button igProduceArcher = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(320, 700), "Produce Archer", bigFont, size);
+            //igProduceArcher.OnPress += igProduceArcher_OnPress;
+            //igProduceArcher.Clicked += igProduceArcher_Clicked;
 
-            Button igProducePeasant = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(400, 660), 1.0f, "Produce Peasant", bigFont, size);
-            igProducePeasant.OnPress += igProducePeasant_OnPress;
-            igProducePeasant.Clicked += igProducePeasant_Clicked;
+            //Button igProducePeasant = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(400, 660), "Produce Peasant", bigFont, size);
+            //igProducePeasant.OnPress += igProducePeasant_OnPress;
+            //igProducePeasant.Clicked += igProducePeasant_Clicked;
 
-            Button igAttack = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(80, 700), 1.0f, "Attack", bigFont, size);
-            igAttack.OnPress += igAttack_OnPress;
-            igAttack.Clicked += igAttack_Clicked;
+            //Button igAttack = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(80, 700), "Attack", bigFont, size);
+            //igAttack.OnPress += igAttack_OnPress;
+            //igAttack.Clicked += igAttack_Clicked;
 
-            Button igMove = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(80, 660), 1.0f, "Move", bigFont, size);
-            igMove.OnPress += igMove_OnPress;
-            igMove.Clicked += igMove_Clicked;
+            //Button igMove = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(80, 660), "Move", bigFont, size);
+            //igMove.OnPress += igMove_OnPress;
+            //igMove.Clicked += igMove_Clicked;
 
-            Button igGather = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(160, 660), 1.0f, "Gather", bigFont, size);
-            igGather.OnPress += igGather_OnPress;
-            igGather.Clicked += igGather_Clicked;
+            //Button igGather = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(160, 660), "Gather", bigFont, size);
+            //igGather.OnPress += igGather_OnPress;
+            //igGather.Clicked += igGather_Clicked;
 
-            Button igStop = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(160, 700), 1.0f, "Stop", bigFont, size);
-            igStop.OnPress += igStop_OnPress;
-            igStop.Clicked += igStop_Clicked;
+            //Button igStop = new Button(buttonTexture, buttonHover, buttonActive, new Vector2(160, 700), "Stop", bigFont, size);
+            //igStop.OnPress += igStop_OnPress;
+            //igStop.Clicked += igStop_Clicked;
 
             #endregion
             #region TextDisplays
             // testTextDisplay
-            Texture2D blackTextBackground = Content.Load<Texture2D>("BlackTextBackground");
+            //Texture2D blackTextBackground = Content.Load<Texture2D>("BlackTextBackground");
             SpriteFont font = Content.Load<SpriteFont>("Arial");
-            TextDisplay testTextDisplay = new TextDisplay(blackTextBackground, new Vector2(300, 300), font, Color.Green);
+            //TextDisplay testTextDisplay = new TextDisplay(blackTextBackground, new Vector2(300, 300), font, Color.Green);
             #endregion
             #region TextInputs
             Texture2D textInBackground = Content.Load<Texture2D>("TextInBackground");
             Texture2D textInBackgroundActive = Content.Load<Texture2D>("TextInBackgroundActive");
-            
+
             TextInput testTextInput = new TextInput(textInBackground, textInBackgroundActive, new Vector2(100, 50), font);
             //testTextInput.newInput += new EventHandler(testTextInput_newInput);
 
@@ -195,13 +195,13 @@ namespace mst_boredom_remover
             Texture2D mainBackground = Content.Load<Texture2D>("MainBackground");
             Texture2D hudBackground = Content.Load<Texture2D>("Hud");
 
-            List<UiObject> mainControls = new List<UiObject>();
-            mainControls.Add(newButton);
-            mainControls.Add(loadButton);
-            mainControls.Add(mmExitButton);
-            mainControls.Add(testTextDisplay);
+            //List<UiObject> mainControls = new List<UiObject>();
+            //mainControls.Add(newButton);
+            //mainControls.Add(loadButton);
+            //mainControls.Add(mmExitButton);
+            //mainControls.Add(testTextDisplay);
 
-            Menu mainMenu = new Menu(hudBackground, new Vector2(0, 0), mainControls, Color.White, 0);
+            //Menu mainMenu = new Menu(hudBackground, new Vector2(0, 0), mainControls, Color.White, 0);
 
             Texture2D blankBackground = Content.Load<Texture2D>("BlankBackground");
             Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Plains1");
@@ -244,10 +244,10 @@ namespace mst_boredom_remover
             engine.tileTypes.Add(new TileType("River West and South", texture: riverBendTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 0.0f));
             engine.tileTypes.Add(new TileType("River West and North", texture: riverBendTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 0.5f));
             engine.tileTypes.Add(new TileType("River East and North", texture: riverBendTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 1.0f));
-            
+
             //Map m = new Map(Vector2.Zero, width, height, ref engine, GraphicsDevice);
             Map m = new Map(Vector2.Zero, width, height, ref engine, GraphicsDevice, numDreadland.GetTextAsInt(), numDesert.GetTextAsInt(), numPlain.GetTextAsInt(), numMountain.GetTextAsInt(), numTundra.GetTextAsInt(), numForest.GetTextAsInt(), numOcean.GetTextAsInt(), numResource.GetTextAsInt());
-            List<UiObject> gameControls = new List<UiObject>();
+            //List<UiObject> gameControls = new List<UiObject>();
 
             Texture2D gameBackground = Content.Load<Texture2D>("gameBackground");
 
@@ -256,35 +256,35 @@ namespace mst_boredom_remover
             Texture2D HPbar = Content.Load<Texture2D>("HPbar");
             Hud hud = new Hud(ref engine, ref m, boxSelect, HPbar);
 
-            gameControls.Add(m);
-            gameControls.Add(backButton);
-            gameControls.Add(igBuildTown);
-            gameControls.Add(igBuildMine);
-            gameControls.Add(igProduceKnight);
-            gameControls.Add(igProduceArcher);
-            gameControls.Add(igProducePeasant);
-            gameControls.Add(igAttack);
-            gameControls.Add(igMove);
-            gameControls.Add(igGather);
-            gameControls.Add(igStop);
-            gameControls.Add(hud);
+            //gameControls.Add(m);
+            //gameControls.Add(backButton);
+            //gameControls.Add(igBuildTown);
+            //gameControls.Add(igBuildMine);
+            //gameControls.Add(igProduceKnight);
+            //gameControls.Add(igProduceArcher);
+            //gameControls.Add(igProducePeasant);
+            //gameControls.Add(igAttack);
+            //gameControls.Add(igMove);
+            //gameControls.Add(igGather);
+            //gameControls.Add(igStop);
+            //gameControls.Add(hud);
 
-            Menu gameMenu = new Menu(hudBackground, new Vector2(0, 0), gameControls, Color.White, 1);
+            //Menu gameMenu = new Menu(hudBackground, new Vector2(0, 0), gameControls, Color.White, 1);
 
             // --- //
 
-            List<UiObject> newGameControls = new List<UiObject>();
-            newGameControls.Add(testTextInput);
-            newGameControls.Add(goButton);
-            newGameControls.Add(ngbackButton);
-            newGameControls.Add(numOcean);
-            newGameControls.Add(numForest);
-            newGameControls.Add(numPlain);
-            newGameControls.Add(numMountain);
-            newGameControls.Add(numDesert);
-            newGameControls.Add(numTundra);
-            newGameControls.Add(numDreadland);
-            newGameControls.Add(numResource);
+            //List<UiObject> newGameControls = new List<UiObject>();
+            //newGameControls.Add(testTextInput);
+            //newGameControls.Add(goButton);
+            //newGameControls.Add(ngbackButton);
+            //newGameControls.Add(numOcean);
+            //newGameControls.Add(numForest);
+            //newGameControls.Add(numPlain);
+            //newGameControls.Add(numMountain);
+            //newGameControls.Add(numDesert);
+            //newGameControls.Add(numTundra);
+            //newGameControls.Add(numDreadland);
+            //newGameControls.Add(numResource);
 
             Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
             Texture2D swordUnitAttackTexture = Content.Load<Texture2D>("Units\\Kbaseatk");
@@ -326,7 +326,7 @@ namespace mst_boredom_remover
                 movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 500,
                 attackStrength: 0, defense: 10, gatherRate: 50, goldCost: 500));
 
-            Menu newGameMenu = new Menu(hudBackground, Vector2.Zero, newGameControls, Color.White, 2);
+            //Menu newGameMenu = new Menu(hudBackground, Vector2.Zero, newGameControls, Color.White, 2);
             #endregion
 
             SoundEngine.backgroundMusic = Content.Load<Song>("Audio\\RTS_BGM");
@@ -334,10 +334,24 @@ namespace mst_boredom_remover
             // list of all UI objects to be drawn/updated
             userInterface = new List<UiObject>();
 
-            userInterface.Add(mainMenu);
-            userInterface.Add(gameMenu);
-            userInterface.Add(newGameMenu);
-            mainMenu.Activate(); // activate the main menu first
+            //userInterface.Add(mainMenu);
+            //userInterface.Add(gameMenu);
+            //userInterface.Add(newGameMenu);
+            //mainMenu.Activate(); // activate the main menu first
+
+            userInterface = ContentLoader.ParseUI("Config.txt", Content, this, font);
+
+            // force these
+
+
+            Menu mainMenuScreen = (Menu)userInterface[0];
+            Menu inGameScreen = (Menu)userInterface[1];
+            Menu newGameScreen = (Menu)userInterface[2];
+
+            inGameScreen.controls.Insert(0, m);
+            inGameScreen.controls.Add(hud);
+
+            mainMenuScreen.Activate();
 
             foreach (UiObject u in userInterface)
             {
@@ -437,6 +451,75 @@ namespace mst_boredom_remover
             base.Draw(gameTime);
         }
 
+        public void button_Clicked(object sender, EventArgs e)
+        {
+            Button b = (Button)sender;
+
+            switch (b.text)
+            {
+                case "New":
+                    newButton_Clicked(sender, e);
+                    break;
+                case "Load":
+
+                    break;
+                case "Exit":
+                    mmExitButton_Clicked(sender, e);
+                    break;
+                case "Back":
+                    // if ingame screen
+                    if (b.parentReference == userInterface[1])
+                    {
+                        backButton_Clicked(sender, e);
+                    }
+                    else // new game screen
+                    {
+                        ngbackButton_Clicked(sender, e);
+                    }
+                    break;
+                case "Build Town":
+                    igBuildTown_Clicked(sender, e);
+                    break;
+                case "Build Mine":
+                    igBuildMine_Clicked(sender, e);
+                    break;
+                case "Produce Knight":
+                    igProduceKnight_Clicked(sender, e);
+                    break;
+                case "Produce Archer":
+                    igProduceArcher_Clicked(sender, e);
+                    break;
+                case "Produce Peasant":
+                    igProducePeasant_Clicked(sender, e);
+                    break;
+                case "Attack":
+                    igAttack_Clicked(sender, e);
+                    break;
+                case "Move":
+                    igMove_Clicked(sender, e);
+                    break;
+                case "Gather":
+                    igGather_Clicked(sender, e);
+                    break;
+                case "Stop":
+                    igStop_Clicked(sender, e);
+                    break;
+                case "Go":
+                    goButton_Clicked(sender, e);
+                    break;
+                //case "Back":
+                //    ngbackButton_Clicked(sender, e);
+                //    break;
+                default:
+                    // nothing
+                    break;
+            }
+        }
+
+        public void button_OnPress(object sender, EventArgs e)
+        {
+
+        }
         
         public void newButton_Clicked(object sender, EventArgs e)
         {
