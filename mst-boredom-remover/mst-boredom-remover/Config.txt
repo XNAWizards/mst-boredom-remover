@@ -31,8 +31,8 @@ Hud
 1
 menu controls start
 button start
-20
-675
+1250
+27
 Back
 t
 button end
