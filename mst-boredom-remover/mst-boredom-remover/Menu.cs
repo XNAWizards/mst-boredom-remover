@@ -8,7 +8,7 @@ namespace mst_boredom_remover
     {
         private Texture2D texture;
         private Vector2 position;
-        private List<UiObject> controls;
+        public List<UiObject> controls;
         private Color color;
         private int thisId;
 
@@ -116,7 +116,7 @@ namespace mst_boredom_remover
         {
             if (active)
             {
-                
+                sb.Draw(texture, position, Color.White);
                 foreach (UiObject x in controls)
                 {
                     x.Draw(sb);
@@ -126,7 +126,6 @@ namespace mst_boredom_remover
                 {
                     DebugDraw(sb);
                 }
-                //sb.Draw(texture, position, color);
             }
         }
     }
