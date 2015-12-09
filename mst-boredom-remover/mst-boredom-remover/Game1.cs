@@ -501,21 +501,29 @@ namespace mst_boredom_remover
             {
                 x.Draw(spriteBatch);
             }
+            spriteBatch.End();
+            
+            BlendState invert = new BlendState();
+            invert.AlphaBlendFunction = BlendFunction.Subtract;
+            invert.AlphaSourceBlend = Blend.SourceAlpha;
+            invert.AlphaDestinationBlend = Blend.DestinationAlpha;
+            invert.ColorBlendFunction = BlendFunction.Add;
+            invert.ColorSourceBlend = Blend.InverseDestinationColor;
+            invert.ColorDestinationBlend = Blend.InverseSourceColor;
 
-            spriteBatch.DrawString(debugFont, "Current tick: " + engine.currentTick, new Vector2(1, 1), Color.Black);
+            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: invert);
+            spriteBatch.DrawString(debugFont, "Current tick: " + engine.currentTick, new Vector2(1, 1), Color.White);
             if (engine.currentTick > 1)
             {
-                spriteBatch.DrawString(debugFont, "x: " + engine.units[0].position.x, new Vector2(1, 1 + 32), Color.Black);
-                spriteBatch.DrawString(debugFont, "y: " + engine.units[0].position.y, new Vector2(1, 1 + 32 * 2), Color.Black);
-                spriteBatch.DrawString(debugFont, "1 player gold: " + engine.players[0].gold, new Vector2(1, 1 + 32 * 3), Color.Black);
-                spriteBatch.DrawString(debugFont, "1 player iron: " + engine.players[0].iron, new Vector2(1, 1 + 32 * 4), Color.Black);
-                spriteBatch.DrawString(debugFont, "1 player mc  : " + engine.players[0].manaCystals, new Vector2(1, 1 + 32 * 5), Color.Black);
-                spriteBatch.DrawString(debugFont, "2 player gold: " + engine.players[1].gold, new Vector2(1, 1 + 32 * 6), Color.Black);
-                spriteBatch.DrawString(debugFont, "2 player iron: " + engine.players[1].iron, new Vector2(1, 1 + 32 * 7), Color.Black);
-                spriteBatch.DrawString(debugFont, "2 player mc  : " + engine.players[1].manaCystals, new Vector2(1, 1 + 32 * 8), Color.Black);
+                spriteBatch.DrawString(debugFont, "1 player gold: " + engine.players[0].gold, new Vector2(1, 1 + 32 * 1), Color.White);
+                spriteBatch.DrawString(debugFont, "1 player iron: " + engine.players[0].iron, new Vector2(1, 1 + 32 * 2), Color.White);
+                spriteBatch.DrawString(debugFont, "1 player mc  : " + engine.players[0].manaCystals, new Vector2(1, 1 + 32 * 3), Color.White);
+                spriteBatch.DrawString(debugFont, "2 player gold: " + engine.players[1].gold, new Vector2(1, 1 + 32 * 4), Color.White);
+                spriteBatch.DrawString(debugFont, "2 player iron: " + engine.players[1].iron, new Vector2(1, 1 + 32 * 5), Color.White);
+                spriteBatch.DrawString(debugFont, "2 player mc  : " + engine.players[1].manaCystals, new Vector2(1, 1 + 32 * 6), Color.White);
             }
-
             spriteBatch.End();
+
             base.Draw(gameTime);
         }
 

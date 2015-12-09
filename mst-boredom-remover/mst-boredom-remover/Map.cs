@@ -336,21 +336,28 @@ namespace mst_boredom_remover
                 pxMod = 0;
             }
 
+            int step = 1;
+            // Slow down movement speed when left control is held
+            if (keyboard.IsKeyDown(Keys.LeftControl))
+            {
+                step = gt.TotalGameTime.Ticks % 3 == 0 ? 1 : 0;
+            }
+            // Move screen with WASD
             if (keyboard.IsKeyDown(Keys.W))
             {
-                MapMove(0, -1);
+                MapMove(0, -step);
             }
             if (keyboard.IsKeyDown(Keys.A))
             {
-                MapMove(-1, 0);
+                MapMove(-step, 0);
             }
             if (keyboard.IsKeyDown(Keys.S))
             {
-                MapMove(0, 1);
+                MapMove(0, step);
             }
             if (keyboard.IsKeyDown(Keys.D))
             {
-                MapMove(1, 0);
+                MapMove(step, 0);
             }
 
             MouseState m = Mouse.GetState();
