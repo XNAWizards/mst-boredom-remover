@@ -44,6 +44,10 @@ namespace mst_boredom_remover.engine
         public List<UnitModifier> modifiers;
 
         public int animationStartTick; // This tells us on which tick an animation was started
+
+        private List<Position> currentPath;
+        private Position currentTargetPosition;
+
         private const int moveRetryCooldown = 10;
         private const int buildRetryCooldown = 10;
         private const int buildCooldown = 10;
@@ -65,6 +69,9 @@ namespace mst_boredom_remover.engine
             modifiers = new List<UnitModifier>();
 
             animationStartTick = 0;
+
+            currentPath = null;
+            currentTargetPosition = null;
         }
 
         public bool CanMove(Position targetPosition)
@@ -132,7 +139,7 @@ namespace mst_boredom_remover.engine
         public int GetMoveCooldown(Position startPosition, Position endPosition)
         {
             // TODO: Account for tile effects, unit modifiers, etc.
-            int nominalSpeed = (int)(10.0 / type.movementSpeed);
+            int nominalSpeed = (int)(engine.map.GetTileAt(endPosition).tileType.movementCost * 10.0 / type.movementSpeed);
             return nominalSpeed > 0 ? nominalSpeed : 1;
         }
 
@@ -187,6 +194,32 @@ namespace mst_boredom_remover.engine
             orders.RemoveAt(0);
         }
 
+        private void MoveTowards(Position targetPosition)
+        {
+            Position nextStep = null;
+            if (currentPath == null || currentPath.Count == 0 || !targetPosition.Equals(currentTargetPosition) || !CanMove(currentPath.First()))
+            {
+                // Try to create a path if the current one is invalid
+                currentPath = Pathfinder.FindPath(engine, this, engine.map.GetTileAt(position), engine.map.GetTileAt(targetPosition));
+                currentTargetPosition = targetPosition;
+                // Remove the first element because we are already there
+                if (currentPath != null)
+                    currentPath.RemoveAt(0);
+            }
+            if (currentPath != null && currentPath.Count > 0 && currentTargetPosition.Equals(targetPosition) && CanMove(currentPath.First()))
+            {
+                nextStep = currentPath.First();
+                currentPath.RemoveAt(0);
+                TryToMove(nextStep);
+            }
+            else
+            {
+                status = Status.Idle;
+                // Retry after moveRetryCooldown ticks
+                engine.ScheduleUpdate(moveRetryCooldown, this);
+            }
+        }
+
         private void TryToMove(Position targetPosition)
         {
             if (targetPosition != null)
@@ -221,8 +254,7 @@ namespace mst_boredom_remover.engine
                 Update();
                 return;
             }
-            Position nextPosition = Pathfinder.FindNextStep(engine, this, position, order.targetPosition);
-            TryToMove(nextPosition);
+            MoveTowards(order.targetPosition);
         }
 
         private void AttackOrder(Order order)
@@ -239,8 +271,7 @@ namespace mst_boredom_remover.engine
             if (position.Distance(targetPosition) > type.attackRange)
             {
                 // Move into range
-                var nextPosition = Pathfinder.FindNextStep(engine, this, position, targetPosition);
-                TryToMove(nextPosition);
+                MoveTowards(targetPosition);
                 return;
             }
 
@@ -254,8 +285,7 @@ namespace mst_boredom_remover.engine
             // If the unit is told to build a structure far away, and he is not in range yet
             if (CanMove() && order.targetPosition != null && order.targetPosition.Distance(position) > 1)
             {
-                var nextPosition = Pathfinder.FindNextStep(engine, this, position, order.targetPosition);
-                TryToMove(nextPosition);
+                MoveTowards(order.targetPosition);
                 return;
             }
 
@@ -275,7 +305,7 @@ namespace mst_boredom_remover.engine
             Position producePosition = null;
             if (order.targetPosition == null)
             {
-                foreach (var testPosition in engine.map.BreadthFirst(targetLocation, distance: 1))
+                foreach (var testPosition in Pathfinder.BreadthFirst(engine, targetLocation, distance: 1))
                 {
                     if (engine.GetUnitAt(testPosition) == null)
                     {
@@ -321,8 +351,7 @@ namespace mst_boredom_remover.engine
             if (!position.Equals(order.targetPosition))
             {
                 // Move to resource
-                var nextPosition = Pathfinder.FindNextStep(engine, this, position, order.targetPosition);
-                TryToMove(nextPosition);
+                MoveTowards(order.targetPosition);
                 return;
             }
             status = Status.Producing;
