@@ -95,11 +95,11 @@ namespace mst_boredom_remover.engine
                     break;
                 }
                 // Give up if we backtrack too far
-                /*if (currentBest.pathHeuristic >= start.pathHeuristic*2 &&
+                if (currentBest.pathHeuristic >= start.pathHeuristic*2 &&
                     currentBest.position.Distance(end.position) > 200)
                 {
                     break;
-                }*/
+                }
                 // Take current best, generate all possible nodes, push them onto queue
                 foreach (var neighbor in currentBest.neighbors)
                 {
