@@ -23,7 +23,7 @@ namespace mst_boredom_remover.engine
         public readonly List<Player> players;
         public readonly List<Unit> units;
 
-        public AI ai;
+        public AI ai1,ai2;
 
         private int idCounter;
         private readonly Unit[,] unitGrid;
@@ -49,7 +49,8 @@ namespace mst_boredom_remover.engine
             List<Position> goldTiles = new List<Position>();
             List<Position> ironTiles = new List<Position>();
             List<Position> manaTiles = new List<Position>();
-            ai = new AI(this, null, goldTiles, ironTiles, manaTiles);
+            ai1 = new AI(this, null, goldTiles, ironTiles, manaTiles);
+            ai2 = new AI(this, null, goldTiles, ironTiles, manaTiles);
         }
 
         public Unit GetUnitAt(Position position)
@@ -106,7 +107,7 @@ namespace mst_boredom_remover.engine
                     unit.Update();
                 }
 
-                // We are done with all the updates for this tick
+                // We are done with all sthe updates for this tick
                 futureUpdates.Remove(currentTick);
 
                 foreach (Unit unit in units.Where(unit => unit.orders.Count == 0))
@@ -120,7 +121,8 @@ namespace mst_boredom_remover.engine
             }
             if ( currentTick%100 == 0 )
             {
-                ai.makeMoves(1);
+                ai1.makeMoves(1);
+                ai2.makeMoves(1);
             }
             currentTick += 1;
             inTick = false;
