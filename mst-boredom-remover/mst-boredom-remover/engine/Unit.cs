@@ -163,6 +163,9 @@ namespace mst_boredom_remover.engine
 
         public void Update()
         {
+            if (status == Status.Dead) // In case this unit got killed on this tick
+                return; // Otherwise this unit might unset it's DEAD state and be attacked twice
+
             if (orders.Count == 0)
             {
                 status = Status.Idle;
@@ -368,7 +371,7 @@ namespace mst_boredom_remover.engine
             }
             else if (tileResoure == TileType.ResourceType.ManaCrystals)
             {
-                owner.iron += type.gatherRate;
+                owner.manaCystals += type.gatherRate;
             }
             engine.ScheduleUpdate(gatherCooldown, this);
             if (orders.Count > 1)

@@ -150,7 +150,10 @@ namespace mst_boredom_remover.engine
             }
             if( futureUpdates[unit.nextMove].Contains(unit))
             {
-                futureUpdates[unit.nextMove].Remove(unit);
+                if (unit.nextMove != currentTick) // Don't remove from the current update list because WE ARE ITERATING OVER IT
+                {
+                    futureUpdates[unit.nextMove].Remove(unit);
+                }
             }
         }
 
@@ -249,7 +252,7 @@ namespace mst_boredom_remover.engine
             Debug.Assert(b.orders.Count == 0, "Swap: b still had orders left.");
             b.orders.Add(Order.CreateMoveOrder(a.position));
             b.Update(); // This will force the unit to wait the appropriate amount of time before moving back
-            Debug.Assert(b.position.Equals(a.position), "Swap: b did not move back to original position.");
+            // Debug.Assert(b.position.Equals(a.position), "Swap: b did not move back to original position.");
             // Add a to b's old position
             a.previousPosition = a.position;
             a.position = targetPosition;
