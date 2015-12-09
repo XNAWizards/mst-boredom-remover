@@ -103,9 +103,12 @@ namespace mst_boredom_remover.engine
 
         public void UpdateTilesFromCharmap(char [,] charmap)
         {
-            engine.ai.goldTiles = new List<Position>();
-            engine.ai.ironTiles = new List<Position>();
-            engine.ai.manaTiles = new List<Position>();
+            engine.ai1.goldTiles = new List<Position>();
+            engine.ai1.ironTiles = new List<Position>();
+            engine.ai1.manaTiles = new List<Position>();
+            engine.ai2.goldTiles = new List<Position>();
+            engine.ai2.ironTiles = new List<Position>();
+            engine.ai2.manaTiles = new List<Position>();
             for (var y = 0; y < height; ++y)
             {
                 for (var x = 0; x < width; ++x)
@@ -123,15 +126,18 @@ namespace mst_boredom_remover.engine
                     
                     if ( tileType.resourceType == TileType.ResourceType.Gold )
                     {
-                        engine.ai.goldTiles.Add(targetPosition);
+                        engine.ai1.goldTiles.Add(targetPosition);
+                        engine.ai2.goldTiles.Add(targetPosition);
                     } 
                     else if (tileType.resourceType == TileType.ResourceType.Iron)
                     {
-                        engine.ai.ironTiles.Add(targetPosition);
+                        engine.ai1.ironTiles.Add(targetPosition);
+                        engine.ai2.ironTiles.Add(targetPosition);
                     } 
                     else if (tileType.resourceType == TileType.ResourceType.ManaCrystals)
                     {
-                        engine.ai.manaTiles.Add(targetPosition);
+                        engine.ai1.manaTiles.Add(targetPosition);
+                        engine.ai2.manaTiles.Add(targetPosition);
                     }
                 }
             }

@@ -29,28 +29,36 @@ namespace mst_boredom_remover.engine
         //The engine can call this to tell the AI to issue upto numMoves orders. This allows the AI to scale how much it is doing
         public void makeMoves( int numMoves )
         {
-            int peasentCount = 0,knightCount =0,archerCount =0, mineCount =0, townCount =0;
+            int peasentCount = 0,knightCount =0,archerCount =0, mineCount =0, townCount =0, attackingCount=0;
             foreach (Unit u in engine.units)
             {
-                if (u.type.Equals(engine.unitTypes[0]))
+                if (u.type.Equals(engine.unitTypes[2]))
                 {
                     peasentCount++;
                 }
                 if (u.type.Equals(engine.unitTypes[0]))
                 {
-                    peasentCount++;
+                    knightCount++;
+                    if (u.orders.Count > 0 && u.orders[0].orderType.Equals(Order.OrderType.Attack))
+                    {
+                        attackingCount++;
+                    }
                 }
-                if (u.type.Equals(engine.unitTypes[0]))
+                if (u.type.Equals(engine.unitTypes[1]))
                 {
-                    peasentCount++;
+                    archerCount++;
+                    if (u.orders.Count>0 && u.orders[0].orderType.Equals(Order.OrderType.Attack))
+                    {
+                        attackingCount++;
+                    }
                 }
-                if (u.type.Equals(engine.unitTypes[0]))
+                if (u.type.Equals(engine.unitTypes[4]))
                 {
-                    peasentCount++;
+                    mineCount++;
                 }
-                if (u.type.Equals(engine.unitTypes[0]))
+                if (u.type.Equals(engine.unitTypes[3]))
                 {
-                    peasentCount++;
+                    townCount++;
                 }
             }
             //generic loop to determine what the AI does
@@ -62,15 +70,64 @@ namespace mst_boredom_remover.engine
                 {
                     if (u.owner == me)
                     {
-                        if ( me.gold >= engine.unitTypes[3].goldCost && u.CanBuild() ) //Can build a town, build it
+                        if ( u.CanAttack() && !u.CanGather() && !u.CanProduce())
+                        {
+                            if ( u.orders.Count != 0 )
+                            {
+                                continue;
+                            }
+                            Position p = null;
+                            int distance = 100000000;
+                            Unit closestTarget = null;
+                            foreach ( Unit target in engine.units)
+                            {
+                                if ( target.owner != me )
+                                {
+                                    if ( target.position.Distance(u.position) < distance )
+                                    {
+                                        distance = target.position.Distance(u.position);
+                                        closestTarget = target;
+                                        p = target.position;
+                                    }
+                                }
+                            }
+                            if ( p != null )
+                            {
+                                engine.OrderAttack(u, closestTarget);
+                                break;
+                            }
+
+
+                        }
+                        if (u.CanProduce() && !u.CanGather() && archerCount+knightCount<=attackingCount)
+                        {
+                            int unit_to_produce = -1;
+                            if (peasentCount == 0)
+                            {
+                                unit_to_produce = 2;
+                            }
+                            else if (knightCount < archerCount)
+                            {
+                                unit_to_produce = 0;
+                            }
+                            else
+                            {
+                                unit_to_produce = 1;
+                            }
+                            if (unit_to_produce >= 0)
+                            {
+                                engine.OrderProduce(u, engine.unitTypes[unit_to_produce]);
+                                break;
+                            }
+                        }
+                        if ( townCount < 5 && me.gold >= engine.unitTypes[3].goldCost && u.CanBuild() ) //Can build a town, build it
                         {
                             if ( u.orders.Count == 0 )
                             {
-                                knightCount++;
-                                //engine.OrderProduce(u, engine.unitTypes[3]);
+                                engine.OrderProduce(u, engine.unitTypes[3]);
                             }
                         }
-                        if ( me.gold >= engine.unitTypes[4].goldCost )
+                        if ( u.CanMove() && u.CanBuild() && me.gold >= engine.unitTypes[4].goldCost && mineCount < 5 ) //make mines
                         {
                             if (u.orders.Count == 0 || u.orders[0].orderType.Equals(Order.OrderType.Gather) ) //if the unit is not doing anything
                             {
@@ -101,7 +158,7 @@ namespace mst_boredom_remover.engine
                                 break;
                             }
                         }
-                        else if (u.CanGather())
+                        else if (u.CanMove() && u.CanGather() && me.gold < 1000)
                         {
                             if (u.orders.Count == 0 || u.orders[0].orderType.Equals(Order.OrderType.Gather) ) //if the unit is not doing anything
                             {
@@ -136,6 +193,7 @@ namespace mst_boredom_remover.engine
                                 }
                             }
                         }
+                        
                     }
                 }
 

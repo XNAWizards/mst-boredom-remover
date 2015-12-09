@@ -45,7 +45,8 @@ namespace mst_boredom_remover
             // Create initial players
             engine.AddPlayer("Frodo", teamIndex: 0);
             engine.AddPlayer("Sauron", teamIndex: 1);
-            engine.ai.me = engine.players[1];
+            engine.ai1.me = engine.players[1];
+            engine.ai2.me = engine.players[0];
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -264,13 +265,13 @@ namespace mst_boredom_remover
                 idleTextures: new[] { swordUnitTexture },
                 moveTextures: new[] { swordUnitTexture },
                 attackTextures: new[] { swordUnitAttackTexture },
-                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Move },
+                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Move },
                 attackStrength: 15, defense: 2, gatherRate: 2, goldCost: 100));
             engine.unitTypes.Add(new UnitType(name: "Archer",
                 idleTextures: new[] { archerUnitTexture },
                 moveTextures: new[] { archerUnitTexture },
                 attackTextures: new[] { archerUnitTexture },
-                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Move },
+                actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Move },
                 attackStrength: 10, attackRange: 5, defense: 0, gatherRate: 2, goldCost: 100));
             engine.unitTypes.Add(new UnitType(name: "Peasent",
                 idleTextures: new[] { mageUnitTexture },
@@ -282,7 +283,7 @@ namespace mst_boredom_remover
                 idleTextures: new[] { baseTown },
                 moveTextures: new[] { baseTown },
                 attackTextures: new[] { baseTown },
-                actions: new List<UnitType.Action> { UnitType.Action.Gather, UnitType.Action.Produce },
+                actions: new List<UnitType.Action> {  UnitType.Action.Produce },
                 movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 1000,
                 attackStrength: 0, defense: 10, gatherRate: 15, goldCost: 1000));
             engine.unitTypes.Add(new UnitType(name: "GoldMine",
