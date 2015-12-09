@@ -16,12 +16,13 @@ namespace mst_boredom_remover.engine
         /// <param name="size">The maximum number of tiles traversed.  Or negative for no limit.</param>
         public static IEnumerable<Position> BreadthFirst(Engine engine, Position position, int distance = -1, int size = -1) // Yay C# has generators!
         {
+            int localPathCounter = pathCounter++;
             List<Tile> perimeter = new List<Tile>() { engine.map.GetTileAt(position) };
             perimeter[0].pathDistance = 0;
             while (size != 0 && perimeter.Count > 0)
             {
                 Tile top = perimeter[0];
-                top.pathIndex = pathCounter;
+                top.pathIndex = localPathCounter;
                 perimeter.RemoveAt(0);
                 if (distance >= 0 && top.pathDistance > distance)
                 {
@@ -31,17 +32,16 @@ namespace mst_boredom_remover.engine
 
                 foreach (var neighbor in top.neighbors)
                 {
-                    if (neighbor.pathIndex < pathCounter)
+                    if (neighbor.pathIndex < localPathCounter)
                     {
                         perimeter.Add(neighbor);
-                        neighbor.pathIndex = pathCounter;
+                        neighbor.pathIndex = localPathCounter;
                         neighbor.pathDistance = top.pathDistance + 1;
                     }
                 }
                 size -= 1;
             }
-
-            pathCounter += 1;
+            // This is not the place for cleanup code
         }
 
         public static Position FindNextStep( Engine engine, Unit unit, Position start, Position end)
