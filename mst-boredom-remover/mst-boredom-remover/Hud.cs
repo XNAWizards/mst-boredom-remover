@@ -151,7 +151,7 @@ namespace mst_boredom_remover
             Position mouseGameTilePosition = new Position((int)mouseTile.X, (int)mouseTile.Y);
 
             Unit clickedUnit = engine.GetUnitAt(mouseGameTilePosition);
-            var enumerator = engine.map.BreadthFirst(mouseGameTilePosition).GetEnumerator();
+            var enumerator = Pathfinder.BreadthFirst(engine, mouseGameTilePosition).GetEnumerator();
             enumerator.MoveNext();
             foreach (Unit unit in selectedUnits)
             {

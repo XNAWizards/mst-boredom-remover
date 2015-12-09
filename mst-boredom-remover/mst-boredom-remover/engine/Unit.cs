@@ -132,7 +132,7 @@ namespace mst_boredom_remover.engine
         public int GetMoveCooldown(Position startPosition, Position endPosition)
         {
             // TODO: Account for tile effects, unit modifiers, etc.
-            int nominalSpeed = (int)(10.0 / type.movementSpeed);
+            int nominalSpeed = (int)(engine.map.GetTileAt(endPosition).tileType.movementCost * 10.0 / type.movementSpeed);
             return nominalSpeed > 0 ? nominalSpeed : 1;
         }
 
@@ -275,7 +275,7 @@ namespace mst_boredom_remover.engine
             Position producePosition = null;
             if (order.targetPosition == null)
             {
-                foreach (var testPosition in engine.map.BreadthFirst(targetLocation, distance: 1))
+                foreach (var testPosition in Pathfinder.BreadthFirst(engine, targetLocation, distance: 1))
                 {
                     if (engine.GetUnitAt(testPosition) == null)
                     {
