@@ -196,8 +196,9 @@ namespace mst_boredom_remover.engine
 
         private void MoveTowards(Position targetPosition)
         {
-            Position nextStep = null;
-            if (currentPath == null || currentPath.Count == 0 || !targetPosition.Equals(currentTargetPosition) || !CanMove(currentPath.First()))
+            if (currentPath == null || currentPath.Count == 0 ||
+                !targetPosition.Equals(currentTargetPosition) || !CanMove(currentPath.First()) ||
+                (position.Distance(targetPosition) % 11 == 0)) // Every 11 steps make sure that a new best path hasn't magically appeared
             {
                 // Try to create a path if the current one is invalid
                 currentPath = Pathfinder.FindPath(engine, this, engine.map.GetTileAt(position), engine.map.GetTileAt(targetPosition));
@@ -208,7 +209,7 @@ namespace mst_boredom_remover.engine
             }
             if (currentPath != null && currentPath.Count > 0 && currentTargetPosition.Equals(targetPosition) && CanMove(currentPath.First()))
             {
-                nextStep = currentPath.First();
+                Position nextStep = currentPath.First();
                 currentPath.RemoveAt(0);
                 TryToMove(nextStep);
             }

@@ -29,6 +29,8 @@ namespace mst_boredom_remover.engine
         private readonly Unit[,] unitGrid;
         private readonly Dictionary<Player, Quadtree> unitQuadtrees;
 
+        private bool inTick = false;
+
         public Engine(int mapWidth, int mapHeight)
         {
             currentTick = 0;
@@ -95,11 +97,11 @@ namespace mst_boredom_remover.engine
 
         public void Tick()
         {
+            inTick = true;
             if (futureUpdates.ContainsKey(currentTick))
             {
-                var x = futureUpdates[currentTick];
                 // Apply all updates for this tick
-                foreach (var unit in x)
+                foreach (var unit in futureUpdates[currentTick])
                 {
                     unit.Update();
                 }
@@ -121,17 +123,18 @@ namespace mst_boredom_remover.engine
                 ai.makeMoves(1);
             }
             currentTick += 1;
+            inTick = false;
         }
 
         public void ScheduleUpdate(int ticksFromNow, Unit unit)
         {
-            if (unit.nextMove <= currentTick)
+            if (unit.nextMove < currentTick + (inTick ? 1 : 0))
             {
                 if (!futureUpdates.ContainsKey(currentTick + ticksFromNow))
                 {
                     futureUpdates[currentTick + ticksFromNow] = new List<Unit>();
                 }
-
+                
                 futureUpdates[currentTick + ticksFromNow].Add(unit);
                 unit.nextMove = currentTick + ticksFromNow;
             }

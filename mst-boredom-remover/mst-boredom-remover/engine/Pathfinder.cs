@@ -10,7 +10,7 @@ namespace mst_boredom_remover.engine
         /// <summary>
         /// A generator that produces positions by doing a breadth first iteration of tiles starting at a given position.
         /// </summary>
-        /// <param name="engine">An engine object ot get tiles from</param>
+        /// <param name="engine">An engine object to get tiles from</param>
         /// <param name="position">The starting position.</param>
         /// <param name="distance">The maximum distance from the starting position.  Or negative for no limit.</param>
         /// <param name="size">The maximum number of tiles traversed.  Or negative for no limit.</param>
