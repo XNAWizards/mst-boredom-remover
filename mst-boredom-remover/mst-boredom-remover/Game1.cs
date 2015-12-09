@@ -404,13 +404,24 @@ namespace mst_boredom_remover
                 x.Update(gameTime);
             }
 
-            // Find starting point
-            Position startPosition = null;
+            // Find starting point for Frodo
+            Position frodoStartPosition = null;
             foreach (var position in Pathfinder.BreadthFirst(engine, new Position(0, 0), -1, -1))
             {
                 if (engine.map.GetTileAt(position).tileType.movementCost < 2)
                 {
-                    startPosition = position;
+                    frodoStartPosition = position;
+                    break;
+                }
+            }
+
+            // Find starting point for Sauron
+            Position sauronStartPosition = null;
+            foreach (var position in Pathfinder.BreadthFirst(engine, new Position(100, 50), -1, -1))
+            {
+                if (engine.map.GetTileAt(position).tileType.movementCost < 2)
+                {
+                    sauronStartPosition = position;
                     break;
                 }
             }
@@ -421,9 +432,9 @@ namespace mst_boredom_remover
             {
                 for (int i = 0; i < 10; ++i)
                 {
-                    engine.AddUnit(engine.unitTypes[2], startPosition + new Position(0, i), engine.players[0]);
+                    engine.AddUnit(engine.unitTypes[2], frodoStartPosition + new Position(0, i), engine.players[0]);
 
-                    engine.AddUnit(engine.unitTypes[2], new Position(100, i + 50), engine.players[1]);
+                    engine.AddUnit(engine.unitTypes[2], sauronStartPosition + new Position(0, i), engine.players[1]);
                 }
             }
             engine.Tick();
