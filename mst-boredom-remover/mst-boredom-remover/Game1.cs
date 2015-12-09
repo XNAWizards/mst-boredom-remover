@@ -203,20 +203,32 @@ namespace mst_boredom_remover
             //mainControls.Add(testTextDisplay);
 
             //Menu mainMenu = new Menu(hudBackground, new Vector2(0, 0), mainControls, Color.White, 0);
-
+            
             Texture2D blankBackground = Content.Load<Texture2D>("BlankBackground");
-            Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Plains1");
-            Texture2D mountainsTexture = Content.Load<Texture2D>("Terrain\\Mountain1");
-            Texture2D desertTexture = Content.Load<Texture2D>("Terrain\\Desert1");
             Texture2D oceanTexture = Content.Load<Texture2D>("Terrain\\Ocean");
+            Texture2D plainsTexture = Content.Load<Texture2D>("Terrain\\Plains1");
+            Texture2D plains2Texture = Content.Load<Texture2D>("Terrain\\Plains2");
+            Texture2D plains3Texture = Content.Load<Texture2D>("Terrain\\Plains3");
+            Texture2D mountainsTexture = Content.Load<Texture2D>("Terrain\\Mountain1");
+            Texture2D mountains2Texture = Content.Load<Texture2D>("Terrain\\Mountain2");
+            Texture2D mountains3Texture = Content.Load<Texture2D>("Terrain\\Mountain3");
+            Texture2D desertTexture = Content.Load<Texture2D>("Terrain\\Desert1");
+            Texture2D desert2Texture = Content.Load<Texture2D>("Terrain\\Desert2");
+            Texture2D desert3Texture = Content.Load<Texture2D>("Terrain\\Desert3");
             Texture2D dreadTexture = Content.Load<Texture2D>("Terrain\\Spoopy1");
+            Texture2D dread2Texture = Content.Load<Texture2D>("Terrain\\Spoopy2");
+            Texture2D dread3Texture = Content.Load<Texture2D>("Terrain\\Spoopy3");
             Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra1");
-            Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest1"); //6
-            Texture2D coastTexture = Content.Load<Texture2D>("Terrain\\CoastStraight"); // 8-11
+            Texture2D tundra2Texture = Content.Load<Texture2D>("Terrain\\Tundra2");
+            Texture2D tundra3Texture = Content.Load<Texture2D>("Terrain\\Tundra3");
+            Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest1");
+            Texture2D forest2Texture = Content.Load<Texture2D>("Terrain\\Forest2");
+            Texture2D forest3Texture = Content.Load<Texture2D>("Terrain\\Forest3");
+            Texture2D coastTexture = Content.Load<Texture2D>("Terrain\\CoastStraight");
             Texture2D coastBendTexture = Content.Load<Texture2D>("Terrain\\CoastBend");
             Texture2D coastCoveTexture = Content.Load<Texture2D>("Terrain\\CoastCove");
-            Texture2D riverStraightTexture = Content.Load<Texture2D>("Terrain\\RiverStraight"); //12-13
-            Texture2D riverBendTexture = Content.Load<Texture2D>("Terrain\\RiverBend"); //14-17
+            Texture2D riverStraightTexture = Content.Load<Texture2D>("Terrain\\RiverStraight");
+            Texture2D riverBendTexture = Content.Load<Texture2D>("Terrain\\RiverBend");
             Texture2D riverThreeTexture = Content.Load<Texture2D>("Terrain\\River3");
             Texture2D riverFourTexture = Content.Load<Texture2D>("Terrain\\River4");
             Texture2D goldTexture = Content.Load<Texture2D>("Terrain\\Gold");
@@ -227,11 +239,23 @@ namespace mst_boredom_remover
             // Create initial TileTypes
             engine.tileTypes.Add(new TileType("Ocean", texture: oceanTexture, biome: TileType.Biome.Ocean, movementCost: 7d));
             engine.tileTypes.Add(new TileType("Plain", texture: plainsTexture, biome: TileType.Biome.Plain));
+            engine.tileTypes.Add(new TileType("Plain2", texture: plains2Texture, biome: TileType.Biome.Plain));
+            engine.tileTypes.Add(new TileType("Plain3", texture: plains3Texture, biome: TileType.Biome.Plain));
             engine.tileTypes.Add(new TileType("Mountain", texture: mountainsTexture, biome: TileType.Biome.Mountain));
+            engine.tileTypes.Add(new TileType("Mountain2", texture: mountains2Texture, biome: TileType.Biome.Mountain));
+            engine.tileTypes.Add(new TileType("Mountain3", texture: mountains3Texture, biome: TileType.Biome.Mountain));
             engine.tileTypes.Add(new TileType("Forest", texture: forestTexture, biome: TileType.Biome.Forest));
+            engine.tileTypes.Add(new TileType("Forest2", texture: forest2Texture, biome: TileType.Biome.Forest));
+            engine.tileTypes.Add(new TileType("Forest3", texture: forest3Texture, biome: TileType.Biome.Forest));
             engine.tileTypes.Add(new TileType("Dreadlands", texture: dreadTexture, biome: TileType.Biome.Dreadlands));
+            engine.tileTypes.Add(new TileType("Dreadlands2", texture: dread2Texture, biome: TileType.Biome.Dreadlands));
+            engine.tileTypes.Add(new TileType("Dreadlands3", texture: dread3Texture, biome: TileType.Biome.Dreadlands));
             engine.tileTypes.Add(new TileType("Desert", texture: desertTexture, biome: TileType.Biome.Desert));
+            engine.tileTypes.Add(new TileType("Desert2", texture: desert2Texture, biome: TileType.Biome.Desert));
+            engine.tileTypes.Add(new TileType("Desert3", texture: desert3Texture, biome: TileType.Biome.Desert));
             engine.tileTypes.Add(new TileType("Tundra", texture: tundraTexture, biome: TileType.Biome.Tundra));
+            engine.tileTypes.Add(new TileType("Tundra2", texture: tundra2Texture, biome: TileType.Biome.Tundra));
+            engine.tileTypes.Add(new TileType("Tundra3", texture: tundra3Texture, biome: TileType.Biome.Tundra));
 
             engine.tileTypes.Add(new TileType("Gold", texture: goldTexture, biome: TileType.Biome.Gold, resourceType: TileType.ResourceType.Gold));
             engine.tileTypes.Add(new TileType("Iron", texture: ironTexture, biome: TileType.Biome.Iron, resourceType: TileType.ResourceType.Iron));

@@ -123,6 +123,18 @@ namespace mst_boredom_remover.engine
             }
         }
 
+        public string RandomizeBiome(Random random, string biomeName)
+        {
+            HashSet<string> toRandomize = new HashSet<string> {"Plain", "Mountain", "Forest", "Dreadlands", "Desert", "Tundra"};
+            if (toRandomize.Contains(biomeName))
+            {
+                double x = random.NextDouble();
+                if (x < 0.02) biomeName += "3";
+                else if (x < 0.2) biomeName += "2";
+            }
+            return biomeName;
+        }
+
         public void UpdateTilesFromCharmap(char [,] charmap)
         {
             engine.ai1.goldTiles = new List<Position>();
@@ -131,6 +143,8 @@ namespace mst_boredom_remover.engine
             engine.ai2.goldTiles = new List<Position>();
             engine.ai2.ironTiles = new List<Position>();
             engine.ai2.manaTiles = new List<Position>();
+            Random random = new Random();
+
             for (var y = 0; y < height; ++y)
             {
                 for (var x = 0; x < width; ++x)
@@ -142,6 +156,8 @@ namespace mst_boredom_remover.engine
                     {
                         biomeName = charToBiomeString[charmap[x, y]];
                     }
+                    biomeName = RandomizeBiome(random, biomeName);
+
                     var tileType = engine.GetTileTypeByName(biomeName);
                     
                     GetTileAt(targetPosition).tileType = tileType;
