@@ -213,8 +213,12 @@ namespace mst_boredom_remover
             Texture2D tundraTexture = Content.Load<Texture2D>("Terrain\\Tundra1");
             Texture2D forestTexture = Content.Load<Texture2D>("Terrain\\Forest1"); //6
             Texture2D coastTexture = Content.Load<Texture2D>("Terrain\\CoastStraight"); // 8-11
+            Texture2D coastBendTexture = Content.Load<Texture2D>("Terrain\\CoastBend");
+            Texture2D coastCoveTexture = Content.Load<Texture2D>("Terrain\\CoastCove");
             Texture2D riverStraightTexture = Content.Load<Texture2D>("Terrain\\RiverStraight"); //12-13
             Texture2D riverBendTexture = Content.Load<Texture2D>("Terrain\\RiverBend"); //14-17
+            Texture2D riverThreeTexture = Content.Load<Texture2D>("Terrain\\River3");
+            Texture2D riverFourTexture = Content.Load<Texture2D>("Terrain\\River4");
             Texture2D goldTexture = Content.Load<Texture2D>("Terrain\\Gold");
             Texture2D ironTexture = Content.Load<Texture2D>("Terrain\\Iron");
             Texture2D manaTexture = Content.Load<Texture2D>("Terrain\\Mana");
@@ -238,13 +242,30 @@ namespace mst_boredom_remover
             engine.tileTypes.Add(new TileType("Coast Land on South", texture: coastTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 0.0f, movementCost: 7d));
             engine.tileTypes.Add(new TileType("Coast Land on West", texture: coastTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 0.5f, movementCost: 7d));
 
+            engine.tileTypes.Add(new TileType("Coast Land on North and East", texture: coastBendTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 1.5f, movementCost: 7d)); // Clockwise radians
+            engine.tileTypes.Add(new TileType("Coast Land on East and South", texture: coastBendTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 0.0f, movementCost: 7d));
+            engine.tileTypes.Add(new TileType("Coast Land on South and West", texture: coastBendTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 0.5f, movementCost: 7d));
+            engine.tileTypes.Add(new TileType("Coast Land on West and North", texture: coastBendTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 1.0f, movementCost: 7d));
+
+            engine.tileTypes.Add(new TileType("Coast Ocean on North", texture: coastCoveTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 0.5f, movementCost: 7d)); // Clockwise radians
+            engine.tileTypes.Add(new TileType("Coast Ocean on East", texture: coastCoveTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 1.0f, movementCost: 7d));
+            engine.tileTypes.Add(new TileType("Coast Ocean on South", texture: coastCoveTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 1.5f, movementCost: 7d));
+            engine.tileTypes.Add(new TileType("Coast Ocean on West", texture: coastCoveTexture, biome: TileType.Biome.Shore, rotation: (float)Math.PI * 0.0f, movementCost: 7d));
+
             engine.tileTypes.Add(new TileType("River Straight Vertical", texture: riverStraightTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 0.0f, movementCost: 2d));
-            engine.tileTypes.Add(new TileType("River Straight Horizontal", texture: riverStraightTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 1.0f, movementCost: 2d));
+            engine.tileTypes.Add(new TileType("River Straight Horizontal", texture: riverStraightTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 0.5f, movementCost: 2d));
             
             engine.tileTypes.Add(new TileType("River East and South", texture: riverBendTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 1.5f, movementCost: 2d));
             engine.tileTypes.Add(new TileType("River West and South", texture: riverBendTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 0.0f, movementCost: 2d));
             engine.tileTypes.Add(new TileType("River West and North", texture: riverBendTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 0.5f, movementCost: 2d));
             engine.tileTypes.Add(new TileType("River East and North", texture: riverBendTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 1.0f, movementCost: 2d));
+
+            engine.tileTypes.Add(new TileType("River Land on North", texture: riverThreeTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 0.0f, movementCost: 2d));
+            engine.tileTypes.Add(new TileType("River Land on East", texture: riverThreeTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 0.5f, movementCost: 2d));
+            engine.tileTypes.Add(new TileType("River Land on South", texture: riverThreeTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 1.0f, movementCost: 2d));
+            engine.tileTypes.Add(new TileType("River Land on West", texture: riverThreeTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 1.5f, movementCost: 2d));
+
+            engine.tileTypes.Add(new TileType("River Four", texture: riverFourTexture, biome: TileType.Biome.River, rotation: (float)Math.PI * 0.0f, movementCost: 2d));
 
             //Map m = new Map(Vector2.Zero, width, height, ref engine, GraphicsDevice);
             Map m = new Map(Vector2.Zero, width, height, ref engine, GraphicsDevice, numDreadland.GetTextAsInt(), numDesert.GetTextAsInt(), numPlain.GetTextAsInt(), numMountain.GetTextAsInt(), numTundra.GetTextAsInt(), numForest.GetTextAsInt(), numOcean.GetTextAsInt(), numResource.GetTextAsInt());

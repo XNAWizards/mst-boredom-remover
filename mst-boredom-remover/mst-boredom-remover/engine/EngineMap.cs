@@ -40,16 +40,30 @@ namespace mst_boredom_remover.engine
             {'G', "Gold" },
             {'L', "Iron" },
             {'*', "ManaCrystals" },
-            {'@', "Coast Land on North"}, // @
-            {'/', "Coast Land on East"}, // /
-            {'&', "Coast Land on South"}, // &
-            {'#', "Coast Land on West"}, // #
+            {'@', "Coast Land on North"},
+            {'/', "Coast Land on East"},
+            {'&', "Coast Land on South"},
+            {'#', "Coast Land on West"},
+            {'r', "Coast Land on North and East"},
+            {'q', "Coast Land on East and South"},
+            {'w', "Coast Land on South and West"},
+            {'e', "Coast Land on West and North"},
+            {'t', "Coast Ocean on North"},
+            {'y', "Coast Ocean on East"},
+            {'u', "Coast Ocean on South"},
+            {'i', "Coast Ocean on West"},
             {'^', "River Straight Vertical"},
             {',', "River Straight Horizontal"},
             {'<', "River East and South"},
             {'>', "River West and South"},
             {']', "River West and North"},
             {'[', "River East and North"},
+            {'|', "River Land on North"},
+            {'p', "River Land on East"},
+            {'_', "River Land on South"},
+            {'?', "River Land on West"},
+            {'X', "River Four"},
+            {'-', "River Four"}, // Default river?
         };
 
         public EngineMap(Engine engine, int width, int height)

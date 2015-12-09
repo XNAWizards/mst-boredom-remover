@@ -431,136 +431,60 @@ namespace mst_boredom_remover
                     //******Ocean Border*****//
                     if (field[j, i] == '~')
                     {
-                        //Cardinal Directions of Coast
-                        if (!IsLandOrShore(field[j - 1, i]) && !IsLandOrShore(field[j - 1, i - 1]) && !IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j, i + 1]))
+                        bool[] land = new[] {false, false, false, false}; // Right, Bottom, Left, Top
+                        land[0] = IsLand(field[j + 1, i]);
+                        land[1] = IsLand(field[j, i + 1]);
+                        land[2] = IsLand(field[j - 1, i]);
+                        land[3] = IsLand(field[j, i - 1]);
+                        int numberOfLandEdges = land.Sum(item => item ? 1 : 0);
+                        if (numberOfLandEdges == 1)
                         {
-                            field[j, i] = '@';//Coast tile with land on north.
+                            if (land[0]) field[j, i] = '/';
+                            else if (land[1]) field[j, i] = '&';
+                            else if (land[2]) field[j, i] = '#';
+                            else if (land[3]) field[j, i] = '@';
                         }
-                        if (!IsLandOrShore(field[j + 1, i + 1]) && !IsLandOrShore(field[j, i + 1]) && !IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j + 1, i]) && IsLandOrShore(field[j - 1, i]))
+                        else if (numberOfLandEdges == 2) // Corners
                         {
-                            field[j, i] = 'Q';//Coast tile with land on east.
+                            if (land[0] && land[1]) field[j, i] = 'q';
+                            else if (land[1] && land[2]) field[j, i] = 'w';
+                            else if (land[2] && land[3]) field[j, i] = 'e';
+                            else if (land[3] && land[0]) field[j, i] = 'r';
                         }
-                        if (!IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j + 1, i - 1]) && !IsLandOrShore(field[j + 1, i + 1]) && IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j, i + 1]))
+                        else if (numberOfLandEdges == 3) // Coves
                         {
-                            field[j, i] = '&';//Coast tile with land on south.
-                        }
-                        if (!IsLandOrShore(field[j + 1, i - 1]) && !IsLandOrShore(field[j, i - 1]) && !IsLandOrShore(field[j - 1, i - 1]) && IsLandOrShore(field[j + 1, i]) && IsLandOrShore(field[j - 1, i]))
-                        {
-                            field[j, i] = '#';//Coast tile with land on west.
-                        }
-
-                        //3 edged by land Ocean tile
-                        if (!IsLandOrShore(field[j - 1, i]) && !IsLandOrShore(field[j - 1, i - 1]) && !IsLandOrShore(field[j - 1, i + 1]) && !IsLandOrShore(field[j, i - 1]) && !IsLandOrShore(field[j, i + 1]))
-                        {
-                            field[j, i] = 'V';//Coast tile triple with bay mouth at north
-                        }
-                        if (!IsLandOrShore(field[j + 1, i + 1]) && !IsLandOrShore(field[j, i + 1]) && !IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j - 1, i]))
-                        {
-                            field[j, i] = 'v';//Coast tile triple with bay mouth at east
-                        }
-                        if (!IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j + 1, i - 1]) && !IsLandOrShore(field[j + 1, i + 1]) && IsLandOrShore(field[j, i - 1]) && !IsLandOrShore(field[j, i + 1]))
-                        {
-                            field[j, i] = 'B';//Coast tile triple with bay mouth at south
-                        }
-                        if (!IsLandOrShore(field[j + 1, i - 1]) && !IsLandOrShore(field[j, i - 1]) && !IsLandOrShore(field[j - 1, i - 1]) && IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j - 1, i]))
-                        {
-                            field[j, i] = 'b';//Coast tile triple with bay mouth at west
-                        }
-
-                        //smooth corner Ocean tile
-                        if (!IsLandOrShore(field[j - 1, i + 1]) && !IsLandOrShore(field[j - 1, i]) && !IsLandOrShore(field[j, i + 1]) && IsLandOrShore(field[j + 1, i + 1]) && IsLandOrShore(field[j - 1, i - 1]))
-                        {
-                            field[j, i] = '$';//Smooth corner Coast tile with land on NE
-                        }
-                        if (!IsLandOrShore(field[j - 1, i - 1]) && !IsLandOrShore(field[j - 1, i]) && !IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j + 1, i - 1]))
-                        {
-                            field[j, i] = '!';//Smooth corner Coast tile with land on NW
-                        }
-                        if (!IsLandOrShore(field[j + 1, i - 1]) && !IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j - 1, i - 1]) && IsLandOrShore(field[j + 1, i + 1]))
-                        {
-                            field[j, i] = '(';//Smooth corner Coast tile with land on SW
-                        }
-                        if (!IsLandOrShore(field[j + 1, i + 1]) && !IsLandOrShore(field[j + 1, i]) && !IsLandOrShore(field[j, i + 1]) && IsLandOrShore(field[j + 1, i - 1]) && IsLandOrShore(field[j - 1, i + 1]))
-                        {
-                            field[j, i] = ')';//Smooth corner Coast tile with land on SE
-                        }
-
-                        //dot corner Ocean tile
-                        if (!IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j - 1, i]) && IsLandOrShore(field[j, i + 1]) && IsLandOrShore(field[j + 1, i + 1]) && IsLandOrShore(field[j - 1, i - 1]))
-                        {
-                            field[j, i] = 'C';//Smooth corner Coast tile with land on NE
-                        }
-                        if (!IsLandOrShore(field[j - 1, i - 1]) && IsLandOrShore(field[j - 1, i]) && IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j - 1, i + 1]) && IsLandOrShore(field[j + 1, i - 1]))
-                        {
-                            field[j, i] = 'c';//Smooth corner Coast tile with land on NW
-                        }
-                        if (!IsLandOrShore(field[j + 1, i - 1]) && IsLandOrShore(field[j + 1, i]) && IsLandOrShore(field[j, i - 1]) && IsLandOrShore(field[j - 1, i - 1]) && IsLandOrShore(field[j + 1, i + 1]))
-                        {
-                            field[j, i] = 'n';//Smooth corner Coast tile with land on SW
-                        }
-                        if (!IsLandOrShore(field[j + 1, i + 1]) && IsLandOrShore(field[j + 1, i]) && IsLandOrShore(field[j, i + 1]) && IsLandOrShore(field[j + 1, i - 1]) && IsLandOrShore(field[j - 1, i + 1]))
-                        {
-                            field[j, i] = 'N';//Smooth corner Coast tile with land on SE
+                            if (land[0] && land[1] && land[2]) field[j, i] = 't';
+                            else if (land[1] && land[2] && land[3]) field[j, i] = 'y';
+                            else if (land[2] && land[3] && land[0]) field[j, i] = 'u';
+                            else if (land[3] && land[0] && land[1]) field[j, i] = 'i';
                         }
                     }
                     //*****River Direction*****//
                     if (field[j, i] == '-')
                     {
-                        if (IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i]))
-                        {
-                            field[j, i] = '^';//River running north to south.
-                        }
-                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]))
-                        {
-                            field[j, i] = ',';//River running east to west.
-                        }
-                        if (IsRiver(field[j + 1, i]) && IsRiver(field[j, i + 1]))
-                        {
-                            field[j, i] = '<';//River mouths at east and south.
-                        }
-                        if (IsRiver(field[j + 1, i]) && IsRiver(field[j, i - 1]))
-                        {
-                            field[j, i] = '>';//River mouths at west and south.
-                        }
-                        if (IsRiver(field[j - 1, i]) && IsRiver(field[j, i - 1]))
-                        {
-                            field[j, i] = ']';//River mouths at west and north.
-                        }
-                        if (IsRiver(field[j - 1, i]) && IsRiver(field[j, i + 1]))
-                        {
-                            field[j, i] = '[';//River mouths at east and north.
-                        }
-                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i]))
-                        {
-                            field[j, i] = 'X'; // 4-way river
-                        }
-                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && !IsRiver(field[j + 1, i]))
-                        {
-                            field[j, i] = '/'; // triple river land at south
-                        }
-                        if (!IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i]))
-                        {
-                            field[j, i] = '|'; // triple river land at west
-                        }
-                        if (IsRiver(field[j, i - 1]) && !IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i]))
-                        {
-                            field[j, i] = '_'; // triple river land at east
-                        }
-                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && !IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i]))
-                        {
-                            field[j, i] = '?'; // triple river land at north
-                        }
+                        if (IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i])) field[j, i] = ','; // River running horizontal.
+                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1])) field[j, i] = '^'; // River running vertical.
+                        if (IsRiver(field[j + 1, i]) && IsRiver(field[j, i + 1])) field[j, i] = '<'; // River mouths at east and south.
+                        if (IsRiver(field[j + 1, i]) && IsRiver(field[j, i - 1])) field[j, i] = '['; // River mouths at east and north.
+                        if (IsRiver(field[j - 1, i]) && IsRiver(field[j, i - 1])) field[j, i] = ']'; // River mouths at west and north.
+                        if (IsRiver(field[j - 1, i]) && IsRiver(field[j, i + 1])) field[j, i] = '>'; // River mouths at west and south.
+                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i])) field[j, i] = 'X'; // 4-way river
+                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && !IsRiver(field[j + 1, i])) field[j, i] = 'p'; // triple river land at east
+                        if (!IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i])) field[j, i] = '|'; // triple river land at north
+                        if (IsRiver(field[j, i - 1]) && !IsRiver(field[j, i + 1]) && IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i])) field[j, i] = '_'; // triple river land at south
+                        if (IsRiver(field[j, i - 1]) && IsRiver(field[j, i + 1]) && !IsRiver(field[j - 1, i]) && IsRiver(field[j + 1, i])) field[j, i] = '?'; // triple river land at west
                     }
                 }
             }
             return field;
         }
+        
+        private static readonly HashSet<char> rivers = new HashSet<char> { '-', '^', ',', '<', '>', '[', ']', 'X', 'p', '|', '_', '?' };
+        private static readonly HashSet<char> lands = new HashSet<char> { '+', 'M', 'F', '%', 'D', 'T', 'G', 'L', '*'};
 
-        private static readonly HashSet<char> landsAndShores = new HashSet<char>{'~', '@', 'Q', '&', '#', '$', '(', ')', '!', 'B', 'b', 'V', 'v', 'C', 'c', 'N', 'n'};
-        private static readonly HashSet<char> rivers = new HashSet<char> { '-', '^', ',', '<', '>', '[', ']', 'X', '/', '|', '_', '?' };
-        private static bool IsLandOrShore(char c)
+        private static bool IsLand(char c)
         {
-            return landsAndShores.Contains(c);
+            return lands.Contains(c);
         }
 
         private static bool IsRiver(char c)
