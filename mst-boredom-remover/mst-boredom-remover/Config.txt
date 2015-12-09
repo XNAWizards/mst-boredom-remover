@@ -1,0 +1,203 @@
+menu start
+splash
+0
+0
+0
+menu controls start
+button start
+150
+117
+New
+f
+button end
+button start
+150
+217
+Load
+f
+button end
+button start
+150
+317
+Exit
+f
+button end
+menu controls end
+menu end
+menu start
+Hud
+0
+0
+1
+menu controls start
+button start
+1250
+27
+Back
+t
+button end
+button start
+240
+660
+Build Town
+t
+button end
+button start
+240
+700
+Build Mine
+t
+button end
+button start
+320
+660
+Produce Knight
+t
+button end
+button start
+320
+700
+Produce Archer
+t
+button end
+button start
+400
+660
+Produce Peasant
+t
+button end
+button start
+80
+700
+Attack
+t
+button end
+button start
+80
+660
+Move
+t
+button end
+button start
+160
+660
+Gather
+t
+button end
+button start
+160
+700
+Stop
+t
+button end
+menu controls end
+menu end
+menu start
+Hud
+0
+0
+2
+menu controls start
+button start
+600
+500
+Go
+f
+button end
+button start
+20
+675
+Back
+f
+button end
+text input start
+BiomeB
+BiomeBA
+700
+100
+text input end
+text input start
+BiomeB
+BiomeBA
+850
+100
+text input end
+text input start
+BiomeB
+BiomeBA
+850
+100
+text input end
+text input start
+BiomeB
+BiomeBA
+700
+200
+text input end
+text input start
+BiomeB
+BiomeBA
+850
+200
+text input end
+text input start
+BiomeB
+BiomeBA
+1000
+200
+text input end
+text input start
+BiomeB
+BiomeBA
+775
+300
+text input end
+text input start
+BiomeB
+BiomeBA
+925
+300
+text input end
+menu controls end
+menu end
+end
+
+
+
+
+UI CONFIG FORMAT:
+
+start
+{menu 1}
+{menu 2}
+{menu n}
+end
+MENU:
+
+menu start
+[string:texture name]
+[int: xpos]
+[int: ypos]
+[int: thisID]
+menu controls start
+{object 1}
+{object 2}
+{object n}
+menu controls end
+menu end
+TEXT INPUT:
+
+text input start
+[string:texture name]
+[string: active texture name]
+[int: xpos]
+[int: ypos]
+text input end
+BUTTON:
+
+button start
+[int:xpos]
+[int:ypos]
+[string:Button text]
+[t/f use size?]
+button end
