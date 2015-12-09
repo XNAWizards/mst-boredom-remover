@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace mst_boredom_remover.engine
@@ -86,6 +87,13 @@ namespace mst_boredom_remover.engine
         public Tile GetTileAt(Position position)
         {
             return Inside(position) ? tiles[position.x, position.y] : null;
+        }
+
+        public Tile GetTileNearestTo(Position position)
+        {
+            var nearestPosition = new Position(Math.Max(0, Math.Min(position.x, width - 1)),
+                    Math.Max(0, Math.Min(position.y, height - 1)));
+            return GetTileAt(nearestPosition);
         }
 
         public Tile GetTileAt(int x, int y)

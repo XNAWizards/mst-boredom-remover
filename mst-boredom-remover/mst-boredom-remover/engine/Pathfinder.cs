@@ -21,13 +21,14 @@ namespace mst_boredom_remover.engine
             engine.map.tiles[index % engine.map.width, (index / engine.map.width)%engine.map.height].pathIndex = int.MinValue;
 
             int localPathCounter = pathCounter++;
-            List<Tile> perimeter = new List<Tile>() { engine.map.GetTileAt(position) };
-            perimeter[0].pathDistance = 0;
+            LinkedList<Tile> perimeter = new LinkedList<Tile>();
+            perimeter.AddLast(engine.map.GetTileNearestTo(position));
+            perimeter.Last.Value.pathDistance = 0;
             while (size != 0 && perimeter.Count > 0)
             {
-                Tile top = perimeter[0];
+                Tile top = perimeter.First.Value;
                 top.pathIndex = localPathCounter;
-                perimeter.RemoveAt(0);
+                perimeter.RemoveFirst();
                 if (distance >= 0 && top.pathDistance > distance)
                 {
                     yield break;
@@ -38,7 +39,7 @@ namespace mst_boredom_remover.engine
                 {
                     if (neighbor.pathIndex < localPathCounter)
                     {
-                        perimeter.Add(neighbor);
+                        perimeter.AddLast(neighbor);
                         neighbor.pathIndex = localPathCounter;
                         neighbor.pathDistance = top.pathDistance + 1;
                     }
@@ -68,7 +69,7 @@ namespace mst_boredom_remover.engine
             
             if (!unit.CanMove(end.position))
             {
-                foreach (Position pos in BreadthFirst(engine, end.position, -1, -1))
+                foreach (Position pos in BreadthFirst(engine, end.position, -1, 500))
                 {
                     if (unit.CanMove(pos))
                     {
@@ -76,6 +77,10 @@ namespace mst_boredom_remover.engine
                         break;
                     }
                 }
+            }
+            if (!unit.CanMove(end.position))
+            {
+                return null;
             }
             
             bool success = false;
@@ -99,8 +104,8 @@ namespace mst_boredom_remover.engine
                     break;
                 }
                 // Give up if we backtrack too far
-                if (currentBest.pathHeuristic >= start.pathHeuristic*2 &&
-                    currentBest.position.Distance(end.position) > 200)
+                if (currentBest.pathHeuristic >= start.pathHeuristic*14 &&
+                    count > 3000)
                 {
                     break;
                 }

@@ -110,7 +110,7 @@ namespace mst_boredom_remover.engine
                 // We are done with all sthe updates for this tick
                 futureUpdates.Remove(currentTick);
 
-                foreach (Unit unit in units.Where(unit => unit.orders.Count == 0))
+                foreach (Unit unit in units.Where(unit => unit.orders.Count == 0 && unit.CanAttack()))
                 {
                     Unit nearestEnemy = FindNearestEnemy(unit, 20);
                     if (nearestEnemy != null)

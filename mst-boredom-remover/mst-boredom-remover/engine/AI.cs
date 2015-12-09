@@ -32,6 +32,8 @@ namespace mst_boredom_remover.engine
             int peasentCount = 0,knightCount =0,archerCount =0, mineCount =0, townCount =0, attackingCount=0;
             foreach (Unit u in engine.units)
             {
+                if (u.owner != me)
+                    continue;
                 if (u.type.Equals(engine.unitTypes[2]))
                 {
                     peasentCount++;
@@ -160,7 +162,7 @@ namespace mst_boredom_remover.engine
                         }
                         else if (u.CanMove() && u.CanGather() && me.gold < 1000)
                         {
-                            if (u.orders.Count == 0 || u.orders[0].orderType.Equals(Order.OrderType.Gather) ) //if the unit is not doing anything
+                            if (u.orders.Count == 0/* || u.orders[0].orderType.Equals(Order.OrderType.Move) */) //if the unit is not doing anything
                             {
                                 currentUnit = u;
                                 if (currentUnit == null)
@@ -179,6 +181,19 @@ namespace mst_boredom_remover.engine
                                 {
                                     if (engine.GetUnitAt(p) == null) //no one is on the tile
                                     {
+                                        bool alreadyTargeted = false;
+                                        foreach (Unit blocker in engine.units)
+                                        {
+                                            if (blocker.orders.Count > 0 &&
+                                                blocker.orders[0].orderType.Equals(Order.OrderType.Gather) &&
+                                                blocker.orders[0].targetPosition.Equals(p))
+                                            {
+                                                alreadyTargeted = true;
+                                                break;
+                                            }
+                                        }
+                                        if (alreadyTargeted)
+                                            continue;
                                         if (unitPosition.Distance(p) < distance)
                                         {
                                             distance = unitPosition.Distance(p);
