@@ -121,8 +121,8 @@ namespace mst_boredom_remover.engine
             }
             if ( currentTick%100 == 0 )
             {
-                ai1.makeMoves(1);
-                ai2.makeMoves(1);
+                ai1.makeMoves(10);
+                ai2.makeMoves(10);
             }
             currentTick += 1;
             inTick = false;

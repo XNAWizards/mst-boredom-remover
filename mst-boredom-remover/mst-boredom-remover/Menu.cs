@@ -12,7 +12,7 @@ namespace mst_boredom_remover
         private Color color;
         private int thisId;
 
-        private bool active = false;
+        public bool active = false;
 
         public Menu(Texture2D texture, Vector2 position, List<UiObject> controls, Color color, int thisId)
             : base()

@@ -104,8 +104,8 @@ namespace mst_boredom_remover.engine
                     break;
                 }
                 // Give up if we backtrack too far
-                if (currentBest.pathHeuristic >= start.pathHeuristic*14 &&
-                    count > 3000)
+                if ((currentBest.pathHeuristic >= start.pathHeuristic*14 &&
+                    count > 2000) || count > 4000)
                 {
                     break;
                 }

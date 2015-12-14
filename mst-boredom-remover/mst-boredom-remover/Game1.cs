@@ -356,7 +356,7 @@ namespace mst_boredom_remover
                 moveTextures: new[] { mageUnitTexture },
                 attackTextures: new[] { mageUnitTexture },
                 actions: new List<UnitType.Action> { UnitType.Action.Attack, UnitType.Action.Gather, UnitType.Action.Move, UnitType.Action.Build, UnitType.Action.Produce },
-                attackStrength: 2, defense: 0, gatherRate: 10, goldCost: 50));
+                attackStrength: 2, defense: 0, gatherRate: 2, goldCost: 50));
             engine.unitTypes.Add(new UnitType(name: "Town",
                 idleTextures: new[] { baseTown },
                 moveTextures: new[] { baseTown },
@@ -470,19 +470,23 @@ namespace mst_boredom_remover
                     break;
                 }
             }
-
-            // TODO: Remove
-            // Create testing units on the first tick
-            if (engine.currentTick == 0)
+            
+            Menu inGameScreen = (Menu)userInterface[1];
+            if (inGameScreen.active)
             {
-                for (int i = 0; i < 10; ++i)
+                // TODO: Remove
+                // Create testing units on the first tick
+                if (engine.currentTick == 0)
                 {
-                    engine.AddUnit(engine.unitTypes[2], frodoStartPosition + new Position(0, i), engine.players[0]);
+                    for (int i = 0; i < 10; ++i)
+                    {
+                        engine.AddUnit(engine.unitTypes[2], frodoStartPosition + new Position(0, i), engine.players[0]);
 
-                    engine.AddUnit(engine.unitTypes[2], sauronStartPosition + new Position(0, i), engine.players[1]);
+                        engine.AddUnit(engine.unitTypes[2], sauronStartPosition + new Position(0, i), engine.players[1]);
+                    }
                 }
+                engine.Tick();
             }
-            engine.Tick();
 
             base.Update(gameTime);
         }
