@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UnitType name="GoldMine" maxHealth="300" attackType="Melee" attackStrength="1" attackRange="1" attackSpeed="1" defense="5" movementType="Walker" movementSpeed="1" gatherRate="4" goldCost="500" ironCost="0" manaCrystalsCost="0" textureFilename="goldminebase" frameWidth="600" frameHeight="600">
+	<Action>Gather</Action>
+	<IdleRight>
+		<Frame>0</Frame>
+	</IdleRight>
+	<IdleDown>
+		<Frame>0</Frame>
+	</IdleDown>
+	<IdleLeft>
+		<Frame>0</Frame>
+	</IdleLeft>
+	<IdleUp>
+		<Frame>0</Frame>
+	</IdleUp>
+	<WalkRight>
+		<Frame>0</Frame>
+	</WalkRight>
+	<WalkDown>
+		<Frame>0</Frame>
+	</WalkDown>
+	<WalkLeft>
+		<Frame>0</Frame>
+	</WalkLeft>
+	<WalkUp>
+		<Frame>0</Frame>
+	</WalkUp>
+	<AttackRight>
+		<Frame>0</Frame>
+	</AttackRight>
+	<AttackDown>
+		<Frame>0</Frame>
+	</AttackDown>
+	<AttackLeft>
+		<Frame>0</Frame>
+	</AttackLeft>
+	<AttackUp>
+		<Frame>0</Frame>
+	</AttackUp>
+</UnitType>

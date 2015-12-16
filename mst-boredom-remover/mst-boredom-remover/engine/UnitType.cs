@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
 
@@ -60,6 +61,8 @@ namespace mst_boredom_remover.engine
 
         // Offline graphics stuff
         public readonly string textureFilename;
+        public readonly int frameWidth;
+        public readonly int frameHeight;
         public readonly int[][] idleIndices; // [RDLU][index]
         public readonly int[][] walkIndices; // [RDLU][index]
         public readonly int[][] attackIndices; // [RDLU][index]
@@ -98,12 +101,14 @@ namespace mst_boredom_remover.engine
             this.moveTextures = moveTextures ?? new Texture2D[] { };
         }
 
-        public UnitType(string name = "", double maxHealth = 100.0, AttackType attackType = AttackType.Melee,
+        public UnitType(ContentManager contentManager=null,
+            string name = "", double maxHealth = 100.0, AttackType attackType = AttackType.Melee,
             double attackStrength = 1.0, double attackRange = 1.0, double attackSpeed = 1.0, double defense = 0.0,
             MovementType movementType = MovementType.Walker,
             double movementSpeed = 1.0, List<Action> actions = null, List<Spell> spells = null, double gatherRate = 10.0,
             double goldCost = 10.0, double ironCost = 0.0, double manaCrystalsCost = 0.0,
-            string textureFilename="", int[][] idleIndices=null, int[][] walkIndices=null, int[][]attackIndices=null)
+            string textureFilename="", int frameWidth=16, int frameHeight=16,
+            int[][] idleIndices=null, int[][] walkIndices=null, int[][]attackIndices=null)
         {
             this.name = name;
             this.maxHealth = maxHealth;
@@ -121,16 +126,22 @@ namespace mst_boredom_remover.engine
             this.ironCost = ironCost;
             this.manaCrystalsCost = manaCrystalsCost;
             this.textureFilename = textureFilename;
+            this.frameWidth = frameWidth;
+            this.frameHeight = frameHeight;
             this.idleIndices = idleIndices ?? new [] {new [] { 0 }, new [] { 0 }, new [] { 0 }, new [] { 0 } };
             this.walkIndices = walkIndices ?? new [] { new[] { 0 }, new[] { 0 }, new[] { 0 }, new[] { 0 } };
             this.attackIndices = attackIndices ?? new [] { new[] { 0 }, new[] { 0 }, new[] { 0 }, new[] { 0 } };
+
+            if (contentManager != null) texture = contentManager.Load<Texture2D>(textureFilename);
         }
 
-        public static UnitType LoadFromFile(string filename)
+        public static UnitType LoadFromFile(string filename, Microsoft.Xna.Framework.Content.ContentManager contentManager = null)
         {
             using (XmlTextReader reader = new XmlTextReader(filename))
             {
                 reader.WhitespaceHandling = WhitespaceHandling.None;
+                
+                reader.MoveToContent();
 
                 string name = reader.GetAttribute("name", "") ?? "UNKOWN";
                 double maxHealth = XmlConvert.ToDouble(reader.GetAttribute("maxHealth", "") ?? "100");
@@ -146,6 +157,8 @@ namespace mst_boredom_remover.engine
                 double ironCost = XmlConvert.ToDouble(reader.GetAttribute("ironCost", "") ?? "0");
                 double manaCrystalCost = XmlConvert.ToDouble(reader.GetAttribute("manaCrystalCost", "") ?? "0");
                 string textureFilename = reader.GetAttribute("textureFilename", "") ?? "";
+                int frameWidth = XmlConvert.ToInt32(reader.GetAttribute("frameWidth", "") ?? "16");
+                int frameHeight = XmlConvert.ToInt32(reader.GetAttribute("frameHeight", "") ?? "16");
 
                 reader.ReadStartElement("UnitType"); // Moves to the next thing after the UnitType start tag
 
@@ -168,8 +181,8 @@ namespace mst_boredom_remover.engine
                 int[][] idleIndices = new int[4][];
                 while (reader.NodeType == XmlNodeType.Element && idleNames.Contains(reader.Name))
                 {
-                    reader.ReadStartElement(reader.Name);
                     int index = Array.IndexOf(idleNames, reader.Name);
+                    reader.ReadStartElement(reader.Name);
                     List<int> frames = new List<int>(); // Use list because length is unknown
                     while (reader.NodeType == XmlNodeType.Element && reader.Name == "Frame")
                     {
@@ -185,8 +198,8 @@ namespace mst_boredom_remover.engine
                 int[][] walkIndices = new int[4][];
                 while (reader.NodeType == XmlNodeType.Element && walkNames.Contains(reader.Name))
                 {
-                    reader.ReadStartElement(reader.Name);
                     int index = Array.IndexOf(walkNames, reader.Name);
+                    reader.ReadStartElement(reader.Name);
                     List<int> frames = new List<int>(); // Use list because length is unknown
                     while (reader.NodeType == XmlNodeType.Element && reader.Name == "Frame")
                     {
@@ -202,8 +215,8 @@ namespace mst_boredom_remover.engine
                 int[][] attackIndices = new int[4][];
                 while (reader.NodeType == XmlNodeType.Element && attackNames.Contains(reader.Name))
                 {
-                    reader.ReadStartElement(reader.Name);
                     int index = Array.IndexOf(attackNames, reader.Name);
+                    reader.ReadStartElement(reader.Name);
                     List<int> frames = new List<int>(); // Use list because length is unknown
                     while (reader.NodeType == XmlNodeType.Element && reader.Name == "Frame")
                     {
@@ -216,9 +229,9 @@ namespace mst_boredom_remover.engine
                 }
                 reader.ReadEndElement(); // UnitType
 
-                return new UnitType(name, maxHealth, attackType, attackStrength, attackRange, attackSpeed, defense,
+                return new UnitType(contentManager, name, maxHealth, attackType, attackStrength, attackRange, attackSpeed, defense,
                     movementType, movementSpeed, actions, spells, gatherRate, goldCost, ironCost, manaCrystalCost,
-                    textureFilename, idleIndices, walkIndices, attackIndices);
+                    textureFilename, frameWidth, frameHeight, idleIndices, walkIndices, attackIndices);
             }
         }
 
@@ -246,6 +259,9 @@ namespace mst_boredom_remover.engine
                     writer.WriteAttributeString("ironCost", XmlConvert.ToString(ironCost));
                     writer.WriteAttributeString("manaCrystalsCost", XmlConvert.ToString(manaCrystalsCost));
                     writer.WriteAttributeString("textureFilename", textureFilename);
+                    writer.WriteAttributeString("textureFilename", textureFilename);
+                    writer.WriteAttributeString("frameWidth", XmlConvert.ToString(frameWidth));
+                    writer.WriteAttributeString("frameHeight", XmlConvert.ToString(frameHeight));
 
                     foreach (var action in actions) writer.WriteElementString("Action", action.ToString());
                     foreach (var spell in spells) writer.WriteElementString("Spell", spell.ToString());

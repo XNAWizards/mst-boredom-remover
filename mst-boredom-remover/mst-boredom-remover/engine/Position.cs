@@ -21,6 +21,11 @@ namespace mst_boredom_remover.engine
             y = p.y;
         }
 
+        public int Abs()
+        {
+            return Math.Abs(x) + Math.Abs(y);
+        }
+
         public int Distance(Position other)
         {
             return Math.Abs(other.y - y) + Math.Abs(other.x - x);
@@ -39,6 +44,11 @@ namespace mst_boredom_remover.engine
         public static Position operator+(Position left, Position right)
         {
             return new Position(left.x + right.x, left.y + right.y);
+        }
+
+        public static Position operator-(Position left, Position right)
+        {
+            return new Position(left.x - right.x, left.y - right.y);
         }
 
         public override bool Equals(System.Object obj)

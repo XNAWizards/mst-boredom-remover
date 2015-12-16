@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 
 namespace mst_boredom_remover.engine
@@ -44,6 +45,7 @@ namespace mst_boredom_remover.engine
         public List<UnitModifier> modifiers;
 
         public int animationStartTick; // This tells us on which tick an animation was started
+        public int direction;
 
         private List<Position> currentPath;
         private Position currentTargetPosition;
@@ -69,6 +71,7 @@ namespace mst_boredom_remover.engine
             modifiers = new List<UnitModifier>();
 
             animationStartTick = 0;
+            direction = 0;
 
             currentPath = null;
             currentTargetPosition = null;
@@ -191,7 +194,18 @@ namespace mst_boredom_remover.engine
         }
 
         // Private
-        
+
+        private int CalculateDirection(Position delta)
+        {
+            bool bottomRight = delta.x > -delta.y;
+            bool topRight = delta.x > delta.y;
+            if (bottomRight && topRight) return 0;
+            if (bottomRight) return 1;
+            if (!topRight) return 2;
+            return 3;
+            // return 1 - delta.x + (delta.y == -1 ? 2 : 0);
+        }
+
         private void NextOrder()
         {
             orders.RemoveAt(0);
@@ -229,6 +243,7 @@ namespace mst_boredom_remover.engine
             if (targetPosition != null)
             {
                 status = Status.Moving;
+                direction = CalculateDirection(targetPosition - position);
                 engine.ScheduleUpdate(GetMoveCooldown(position, targetPosition), this);
 
                 var blockingUnit = engine.GetUnitAt(targetPosition);
@@ -281,6 +296,7 @@ namespace mst_boredom_remover.engine
 
             status = Status.Attacking;
             engine.Attack(this, order.targetUnit);
+            direction = CalculateDirection(targetPosition - position);
             engine.ScheduleUpdate(GetAttackCooldown(), this);
         }
 
@@ -343,7 +359,7 @@ namespace mst_boredom_remover.engine
             }
             else if (u.type.name.Equals("GoldMine"))
             {
-                engine.OrderGather(u, order.targetPosition);
+                engine.OrderGather(u, u.position);
             }
 
             NextOrder();

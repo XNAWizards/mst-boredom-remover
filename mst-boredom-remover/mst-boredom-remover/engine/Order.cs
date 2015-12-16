@@ -1,4 +1,6 @@
-﻿namespace mst_boredom_remover.engine
+﻿using System.Diagnostics;
+
+namespace mst_boredom_remover.engine
 {
     class Order
     {
@@ -30,22 +32,26 @@
 
         public static Order CreateMoveOrder(Position position)
         {
+            Debug.Assert(position != null);
             return new Order(OrderType.Move, targetPosition: position);
         }
 
         public static Order CreateProduceOrder(UnitType unitType, Position targetPosition)
         {
+            Debug.Assert(unitType != null);
             return new Order(OrderType.Produce, targetPosition: targetPosition, unitTypeBuild: unitType);
         }
 
         public static Order CreateAttackOrder(Unit target)
         {
+            Debug.Assert(target != null);
             return new Order(OrderType.Attack, targetUnit: target, targetPosition: target.position);
         }
 
-        public static Order CreateGatherOrder(Position target)
+        public static Order CreateGatherOrder(Position targetPosition)
         {
-            return new Order(OrderType.Gather, targetPosition: target);
+            Debug.Assert(targetPosition != null);
+            return new Order(OrderType.Gather, targetPosition: targetPosition);
         }
     }
 }

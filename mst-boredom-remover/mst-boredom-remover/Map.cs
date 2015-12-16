@@ -441,21 +441,24 @@ namespace mst_boredom_remover
             // TODO: Only do this for units on screen, probably with the help of a quad-tree
             foreach (Unit unit in engine.units)
             {
+                int progress = engine.currentTick - unit.animationStartTick;
                 // TODO: Move current_textures outside of this loop and into unit logic
-                Texture2D[] currentTextures = null;
+                int[] indices = null;
                 switch (unit.status)
                 {
                     case Unit.Status.Idle:
-                        currentTextures = unit.type.idleTextures;
+                        indices = unit.type.idleIndices[unit.direction];
                         break;
                     case Unit.Status.Moving:
-                        currentTextures = unit.type.moveTextures;
+                        indices = unit.type.walkIndices[unit.direction];
+                        progress = (progress * indices.Length) / unit.GetMoveCooldown(unit.previousPosition, unit.position);
                         break;
                     case Unit.Status.Attacking:
-                        currentTextures = unit.type.attackTextures;
+                        indices = unit.type.attackIndices[unit.direction];
+                        progress = (progress * indices.Length) / unit.GetAttackCooldown();
                         break;
                     default:
-                        currentTextures = unit.type.idleTextures;
+                        indices = unit.type.idleIndices[unit.direction];
                         break;
                 }
 
@@ -464,6 +467,7 @@ namespace mst_boredom_remover
                 Vector2 drawPosition = (unit.GetAnimatedPosition() - tileIndex) * (tilePxSize + pxMod);
                 Color c = Color.White;
                 
+                // TODO: Make color a member of Player
                 if (unit.owner == engine.players[1])
                 {
                     c = Color.MediumBlue;
@@ -472,9 +476,17 @@ namespace mst_boredom_remover
                 {
                     c = Color.Red;
                 }
+                
+                int frame = indices[progress % indices.Length];
+                int xFrames = unit.type.texture.Width / unit.type.frameWidth;
+                int tx = unit.type.frameWidth*(frame % xFrames);
+                int ty = unit.type.frameHeight*(frame / xFrames);
+
                 // finally draw the unit
-                sb.Draw(currentTextures[(engine.currentTick- unit.animationStartTick) % currentTextures.Length],
-                    new Rectangle((int)drawPosition.X, (int)drawPosition.Y, (tilePxSize + pxMod), (tilePxSize + pxMod)), c);
+                sb.Draw(unit.type.texture,
+                    destinationRectangle: new Rectangle((int) drawPosition.X, (int) drawPosition.Y, tilePxSize + pxMod, tilePxSize + pxMod),
+                    sourceRectangle: new Rectangle(tx, ty, unit.type.frameWidth, unit.type.frameHeight),
+                    color: c);
             }
 
             if (debugMode)

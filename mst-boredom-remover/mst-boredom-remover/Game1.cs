@@ -331,15 +331,21 @@ namespace mst_boredom_remover
             //newGameControls.Add(numTundra);
             //newGameControls.Add(numDreadland);
             //newGameControls.Add(numResource);
-
-            Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
+            
+            /*Texture2D swordUnitTexture = Content.Load<Texture2D>("Units\\Kbase");
             Texture2D swordUnitAttackTexture = Content.Load<Texture2D>("Units\\Kbaseatk");
             Texture2D archerUnitTexture = Content.Load<Texture2D>("Units\\Arcbase");
             Texture2D mageUnitTexture = Content.Load<Texture2D>("Units\\Wbase");
             Texture2D baseTown = Content.Load<Texture2D>("basictownbase");
-            Texture2D baseGoldMine = Content.Load<Texture2D>("goldminebase");
+            Texture2D baseGoldMine = Content.Load<Texture2D>("goldminebase");*/
 
-            engine.unitTypes.Add(new UnitType(name: "Swordsman",
+            engine.unitTypes.Add(UnitType.LoadFromFile("config/Knight.xml", Content));
+            engine.unitTypes.Add(UnitType.LoadFromFile("config/Archer.xml", Content));
+            engine.unitTypes.Add(UnitType.LoadFromFile("config/Peasant.xml", Content));
+            engine.unitTypes.Add(UnitType.LoadFromFile("config/Town.xml", Content));
+            engine.unitTypes.Add(UnitType.LoadFromFile("config/Mine.xml", Content));
+
+            /*(engine.unitTypes.Add(new UnitType(name: "Swordsman",
                 idleTextures: new[] { swordUnitTexture },
                 moveTextures: new[] { swordUnitTexture },
                 attackTextures: new[] { swordUnitAttackTexture },
@@ -370,7 +376,7 @@ namespace mst_boredom_remover
                 attackTextures: new[] { baseGoldMine },
                 actions: new List<UnitType.Action> { UnitType.Action.Gather },
                 movementSpeed: 0, movementType: UnitType.MovementType.None, maxHealth: 500,
-                attackStrength: 0, defense: 10, gatherRate: 50, goldCost: 500));
+                attackStrength: 0, defense: 10, gatherRate: 50, goldCost: 500));*/
 
             //Menu newGameMenu = new Menu(hudBackground, Vector2.Zero, newGameControls, Color.White, 2);
             #endregion
